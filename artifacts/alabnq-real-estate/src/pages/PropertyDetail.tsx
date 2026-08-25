@@ -1,6 +1,6 @@
 import { useParams, Link } from "wouter";
-import { mockProperties } from "@/data/mockProperties";
-import { MapPin, Bed, Bath, Square, Check, ChevronRight, Map as MapIcon, Share2, Heart, Phone } from "lucide-react";
+import { officialProperties } from "@/data/mockProperties";
+import { MapPin, Bed, Bath, Square, Check, ChevronRight, Share2, Heart, Phone, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
@@ -26,8 +26,9 @@ const customMarkerIcon = L.divIcon({
 
 export default function PropertyDetail() {
   const { id } = useParams<{ id: string }>();
-  const property = mockProperties.find(p => p.id === id);
+  const property = officialProperties.find(p => p.id === id);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   if (!property) {
     return (
@@ -39,6 +40,9 @@ export default function PropertyDetail() {
       </div>
     );
   }
+
+  const gallery = property.gallery?.length ? property.gallery : [property.image];
+  const heroImage = selectedImage ?? gallery[0];
 
   return (
     <main className="flex-1 w-full bg-background pb-24">
@@ -57,7 +61,7 @@ export default function PropertyDetail() {
       {/* Hero Image */}
       <div className="w-full h-[50vh] md:h-[60vh] relative group bg-primary">
         <img 
-          src={property.image} 
+          src={heroImage} 
           alt={property.title}
           className="w-full h-full object-cover opacity-90"
         />
@@ -137,6 +141,37 @@ export default function PropertyDetail() {
               </div>
             </section>
 
+            {gallery.length > 1 && (
+              <section>
+                <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
+                  <span className="w-8 h-1 bg-accent rounded-full inline-block"></span>
+                  صور العرض
+                </h2>
+                <div className="grid grid-cols-3 gap-3">
+                  {gallery.map((image, index) => (
+                    <button
+                      key={image}
+                      type="button"
+                      onClick={() => setSelectedImage(image)}
+                      className={`relative aspect-[4/3] overflow-hidden rounded-xl border-2 transition-all ${
+                        heroImage === image
+                          ? 'border-accent ring-4 ring-accent/15'
+                          : 'border-transparent hover:border-accent/50'
+                      }`}
+                      aria-label={`عرض الصورة ${index + 1}`}
+                    >
+                      <img
+                        src={image}
+                        alt={`${property.title} - صورة ${index + 1}`}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Amenities */}
             <section>
               <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
@@ -197,6 +232,12 @@ export default function PropertyDetail() {
                     <Phone className="w-5 h-5 ml-2" />
                     اتصل بنا مباشرة
                   </Button>
+                  <a href={property.sourceUrl} target="_blank" rel="noreferrer">
+                    <Button variant="outline" className="w-full h-14 border-white/20 text-white hover:bg-white/10 hover:text-white text-base font-bold">
+                      <ExternalLink className="w-5 h-5 ml-2" />
+                      الإعلان الأصلي
+                    </Button>
+                  </a>
                 </div>
 
                 <hr className="border-white/10 my-8" />

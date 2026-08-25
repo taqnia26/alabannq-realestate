@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, ChevronDown, MapPin, ChevronLeft } from "lucide-react";
-import { mockProperties, uniqueNeighborhoods } from "@/data/mockProperties";
+import { officialProperties, uniqueNeighborhoods } from "@/data/mockProperties";
 import { PropertyCard } from "@/components/PropertyCard";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
@@ -9,29 +9,16 @@ import { Input } from "@/components/ui/input";
 
 import { Badge } from "@/components/ui/badge";
 
-const heroSlides = [
-  {
-    src: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=2200&q=85",
-    alt: "فيلا حديثة في مكة المكرمة",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2200&q=85",
-    alt: "منزل بتصميم معماري حديث",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=2200&q=85",
-    alt: "مساحة داخلية راقية",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=2200&q=85",
-    alt: "تصميم سكني فاخر",
-  },
-];
+const heroSlides = officialProperties.map((property) => ({
+  src: property.image,
+  alt: property.title,
+}));
 
 export default function Home() {
   const [, setLocation] = useLocation();
-  const featuredProperties = mockProperties.filter(p => p.featured).slice(0, 3);
-  const recentProperties = mockProperties.slice(0, 6);
+  const featuredProperties = officialProperties.filter(p => p.featured).slice(0, 3);
+  const recentProperties = officialProperties.slice(0, 6);
+  const showcaseProperty = officialProperties[0];
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
@@ -201,8 +188,9 @@ export default function Home() {
             <div className="relative">
               <div className="aspect-[4/5] rounded-2xl overflow-hidden relative">
                 <img 
-                  src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                  alt="قصر فاخر" 
+                  src={showcaseProperty.image}
+                  alt={showcaseProperty.title}
+                  loading="lazy"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 border-2 border-accent/30 rounded-2xl m-4 pointer-events-none"></div>

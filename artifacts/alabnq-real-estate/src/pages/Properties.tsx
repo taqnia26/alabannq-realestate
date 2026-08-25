@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-import { mockProperties, uniqueNeighborhoods } from "@/data/mockProperties";
+import { officialProperties, uniqueNeighborhoods } from "@/data/mockProperties";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ export default function Properties() {
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
 
   const filteredProperties = useMemo(() => {
-    return mockProperties.filter(property => {
+    return officialProperties.filter(property => {
       const matchSearch = property.title.includes(searchQuery) || 
                           property.neighborhood.includes(searchQuery) ||
                           property.description.includes(searchQuery);

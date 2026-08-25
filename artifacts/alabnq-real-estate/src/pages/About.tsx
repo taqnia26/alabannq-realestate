@@ -20,8 +20,8 @@ export default function About() {
           <div className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1572204292164-b35ba473f446?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-                alt="مكتب العبنق العقارية" 
+                src="https://alabannq.com/wp-content/uploads/2026/08/3-592x444.png"
+                alt="عمارة من أحد عروض العبنق العقارية في مكة المكرمة"
                 className="w-full h-full object-cover"
               />
             </div>
