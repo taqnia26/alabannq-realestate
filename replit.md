@@ -1,44 +1,53 @@
-# [Project name]
+# العبنق العقارية
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+موقع عربي RTL فاخر لاستعراض عقارات الرياض، مع خريطة تفاعلية وفلاتر ومعرض عقارات تجريبية منظم.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `pnpm --filter @workspace/alabnq-real-estate run dev` — تشغيل الموقع عبر سير العمل المخصص له.
+- `pnpm --filter @workspace/alabnq-real-estate run typecheck` — فحص TypeScript للموقع.
+- `pnpm run typecheck` — فحص كامل مساحة العمل.
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- React 19 + Vite + Tailwind CSS
+- Wouter للتنقل داخل الواجهة
+- React Leaflet + OpenStreetMap للخريطة التفاعلية
+- Lucide React للأيقونات
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/alabnq-real-estate/src/App.tsx` — تعريف المسارات والغلاف العام للواجهة.
+- `artifacts/alabnq-real-estate/src/data/mockProperties.ts` — المصدر الوحيد لبيانات العقارات التجريبية.
+- `artifacts/alabnq-real-estate/src/pages/Properties.tsx` — بحث وفلاتر ومعرض العقارات والخريطة.
+- `artifacts/alabnq-real-estate/src/index.css` — رموز الهوية والألوان والطباعة وRTL.
+- `artifacts/alabnq-real-estate/public/brand/` — ملف الشعار الأصلي ونسخة العرض المستخدمة بالموقع.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- المرحلة الأولى تعمل بالكامل في المتصفح وببيانات محلية، دون API أو قاعدة بيانات.
+- مصدر بيانات واحد يغذي بطاقات العقارات والخريطة والبحث والفلاتر لتسهيل استبداله لاحقًا.
+- الخريطة تستخدم OpenStreetMap عبر Leaflet بلا مفتاح API.
+- يُحفظ الشعار المرفوع دون تعديل؛ يُستخدم قص بصري عند العرض فقط لأن الأصل لوحة عمودية.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- استكشاف عقارات سكنية واستثمارية موزعة على أحياء الرياض.
+- فلترة حسب التصنيف والحي ونوع العملية والسعر وعدد الغرف.
+- مشاهدة فقاعات الأسعار على الخريطة وفتح بطاقة كل عقار ثم صفحة التفاصيل.
+- نموذج تواصل واجهته جاهزة للربط بخدمة إرسال مستقبلًا.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- الواجهة عربية أولًا وباتجاه RTL.
+- الهوية الأساسية فاتحة ودافئة ببيج ذهبي، مع ذهبي الشعار كلون إبراز.
+- استخدام الشعار المرفوع كما هو وعدم إعادة تصميمه.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- بيانات الاتصال والعناوين داخل واجهة العرض تجريبية حتى تُستبدل ببيانات الشركة الفعلية.
+- صور العقارات الحالية صور stock خارجية ومناسبة للعرض التجريبي.
 
 ## Pointers
 

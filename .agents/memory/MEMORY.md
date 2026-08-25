@@ -1,0 +1,2 @@
+- [Alabnq brand asset](alabnq-brand-asset.md) — source logo PDF is a tall brand board; preserve it and use display-time crops for compact placements.
+- [Artifact Vite build environment](artifact-vite-build-environment.md) — standalone production builds need the runtime routing variables injected by the managed artifact workflow.

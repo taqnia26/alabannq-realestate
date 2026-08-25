@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "العبنق العقارية"
+description = "A bilingual-ready Arabic RTL luxury real estate showcase for Alabnq Real Estate, featuring an interactive Riyadh property map, searchable local listings, filters, company information, and a contact form."
+version = "1.0.0"
+id = "artifacts/alabnq-real-estate"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24312
+
+[services.development]
+run = "pnpm --filter @workspace/alabnq-real-estate run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/alabnq-real-estate", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/alabnq-real-estate/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24312"
+BASE_PATH = "/"
