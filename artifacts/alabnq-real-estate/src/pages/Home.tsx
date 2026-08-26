@@ -11,15 +11,21 @@ import { articles } from "@/data/articles";
 
 import { Badge } from "@/components/ui/badge";
 
-const heroSlides = Array.from({ length: 14 }, (_, index) => ({
-  src: `/hero/makkah-${String(index + 1).padStart(2, "0")}.jpeg`,
-  alt: "صورة جوية من مكة المكرمة",
+const heroSlides = [
+  "/hero/drive-01.jpg",
+  "/hero/drive-02.jpg",
+  "/hero/drive-03.jpg",
+  "/hero/drive-04.jpg",
+  "/hero/drive-05.jpg",
+  "/hero/drive-06.jpg",
+].map((src) => ({
+  src,
+  alt: "مشهد معماري جوي",
 }));
 
 export default function Home() {
   const featuredProperties = officialProperties.filter(p => p.featured).slice(0, 3);
   const recentProperties = officialProperties.slice(0, 6);
-  const showcaseProperty = officialProperties[0];
 
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -37,30 +43,44 @@ export default function Home() {
       <section className="relative h-[85vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden">
         {/* Animated background slider */}
         <div className="absolute inset-0 z-0">
+          {/* Single portrait image on narrow mobile screens */}
           {heroSlides.map((slide, index) => (
-            <div
+            <img
               key={slide.src}
-              className={`absolute inset-0 transition-opacity duration-[1400ms] ease-in-out ${
+              src={slide.src}
+              alt={index === activeSlide ? slide.alt : ""}
+              fetchPriority={index === 0 ? "high" : "auto"}
+              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[1400ms] min-[520px]:hidden ${
                 index === activeSlide ? "opacity-100" : "opacity-0"
               }`}
+            />
+          ))}
+
+          {/* Three portrait photos fill wide screens without large top/bottom crops */}
+          {heroSlides.map((_, groupIndex) => (
+            <div
+              key={`group-${groupIndex}`}
+              aria-hidden={groupIndex !== activeSlide}
+              className={`absolute inset-0 hidden min-[520px]:grid grid-cols-3 gap-1 bg-primary transition-opacity duration-[1400ms] ease-in-out ${
+                groupIndex === activeSlide ? "opacity-100" : "opacity-0"
+              }`}
             >
-              <img
-                src={slide.src}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
-              />
-              <div className="absolute inset-0 bg-primary/55" />
-              <img
-                src={slide.src}
-                alt={slide.alt}
-                fetchPriority={index === 0 ? "high" : "auto"}
-                className="relative z-10 h-full w-full object-cover object-center transition-transform duration-[5500ms] ease-out"
-              />
+              {[0, 1, 2].map((offset) => {
+                const slide = heroSlides[(groupIndex + offset) % heroSlides.length];
+                return (
+                  <img
+                    key={`${groupIndex}-${slide.src}`}
+                    src={slide.src}
+                    alt=""
+                    className="h-full w-full object-cover object-center"
+                  />
+                );
+              })}
             </div>
           ))}
-          <div className="absolute inset-0 bg-[#332814]/25"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#241b0d]/75 via-[#241b0d]/20 to-transparent"></div>
+
+          <div className="absolute inset-0 bg-[#241b0d]/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#241b0d]/80 via-[#241b0d]/15 to-[#241b0d]/20"></div>
         </div>
 
         <div className="container relative z-10 px-4 flex flex-col items-center text-center mt-16">
@@ -126,7 +146,7 @@ export default function Home() {
       <section className="py-24 bg-secondary text-primary relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <img
-            src={officialProperties[1].image}
+            src="/hero/drive-01.jpg"
             alt=""
             aria-hidden="true"
             loading="lazy"
@@ -177,8 +197,8 @@ export default function Home() {
             <div className="relative">
               <div className="aspect-[4/5] rounded-2xl overflow-hidden relative">
                 <img 
-                  src={showcaseProperty.image}
-                  alt={showcaseProperty.title}
+                  src="/hero/drive-03.jpg"
+                  alt="مشهد معماري جوي"
                   loading="lazy"
                   className="w-full h-full object-cover"
                 />
