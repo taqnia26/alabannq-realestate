@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -29,24 +29,37 @@ const queryClient = new QueryClient();
 
 function Router() {
   return (
-    <div className="flex flex-col min-h-[100dvh] w-full font-sans selection:bg-accent selection:text-primary">
-      <Navbar />
-      <RoutedErrorBoundary>
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/properties" component={Properties} />
-          <Route path="/properties/:id" component={PropertyDetail} />
-          <Route path="/articles" component={Articles} />
-          <Route path="/articles/:id" component={ArticleDetail} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route component={NotFound} />
-        </Switch>
-      </RoutedErrorBoundary>
-      <Footer />
-      <WhatsAppButton />
-    </div>
+    <>
+      <ScrollToTop />
+      <div className="flex flex-col min-h-[100dvh] w-full font-sans selection:bg-accent selection:text-primary">
+        <Navbar />
+        <RoutedErrorBoundary>
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/properties" component={Properties} />
+            <Route path="/properties/:id" component={PropertyDetail} />
+            <Route path="/articles" component={Articles} />
+            <Route path="/articles/:id" component={ArticleDetail} />
+            <Route path="/about" component={About} />
+            <Route path="/contact" component={Contact} />
+            <Route component={NotFound} />
+          </Switch>
+        </RoutedErrorBoundary>
+        <Footer />
+        <WhatsAppButton />
+      </div>
+    </>
   );
+}
+
+function ScrollToTop() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
+  return null;
 }
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
