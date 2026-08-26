@@ -55,7 +55,7 @@ export default function Home() {
                 src={slide.src}
                 alt={slide.alt}
                 fetchPriority={index === 0 ? "high" : "auto"}
-                className="relative z-10 h-full w-full object-contain transition-transform duration-[5500ms] ease-out"
+                className="relative z-10 h-full w-full object-cover object-center transition-transform duration-[5500ms] ease-out"
               />
             </div>
           ))}
