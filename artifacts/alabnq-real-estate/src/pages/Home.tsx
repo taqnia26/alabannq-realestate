@@ -11,9 +11,9 @@ import { articles } from "@/data/articles";
 
 import { Badge } from "@/components/ui/badge";
 
-const heroSlides = officialProperties.map((property) => ({
-  src: property.image,
-  alt: property.title,
+const heroSlides = Array.from({ length: 14 }, (_, index) => ({
+  src: `/hero/makkah-${String(index + 1).padStart(2, "0")}.jpeg`,
+  alt: "صورة جوية من مكة المكرمة",
 }));
 
 export default function Home() {
@@ -38,17 +38,29 @@ export default function Home() {
         {/* Animated background slider */}
         <div className="absolute inset-0 z-0">
           {heroSlides.map((slide, index) => (
-            <img
+            <div
               key={slide.src}
-              src={slide.src}
-              alt={slide.alt}
-              className={`absolute inset-0 h-full w-full object-cover transition-all duration-[1400ms] ease-in-out ${
-                index === activeSlide ? "scale-105 opacity-100" : "scale-100 opacity-0"
+              className={`absolute inset-0 transition-opacity duration-[1400ms] ease-in-out ${
+                index === activeSlide ? "opacity-100" : "opacity-0"
               }`}
-            />
+            >
+              <img
+                src={slide.src}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
+              />
+              <div className="absolute inset-0 bg-primary/55" />
+              <img
+                src={slide.src}
+                alt={slide.alt}
+                fetchPriority={index === 0 ? "high" : "auto"}
+                className="relative z-10 h-full w-full object-contain transition-transform duration-[5500ms] ease-out"
+              />
+            </div>
           ))}
-          <div className="absolute inset-0 bg-[#332814]/35"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#241b0d]/60 via-[#241b0d]/25 to-transparent"></div>
+          <div className="absolute inset-0 bg-[#332814]/25"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#241b0d]/75 via-[#241b0d]/20 to-transparent"></div>
         </div>
 
         <div className="container relative z-10 px-4 flex flex-col items-center text-center mt-16">
@@ -71,7 +83,7 @@ export default function Home() {
         <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2" aria-label="شرائح الصور">
           {heroSlides.map((slide, index) => (
             <button
-              key={slide.alt}
+              key={slide.src}
               type="button"
               aria-label={`عرض الصورة ${index + 1}`}
               aria-current={index === activeSlide}
