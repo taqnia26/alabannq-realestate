@@ -172,10 +172,10 @@ export default function Properties() {
     }] : []),
   ];
 
-  const createCustomMarker = (price: string) => {
+  const createCustomMarker = (price: string, propertyId: string) => {
     return L.divIcon({
       className: 'custom-map-marker',
-      html: `<div style="background-color: hsl(0 0% 13%); color: hsl(52 86% 60%); padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px; white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 2px solid hsl(52 86% 60%); font-family: 'Cairo', sans-serif;">${price.replace(' ر.س', '')}</div>`,
+      html: `<div data-property-id="${propertyId}" style="background-color: hsl(0 0% 13%); color: hsl(52 86% 60%); padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px; white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 2px solid hsl(52 86% 60%); font-family: 'Cairo', sans-serif;">${price.replace(' ر.س', '')}</div>`,
       iconSize: [80, 30],
       iconAnchor: [40, 15],
       popupAnchor: [0, -15]
@@ -391,7 +391,7 @@ export default function Properties() {
           <div className="flex flex-col gap-5 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center mb-5">
             <div className="flex items-center gap-3 md:justify-self-end">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-primary">
+                <h2 data-testid="results-count" className="text-xl md:text-2xl font-bold text-primary">
                   {filteredProperties.length} {filteredProperties.length === 1 ? 'عقار متاح' : 'عقارات متاحة'}
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">من أصل {officialProperties.length} عروض رسمية</p>
@@ -467,13 +467,13 @@ export default function Properties() {
 
           {viewMode === 'grid' ? (
             filteredProperties.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div data-testid="property-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredProperties.map(property => (
                   <PropertyCard key={property.id} property={property} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-24 px-5 rounded-2xl border border-dashed border-border bg-white/60">
+              <div data-testid="list-empty-state" className="text-center py-24 px-5 rounded-2xl border border-dashed border-border bg-white/60">
                 <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-5">
                   <Search className="w-7 h-7 text-primary/60" />
                 </div>
@@ -486,7 +486,7 @@ export default function Properties() {
               </div>
             )
           ) : (
-          <div className="relative w-full overflow-hidden rounded-2xl border border-border shadow-sm">
+          <div data-testid="map-results" className="relative w-full overflow-hidden rounded-2xl border border-border shadow-sm">
             <MapContainer 
               center={[21.3891, 39.8579]} 
               zoom={12} 
@@ -501,7 +501,7 @@ export default function Properties() {
                 <Marker 
                   key={property.id} 
                   position={property.coordinates}
-                  icon={createCustomMarker(property.priceLabel)}
+                  icon={createCustomMarker(property.priceLabel, property.id)}
                 >
                   <Popup className="map-popup-custom">
                     <div className="flex flex-col">
@@ -526,7 +526,7 @@ export default function Properties() {
             </MapContainer>
             {filteredProperties.length === 0 && (
               <div className="absolute inset-0 z-[1000] flex items-center justify-center p-5 pointer-events-none">
-                <div className="bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-border p-6 text-center max-w-sm pointer-events-auto">
+                <div data-testid="map-empty-state" className="bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-border p-6 text-center max-w-sm pointer-events-auto">
                   <Search className="w-9 h-9 text-muted-foreground mx-auto mb-3" />
                   <h3 className="font-bold text-primary mb-1">لا توجد عروض في هذه المنطقة</h3>
                   <p className="text-sm text-muted-foreground mb-4">غيّر خيارات البحث أو أعد ضبط الفلاتر لرؤية العروض الرسمية.</p>

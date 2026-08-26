@@ -12,7 +12,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <div className="group bg-card rounded-xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+    <div data-testid="property-card" data-property-id={property.id} className="group bg-card rounded-xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
       {/* Image Container */}
       <div className="relative aspect-[4/3] overflow-hidden bg-primary/5">
         <Link href={`/properties/${property.id}`} className="absolute inset-0 z-10" />
