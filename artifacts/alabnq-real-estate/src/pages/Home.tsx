@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "wouter";
-import { Search, ChevronDown, MapPin, ChevronLeft } from "lucide-react";
+import { Link } from "wouter";
+import { MapPin, ChevronLeft } from "lucide-react";
 import { officialProperties, uniqueNeighborhoods } from "@/data/mockProperties";
 import { PropertyCard } from "@/components/PropertyCard";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SiteSearch } from "@/components/SiteSearch";
+import { ArticleCard } from "@/components/ArticleCard";
+import { articles } from "@/data/articles";
 
 import { Badge } from "@/components/ui/badge";
 
@@ -15,12 +17,10 @@ const heroSlides = officialProperties.map((property) => ({
 }));
 
 export default function Home() {
-  const [, setLocation] = useLocation();
   const featuredProperties = officialProperties.filter(p => p.featured).slice(0, 3);
   const recentProperties = officialProperties.slice(0, 6);
   const showcaseProperty = officialProperties[0];
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
@@ -30,15 +30,6 @@ export default function Home() {
 
     return () => window.clearInterval(slider);
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      setLocation(`/properties?q=${encodeURIComponent(searchQuery)}`);
-    } else {
-      setLocation('/properties');
-    }
-  };
 
   return (
     <main className="flex-1 w-full">
@@ -74,22 +65,7 @@ export default function Home() {
 
           {/* Quick Search */}
           <div className="w-full max-w-3xl bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-2xl">
-            <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-3">
-              <div className="flex-1 relative">
-                <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input 
-                  type="text" 
-                  placeholder="ابحث عن حي، معلم، أو رقم عقار..." 
-                  className="w-full h-14 pl-4 pr-12 bg-white text-foreground border-none rounded-xl text-base placeholder:text-muted-foreground/70"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Button type="submit" className="h-14 px-8 text-base bg-accent text-primary hover:bg-accent/90 rounded-xl font-bold">
-                <Search className="w-5 h-5 ml-2" />
-                بحث عن عقار
-              </Button>
-            </form>
+            <SiteSearch mode="hero" />
           </div>
         </div>
         <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2" aria-label="شرائح الصور">
@@ -136,16 +112,17 @@ export default function Home() {
 
       {/* Value Proposition */}
       <section className="py-24 bg-secondary text-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          {/* Subtle pattern background */}
-          <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M0 40L40 0H20L0 20M40 40V20L20 40" fill="currentColor"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-          </svg>
+        <div className="absolute inset-0 pointer-events-none">
+          <img
+            src={officialProperties[1].image}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="h-full w-full object-cover opacity-[0.055] grayscale"
+          />
+          <div className="absolute inset-0 bg-gradient-to-l from-secondary via-secondary/95 to-secondary/75" />
+          <div className="absolute -top-40 -right-32 h-96 w-96 rounded-full bg-accent/15 blur-3xl" />
+          <div className="absolute -bottom-52 left-10 h-[28rem] w-[28rem] rounded-full bg-white/60 blur-3xl" />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -238,6 +215,35 @@ export default function Home() {
                 تصفح جميع العقارات
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest News */}
+      <section className="border-t border-border bg-white py-24">
+        <div className="container mx-auto px-4">
+          <div className="mb-14 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div className="max-w-2xl">
+              <span className="mb-4 inline-flex rounded-full bg-accent/20 px-4 py-2 text-sm font-bold text-primary">
+                أخبار ورؤى عقارية
+              </span>
+              <h2 className="mb-4 text-3xl font-bold text-primary md:text-4xl">معرفة تساعدك على اتخاذ القرار</h2>
+              <p className="text-lg leading-relaxed text-muted-foreground">
+                أدلة عملية وتحليلات مبسطة حول السكن والاستثمار وإدارة الأملاك في مكة المكرمة.
+              </p>
+            </div>
+            <Link href="/articles">
+              <Button variant="outline" className="h-12 border-primary/20 hover:border-primary">
+                تصفح الأخبار والمقالات
+                <ChevronLeft className="mr-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {articles.slice(0, 3).map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
           </div>
         </div>
       </section>

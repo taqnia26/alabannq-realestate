@@ -23,6 +23,7 @@ export function Footer() {
               <li><Link href="/" className="text-muted-foreground hover:text-primary transition-colors">الرئيسية</Link></li>
               <li><Link href="/properties" className="text-muted-foreground hover:text-primary transition-colors">العقارات</Link></li>
               <li><Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">عن الشركة</Link></li>
+              <li><Link href="/articles" className="text-muted-foreground hover:text-primary transition-colors">الأخبار والمقالات</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">تواصل معنا</Link></li>
             </ul>
           </div>

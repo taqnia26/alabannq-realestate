@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { BrandLogo } from "./BrandLogo";
+import { SiteSearch } from "./SiteSearch";
 
 export function Navbar() {
   const [location] = useLocation();
@@ -13,6 +14,7 @@ export function Navbar() {
     { href: "/", label: "الرئيسية" },
     { href: "/properties", label: "العقارات" },
     { href: "/about", label: "عن الشركة" },
+    { href: "/articles", label: "الأخبار" },
     { href: "/contact", label: "تواصل معنا" },
   ];
 
@@ -42,8 +44,11 @@ export function Navbar() {
         </nav>
 
         {/* Action Button */}
-        <div className="hidden md:block">
-          <Link href="/contact" className={cn("inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50", "bg-accent text-accent-foreground shadow hover:bg-accent/90 h-11 px-8")}>
+        <div className="hidden md:flex items-center gap-3">
+          <div className="hidden xl:block w-[270px]">
+            <SiteSearch mode="navbar" />
+          </div>
+          <Link href="/contact" className={cn("inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50", "bg-accent text-accent-foreground shadow hover:bg-accent/90 h-11 px-6")}>
             احجز استشارة
           </Link>
         </div>
@@ -60,6 +65,7 @@ export function Navbar() {
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-24 left-0 w-full bg-background border-b border-border shadow-lg py-4 px-4 flex flex-col gap-4">
+          <SiteSearch mode="mobile" className="mb-1" />
           {links.map((link) => (
             <Link
               key={link.href}
