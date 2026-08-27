@@ -5,15 +5,19 @@ import { BrandLogo } from "./BrandLogo";
 export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-primary/20 bg-primary pt-16 pb-8 text-white">
-      <img
-        src="/hero/drive-04.jpg"
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover opacity-25"
-      />
+      <div className="footer-bg-motion absolute -inset-[4%]">
+        <img
+          src="/hero/drive-04.jpg"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="h-full w-full object-cover opacity-30"
+        />
+      </div>
       <div className="absolute inset-0 bg-gradient-to-l from-primary via-primary/95 to-primary/80" />
-      <div className="absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+      <div className="footer-light-sweep absolute inset-y-0 -left-1/2 w-1/3" aria-hidden="true" />
+      <div className="footer-glow footer-glow--one absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
+      <div className="footer-glow footer-glow--two absolute -right-24 top-0 h-72 w-72 rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">

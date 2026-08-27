@@ -121,6 +121,90 @@
   animation: whatsapp-pulse 2.2s ease-in-out infinite;
 }
 
+@keyframes footer-image-drift {
+  0% { transform: scale(1.04) translate3d(0, 0, 0); }
+  100% { transform: scale(1.12) translate3d(1.5%, -1%, 0); }
+}
+
+@keyframes footer-light-sweep {
+  0% { transform: translateX(0) rotate(12deg); opacity: 0; }
+  18% { opacity: 0.18; }
+  48% { opacity: 0.06; }
+  72%, 100% { transform: translateX(520%) rotate(12deg); opacity: 0; }
+}
+
+@keyframes footer-glow-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
+  50% { transform: translate3d(22px, -18px, 0) scale(1.12); opacity: 0.9; }
+}
+
+.footer-bg-motion {
+  animation: footer-image-drift 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.footer-light-sweep {
+  background: linear-gradient(105deg, transparent 0%, rgba(255, 228, 92, 0.9) 48%, transparent 100%);
+  filter: blur(22px);
+  animation: footer-light-sweep 12s ease-in-out infinite;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.footer-glow {
+  animation: footer-glow-drift 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.footer-glow--two {
+  animation-delay: -4.5s;
+}
+
+@keyframes showcase-image-drift {
+  0%, 100% { transform: scale(1.06) translate3d(0, 0, 0); }
+  50% { transform: scale(1.11) translate3d(1.2%, -1.2%, 0); }
+}
+
+@keyframes showcase-sheen {
+  0%, 15% { transform: translateX(0) rotate(14deg); opacity: 0; }
+  35% { opacity: 0.24; }
+  65%, 100% { transform: translateX(560%) rotate(14deg); opacity: 0; }
+}
+
+@keyframes showcase-glow {
+  0%, 100% { transform: scale(0.96); opacity: 0.45; }
+  50% { transform: scale(1.04); opacity: 0.8; }
+}
+
+.value-showcase-image {
+  animation: showcase-image-drift 14s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.value-showcase-sheen {
+  background: linear-gradient(105deg, transparent 0%, rgba(255, 228, 92, 0.85) 50%, transparent 100%);
+  filter: blur(18px);
+  animation: showcase-sheen 10s ease-in-out infinite;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.value-showcase-glow {
+  animation: showcase-glow 8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-bg-motion,
+  .footer-light-sweep,
+  .footer-glow,
+  .value-showcase-image,
+  .value-showcase-sheen,
+  .value-showcase-glow {
+    animation: none;
+  }
+}
+
 .map-popup-custom .leaflet-popup-content-wrapper {
   padding: 0;
   border-radius: 0.75rem;

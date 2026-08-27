@@ -195,13 +195,15 @@ export default function Home() {
             </div>
             
             <div className="relative">
-              <div className="aspect-[4/5] rounded-2xl overflow-hidden relative">
+              <div className="value-showcase-glow absolute -inset-3 rounded-[1.4rem] bg-accent/20 blur-2xl" aria-hidden="true" />
+              <div className="value-showcase-frame relative aspect-[4/5] overflow-hidden rounded-2xl">
                 <img 
                   src="/hero/drive-03.jpg"
                   alt="مشهد معماري جوي"
                   loading="lazy"
-                  className="w-full h-full object-cover"
+                  className="value-showcase-image h-full w-full object-cover"
                 />
+                <div className="value-showcase-sheen absolute inset-y-0 -left-1/2 w-1/3" aria-hidden="true" />
                 <div className="absolute inset-0 border-2 border-accent/30 rounded-2xl m-4 pointer-events-none"></div>
               </div>
               <div className="absolute -bottom-8 -left-8 bg-white text-primary p-8 rounded-2xl shadow-xl max-w-xs hidden md:block">
