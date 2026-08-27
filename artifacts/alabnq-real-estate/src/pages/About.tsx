@@ -1,4 +1,5 @@
 import { MapPin, CheckCircle2, Building2 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function About() {
   return (
@@ -18,12 +19,20 @@ export default function About() {
       <section className="container mx-auto px-4 mb-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+            <div className="about-company-visual relative aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl">
               <img 
-                src="https://alabannq.com/wp-content/uploads/2026/08/3-592x444.png"
-                alt="عمارة من أحد عروض العبنق العقارية في مكة المكرمة"
-                className="w-full h-full object-cover"
+                src="/hero/alabnq-company-exterior.png"
+                alt="واجهة تخيلية لمقر شركة العبنق العقارية"
+                className="about-company-visual__image w-full h-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/10 pointer-events-none" />
+              <div className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2">
+                <BrandLogo
+                  className="h-20 w-20 rounded-md shadow-[0_6px_20px_rgba(0,0,0,0.3)] sm:h-28 sm:w-28"
+                  label="شعار شركة العبنق العقارية على واجهة المقر"
+                />
+              </div>
+              <div className="absolute inset-0 rounded-2xl border-2 border-accent/35 pointer-events-none" />
             </div>
             <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-accent rounded-full -z-10 blur-3xl opacity-30"></div>
           </div>
