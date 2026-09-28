@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { useSiteValue } from "@/data/siteContent";
 
 const contactSchema = z.object({
   name: z.string().min(2, { message: "الاسم يجب أن يكون أكثر من حرفين" }),
@@ -24,7 +25,13 @@ const contactSchema = z.object({
 });
 
 export default function Contact() {
+  const address = useSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع");
+  const phone = useSiteValue("contact.phone", "8002450000");
+  const heading = useSiteValue("contact.heading", "تواصل معنا");
+  const intro = useSiteValue("contact.intro", "تواصل مع العبنق عقارات للاستفسار عن إدارة الأملاك، أو التسويق العقاري، أو العروض المتاحة.");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
@@ -36,10 +43,21 @@ export default function Contact() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof contactSchema>) {
-    // In a real app, this would be an API call
-    console.log(values);
-    setIsSubmitted(true);
+  async function onSubmit(values: z.infer<typeof contactSchema>) {
+    setSubmitError("");
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/inquiries", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(values),
+      });
+      if (!response.ok) throw new Error("تعذر إرسال الرسالة. حاول مرة أخرى.");
+      setIsSubmitted(true);
+      form.reset();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "تعذر إرسال الرسالة.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -49,9 +67,9 @@ export default function Contact() {
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h1 className="text-4xl font-bold text-primary mb-4">تواصل معنا</h1>
+          <h1 className="text-4xl font-bold text-primary mb-4">{heading}</h1>
           <p className="text-lg text-muted-foreground">
-            تواصل مع العبنق عقارات للاستفسار عن إدارة الأملاك، أو التسويق العقاري، أو العروض المتاحة.
+            {intro}
           </p>
         </div>
 
@@ -71,7 +89,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">العنوان</h4>
-                    <p className="text-white/70">مكة المكرمة – العوالي<br/>شارع الشيخ محمد بن مانع</p>
+                    <p className="text-white/70">{address}</p>
                   </div>
                 </div>
 
@@ -81,7 +99,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">الهاتف</h4>
-                    <a href="tel:8002450000" className="text-white/70 hover:text-accent transition-colors" dir="ltr">800 245 0000</a>
+                    <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="text-white/70 hover:text-accent transition-colors" dir="ltr">{phone}</a>
                   </div>
                 </div>
 
@@ -108,7 +126,7 @@ export default function Contact() {
                   </div>
                   <h3 className="text-2xl font-bold text-primary mb-4">شكراً لتواصلك معنا</h3>
                   <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                    لقد استلمنا رسالتك بنجاح. سيقوم أحد مستشارينا العقاريين بالتواصل معك في أقرب وقت ممكن.
+                    تم حفظ رسالتك بنجاح، وسيتمكن فريقنا من مراجعتها من لوحة التحكم.
                   </p>
                   <Button onClick={() => setIsSubmitted(false)} variant="outline">
                     إرسال رسالة أخرى
@@ -180,9 +198,10 @@ export default function Contact() {
                         )}
                       />
 
-                      <Button type="submit" size="lg" className="w-full text-lg h-14 bg-primary text-primary-foreground hover:bg-primary/90 mt-4">
+                      {submitError && <p role="alert" className="text-red-700 text-sm">{submitError}</p>}
+                      <Button type="submit" disabled={submitting} size="lg" className="w-full text-lg h-14 bg-primary text-primary-foreground hover:bg-primary/90 mt-4">
                         <Send className="w-5 h-5 ml-2 rotate-180" />
-                        إرسال الرسالة
+                        {submitting ? "جارٍ إرسال الرسالة…" : "إرسال الرسالة"}
                       </Button>
                     </form>
                   </Form>

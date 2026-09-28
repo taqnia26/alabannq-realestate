@@ -1,9 +1,13 @@
-import { articles } from "@/data/articles";
+import { useSiteContent, useSiteValue } from "@/data/siteContent";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Link } from "wouter";
 import { ChevronRight } from "lucide-react";
 
 export default function Articles() {
+  const { data } = useSiteContent();
+  const heading = useSiteValue("articles.heading", "دليلك نحو قرارات عقارية واثقة");
+  const intro = useSiteValue("articles.intro", "تغطيات، نصائح، وتحليلات متعمقة لسوق العقارات في مكة المكرمة نضعها بين يديك لتكون دليلك الشامل في رحلتك العقارية.");
+  const articles = data?.articles ?? [];
   return (
     <main className="flex-1 w-full bg-background pb-24">
       {/* Breadcrumb */}
@@ -23,9 +27,9 @@ export default function Articles() {
             <span className="mb-5 inline-flex rounded-full border border-accent/35 bg-accent/10 px-4 py-2 text-sm font-bold text-accent">
               محتوى تجريبي لأغراض العرض
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">دليلك نحو قرارات عقارية واثقة</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">{heading}</h1>
             <p className="text-lg text-primary-foreground/80 leading-relaxed">
-              تغطيات، نصائح، وتحليلات متعمقة لسوق العقارات في مكة المكرمة نضعها بين يديك لتكون دليلك الشامل في رحلتك العقارية.
+              {intro}
             </p>
           </div>
         </div>

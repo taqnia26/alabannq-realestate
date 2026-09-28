@@ -1,13 +1,22 @@
 import { Link } from "wouter";
 import { Mail, MapPin, Phone, Instagram, Twitter, Linkedin } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
+import { useSiteValue } from "@/data/siteContent";
 
 export function Footer() {
+  const image = useSiteValue("footer.image", "/hero/drive-04.jpg");
+  const about = useSiteValue("footer.about", "العبنق عقارات مكتب متخصص في إدارة وتشغيل الأملاك والتسويق العقاري نيابةً عن الملاك.");
+  const address = useSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع");
+  const phone = useSiteValue("contact.phone", "8002450000");
+  const email = useSiteValue("footer.email", "info@alabnq.com");
+  const twitter = useSiteValue("footer.twitter", "");
+  const instagram = useSiteValue("footer.instagram", "");
+  const linkedin = useSiteValue("footer.linkedin", "");
   return (
     <footer className="relative overflow-hidden border-t border-primary/20 bg-primary pt-16 pb-8 text-white">
       <div className="footer-bg-motion absolute -inset-[4%]">
         <img
-          src="/hero/drive-04.jpg"
+          src={image}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -27,7 +36,7 @@ export function Footer() {
               <BrandLogo className="h-24 w-24 rounded-md shadow-sm" />
             </Link>
             <p className="max-w-xs text-sm leading-relaxed text-white/70">
-              العبنق عقارات مكتب متخصص في إدارة وتشغيل الأملاك والتسويق العقاري نيابةً عن الملاك.
+              {about}
             </p>
           </div>
 
@@ -57,27 +66,27 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-white/70">
                 <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                <span>مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع</span>
+                <span>{address}</span>
               </li>
               <li className="flex items-center gap-3 text-white/70">
                 <Phone className="w-5 h-5 text-accent shrink-0" />
-                <a href="tel:8002450000" className="hover:text-accent transition-colors" dir="ltr">800 245 0000</a>
+                <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="hover:text-accent transition-colors" dir="ltr">{phone}</a>
               </li>
               <li className="flex items-center gap-3 text-white/70">
                 <Mail className="w-5 h-5 text-accent shrink-0" />
-                <a href="mailto:info@alabnq.com" className="hover:text-accent transition-colors">info@alabnq.com</a>
+                <a href={`mailto:${email}`} className="hover:text-accent transition-colors">{email}</a>
               </li>
             </ul>
             <div className="flex items-center gap-4 mt-8">
-              <a href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
+              {twitter && <a href={twitter} target="_blank" rel="noreferrer" aria-label="X" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
                 <Twitter className="w-4 h-4" />
-              </a>
-              <a href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
+              </a>}
+              {instagram && <a href={instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
                 <Instagram className="w-4 h-4" />
-              </a>
-              <a href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
+              </a>}
+              {linkedin && <a href={linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
                 <Linkedin className="w-4 h-4" />
-              </a>
+              </a>}
             </div>
           </div>
         </div>

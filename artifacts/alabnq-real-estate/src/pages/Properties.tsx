@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-import { officialProperties, uniqueNeighborhoods } from "@/data/mockProperties";
+import { useSiteContent } from "@/data/siteContent";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,9 @@ const formatNumber = (value: string | number) =>
   new Intl.NumberFormat('en-US').format(Number(value));
 
 export default function Properties() {
+  const { data, isLoading, isError } = useSiteContent();
+  const officialProperties = data?.properties ?? [];
+  const uniqueNeighborhoods = Array.from(new Set(officialProperties.map(property => property.neighborhood)));
   // Parse query params if any
   const urlParams = new URLSearchParams(window.location.search);
   const initialQuery = urlParams.get('q') || '';
@@ -89,6 +92,7 @@ export default function Properties() {
       }
     });
   }, [
+    officialProperties,
     searchQuery,
     activeCategory,
     activeNeighborhood,

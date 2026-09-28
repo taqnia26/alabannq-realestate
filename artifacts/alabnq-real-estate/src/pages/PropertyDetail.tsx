@@ -1,5 +1,5 @@
 import { useParams, Link } from "wouter";
-import { officialProperties } from "@/data/mockProperties";
+import { useSiteContent } from "@/data/siteContent";
 import { MapPin, Bed, Bath, Square, Check, ChevronRight, Share2, Heart, Phone, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,10 +26,13 @@ const customMarkerIcon = L.divIcon({
 
 export default function PropertyDetail() {
   const { id } = useParams<{ id: string }>();
-  const property = officialProperties.find(p => p.id === id);
+  const { data, isLoading, isError } = useSiteContent();
+  const property = data?.properties.find(p => p.id === id);
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  if (isLoading) return <main className="container mx-auto px-4 py-32">جارٍ تحميل العقار…</main>;
+  if (isError) return <main className="container mx-auto px-4 py-32">تعذر تحميل العقار. يرجى المحاولة لاحقًا.</main>;
   if (!property) {
     return (
       <div className="container mx-auto px-4 py-32 text-center">

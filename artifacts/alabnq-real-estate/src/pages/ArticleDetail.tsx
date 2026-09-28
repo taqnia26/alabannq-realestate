@@ -1,14 +1,19 @@
 import { useParams, Link } from "wouter";
-import { articles } from "@/data/articles";
+import { useSiteContent } from "@/data/siteContent";
+import DOMPurify from "dompurify";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Calendar, Clock, ChevronRight, User, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export default function ArticleDetail() {
+  const { data, isLoading, isError } = useSiteContent();
+  const articles = data?.articles ?? [];
   const { id } = useParams<{ id: string }>();
   const article = articles.find(a => a.id === id);
 
+  if (isLoading) return <main className="container mx-auto px-4 py-32">جارٍ تحميل المقال…</main>;
+  if (isError) return <main className="container mx-auto px-4 py-32">تعذر تحميل المقال. يرجى المحاولة لاحقًا.</main>;
   if (!article) {
     return (
       <div className="container mx-auto px-4 py-32 text-center">
@@ -103,7 +108,7 @@ export default function ArticleDetail() {
                 className="prose prose-lg max-w-none prose-headings:text-primary prose-headings:font-bold prose-p:text-muted-foreground prose-p:leading-relaxed prose-a:text-accent hover:prose-a:text-primary prose-strong:text-foreground mb-16
                 prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:flex prose-h2:items-center prose-h2:gap-3
                 [&>h2]:before:content-[''] [&>h2]:before:block [&>h2]:before:w-2 [&>h2]:before:h-8 [&>h2]:before:bg-accent [&>h2]:before:rounded-full"
-                dangerouslySetInnerHTML={{ __html: article.content }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
               />
 
               {/* Mobile Social Share */}

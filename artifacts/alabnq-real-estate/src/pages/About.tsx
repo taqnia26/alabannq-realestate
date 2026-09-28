@@ -1,16 +1,22 @@
 import { MapPin, CheckCircle2, Building2 } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
+import { useSiteValue } from "@/data/siteContent";
 
 export default function About() {
+  const heading = useSiteValue("about.heading", "العبنق عقارات لإدارة الأملاك والتسويق العقاري");
+  const intro = useSiteValue("about.intro", "مكتب فهاد سعد منصور السبيعي لإدارة الأملاك والتسويق العقاري في مكة المكرمة، نقدّم خدمات عملية تساعد الملاك والباحثين عن العقار.");
+  const image = useSiteValue("about.image", "/hero/alabnq-company-exterior.png");
+  const story = useSiteValue("about.story", "العبنق عقارات مكتب متخصص في استلام وإدارة وتشغيل العقارات والأراضي داخل مكة المكرمة، ويعمل كشريك استراتيجي للمالكين الراغبين في تحقيق أقصى قدر من الفوائد من استثماراتهم العقارية.");
+  const servicesHeading = useSiteValue("about.servicesHeading", "خدمات متكاملة للمالك والعميل");
   return (
     <main className="flex-1 w-full bg-background pt-24">
       
       {/* Header */}
       <section className="container mx-auto px-4 mb-20 text-center">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">العبنق عقارات لإدارة الأملاك والتسويق العقاري</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">{heading}</h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            مكتب فهاد سعد منصور السبيعي لإدارة الأملاك والتسويق العقاري في مكة المكرمة، نقدّم خدمات عملية تساعد الملاك والباحثين عن العقار.
+            {intro}
           </p>
         </div>
       </section>
@@ -21,7 +27,7 @@ export default function About() {
           <div className="relative">
             <div className="about-company-visual relative aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl">
               <img 
-                src="/hero/alabnq-company-exterior.png"
+                src={image}
                 alt="واجهة تخيلية لمقر شركة العبنق العقارية"
                 className="about-company-visual__image w-full h-full object-cover"
               />
@@ -40,7 +46,7 @@ export default function About() {
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-primary">من نحن</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              العبنق عقارات مكتب متخصص في استلام وإدارة وتشغيل العقارات والأراضي داخل مكة المكرمة، ويعمل كشريك استراتيجي للمالكين الراغبين في تحقيق أقصى قدر من الفوائد من استثماراتهم العقارية.
+              {story}
             </p>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
               نسهّل إدارة الأملاك والتسويق العقاري داخل مكة المكرمة من خلال التواصل السلس، وتنسيق إجراءات التأجير والبيع، وإعداد التقارير المالية وفق احتياجات المالك.
@@ -86,7 +92,7 @@ export default function About() {
           <div className="inline-flex items-center justify-center p-4 bg-white/5 rounded-full mb-8">
             <Building2 className="w-12 h-12 text-accent" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">خدمات متكاملة للمالك والعميل</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">{servicesHeading}</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed mb-16">
             فريق من الكفاءات في مختلف الإدارات يقدّم متابعة أسرع وخدمة أكثر سلاسة للملاك والمستأجرين.
           </p>

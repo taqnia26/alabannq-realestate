@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { ArrowLeft, Building2, MapPin, Newspaper, Search } from "lucide-react";
-import { articles } from "@/data/articles";
-import { officialProperties, uniqueNeighborhoods } from "@/data/mockProperties";
+import { useSiteContent } from "@/data/siteContent";
 
 type SearchMode = "hero" | "navbar" | "mobile";
 
@@ -41,6 +40,10 @@ const suggestionLabel = {
 };
 
 export function SiteSearch({ mode = "navbar", className = "" }: SiteSearchProps) {
+  const { data } = useSiteContent();
+  const articles = data?.articles ?? [];
+  const officialProperties = data?.properties ?? [];
+  const uniqueNeighborhoods = Array.from(new Set(officialProperties.map(item => item.neighborhood)));
   const [, setLocation] = useLocation();
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +93,7 @@ export function SiteSearch({ mode = "navbar", className = "" }: SiteSearchProps)
       .sort((a, b) => a.score - b.score)
       .slice(0, 7)
       .map(({ item }) => item);
-  }, [query]);
+  }, [query, articles, officialProperties, uniqueNeighborhoods]);
 
   const navigateTo = (href: string) => {
     setLocation(href);

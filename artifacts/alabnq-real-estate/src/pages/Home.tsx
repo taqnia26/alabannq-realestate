@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { MapPin, ChevronLeft } from "lucide-react";
-import { officialProperties, uniqueNeighborhoods } from "@/data/mockProperties";
+import { useSiteContent, useSiteValue } from "@/data/siteContent";
 import { PropertyCard } from "@/components/PropertyCard";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { SiteSearch } from "@/components/SiteSearch";
 import { ArticleCard } from "@/components/ArticleCard";
-import { articles } from "@/data/articles";
 
 import { Badge } from "@/components/ui/badge";
 
@@ -24,6 +23,16 @@ const heroSlides = [
 }));
 
 export default function Home() {
+  const { data } = useSiteContent();
+  const officialProperties = data?.properties ?? [];
+  const articles = data?.articles ?? [];
+  const uniqueNeighborhoods = Array.from(new Set(officialProperties.map(property => property.neighborhood)));
+  const heroTitle = useSiteValue("home.title", "عقارات مكة المكرمة");
+  const heroSubtitle = useSiteValue("home.subtitle", "نستلم العقارات والأراضي داخل مكة المكرمة، ونقدّم حلولًا متكاملة لإدارتها وتسويقها.");
+  const heroImage = useSiteValue("home.heroImage", "");
+  const aboutHeading = useSiteValue("about.heading", "العبنق عقارات في مكة المكرمة");
+  const aboutIntro = useSiteValue("about.intro", "مكتب متخصص في استلام وإدارة وتسويق العقارات والأراضي داخل مكة المكرمة، لمساعدة الملاك على تحقيق أفضل استفادة من أصولهم.");
+  const aboutImage = useSiteValue("about.image", "/hero/drive-03.jpg");
   const featuredProperties = officialProperties.filter(p => p.featured).slice(0, 3);
   const recentProperties = officialProperties.slice(0, 6);
 
@@ -44,7 +53,7 @@ export default function Home() {
         {/* Animated background slider */}
         <div className="absolute inset-0 z-0">
           {/* Single portrait image on narrow mobile screens */}
-          {heroSlides.map((slide, index) => (
+          {(heroImage ? [{src: heroImage, alt: "صورة رئيسية"}] : heroSlides).map((slide, index) => (
             <img
               key={slide.src}
               src={slide.src}
@@ -57,7 +66,7 @@ export default function Home() {
           ))}
 
           {/* Three portrait photos fill wide screens without large top/bottom crops */}
-          {heroSlides.map((_, groupIndex) => (
+          {!heroImage && heroSlides.map((_, groupIndex) => (
             <div
               key={`group-${groupIndex}`}
               aria-hidden={groupIndex !== activeSlide}
@@ -89,10 +98,10 @@ export default function Home() {
           </Badge>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight max-w-4xl">
             نُدير ونسوّق <br/>
-            <span className="text-accent">عقارات مكة المكرمة</span>
+            <span className="text-accent">{heroTitle}</span>
           </h1>
           <p className="text-lg md:text-xl text-white/80 mb-12 max-w-2xl">
-            نستلم العقارات والأراضي داخل مكة المكرمة، ونقدّم حلولًا متكاملة لإدارتها وتسويقها.
+            {heroSubtitle}
           </p>
 
           {/* Quick Search */}
@@ -121,7 +130,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div className="max-w-2xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">العروض العقارية المميزة</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{useSiteValue("home.propertiesHeading", "العروض العقارية المميزة")}</h2>
               <p className="text-muted-foreground text-lg">
                 نعرض فرص البيع والإيجار المتاحة في مكة المكرمة، ونتولى استلام العقارات والأراضي داخل المدينة.
               </p>
@@ -162,10 +171,10 @@ export default function Home() {
             <div>
               <BrandLogo className="mb-10 h-28 w-28 rounded-lg shadow-sm" />
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary leading-tight">
-                  العبنق عقارات في مكة المكرمة
+                  {aboutHeading}
               </h2>
               <p className="text-primary/75 text-lg mb-8 leading-relaxed">
-                  مكتب متخصص في استلام وإدارة وتسويق العقارات والأراضي داخل مكة المكرمة، لمساعدة الملاك على تحقيق أفضل استفادة من أصولهم.
+                  {aboutIntro}
               </p>
               
               <div className="grid grid-cols-2 gap-8 mb-10">
@@ -198,7 +207,7 @@ export default function Home() {
               <div className="value-showcase-glow absolute -inset-3 rounded-[1.4rem] bg-accent/20 blur-2xl" aria-hidden="true" />
               <div className="value-showcase-frame relative aspect-[4/5] overflow-hidden rounded-2xl">
                 <img 
-                  src="/hero/drive-03.jpg"
+                  src={aboutImage}
                   alt="مشهد معماري جوي"
                   loading="lazy"
                   className="value-showcase-image h-full w-full object-cover"
@@ -261,7 +270,7 @@ export default function Home() {
               <span className="mb-4 inline-flex rounded-full bg-accent/20 px-4 py-2 text-sm font-bold text-primary">
                 أخبار ورؤى عقارية
               </span>
-              <h2 className="mb-4 text-3xl font-bold text-primary md:text-4xl">معرفة تساعدك على اتخاذ القرار</h2>
+              <h2 className="mb-4 text-3xl font-bold text-primary md:text-4xl">{useSiteValue("home.articlesHeading", "معرفة تساعدك على اتخاذ القرار")}</h2>
               <p className="text-lg leading-relaxed text-muted-foreground">
                 أدلة عملية وتحليلات مبسطة حول السكن والاستثمار وإدارة الأملاك في مكة المكرمة.
               </p>
