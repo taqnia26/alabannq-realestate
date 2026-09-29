@@ -5,6 +5,7 @@ import { useSiteContent, useLocalizedSiteValue, useSiteValue } from "@/data/site
 import { usePreferences } from "@/lib/preferences";
 import { SiteSearch } from "@/components/SiteSearch";
 import { FeaturedSlider } from "@/components/FeaturedSlider";
+import { CityGallerySlider } from "@/components/CityGallerySlider";
 
 const heroSlides = [
   "/hero/riyadh-kingdom.jpg",
@@ -99,5 +100,6 @@ export default function Home() {
       </div>
     </section>
     {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل العقارات المميزة.", "Could not load featured properties.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <FeaturedSlider properties={(data?.properties ?? []).filter(property => property.featured)} heading={featuredHeading} />}
+    <CityGallerySlider />
   </main>;
 }
