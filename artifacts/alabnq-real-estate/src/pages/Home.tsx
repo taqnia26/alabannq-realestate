@@ -6,7 +6,13 @@ import { usePreferences } from "@/lib/preferences";
 import { SiteSearch } from "@/components/SiteSearch";
 import { FeaturedSlider } from "@/components/FeaturedSlider";
 
-const heroSlides = ["/hero/riyadh-kingdom.jpg", "/hero/riyadh-aerial.jpg", "/hero/riyadh-financial.jpg"];
+const heroSlides = [
+  "/hero/riyadh-kingdom.jpg",
+  "/hero/makkah-clocktower.jpg",
+  "/hero/riyadh-aerial.jpg",
+  "/hero/makkah-abraj.jpg",
+  "/hero/riyadh-financial.jpg",
+];
 
 export default function Home() {
   const { data, isLoading, isError, refetch } = useSiteContent();
@@ -30,7 +36,7 @@ export default function Home() {
   return <main className="site-shell flex-1">
     <section aria-label={t("المشهد الرئيسي", "Introduction")} className="site-always-dark relative isolate flex min-h-[720px] items-end overflow-hidden bg-[#162127] text-[#eee8db] md:min-h-[min(860px,calc(100dvh-88px))]" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
       <div className="hero-frame absolute inset-0">
-        {images.map((image, index) => <img key={image} src={image} alt="" fetchPriority={index === 0 ? "high" : "auto"} aria-hidden="true" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] ease-in-out ${index === active || !!heroImage ? "active opacity-100" : "opacity-0"}`} />)}
+        {images.map((image, index) => <img key={image} src={image} alt="" loading={index === 0 ? "eager" : "lazy"} fetchPriority={index === 0 ? "high" : "low"} aria-hidden="true" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] ease-in-out ${image.includes("/hero/makkah-") ? "md:object-[center_15%]" : ""} ${index === active || !!heroImage ? "active opacity-100" : "opacity-0"}`} />)}
         <div className="absolute inset-0 bg-gradient-to-t from-[#121a1e]/90 via-[#121a1e]/25 to-[#121a1e]/10" />
         <div className="absolute inset-0 bg-gradient-to-l from-[#121a1e]/40 via-transparent to-transparent" />
       </div>
