@@ -13,6 +13,7 @@ import type { Article } from '../data/articles';
 import { officialProperties } from '../data/mockProperties';
 import { articles } from '../data/articles';
 import { mergeRecords, contentQueryKey } from '../data/siteContent';
+import { ImageInput } from './ImageInput';
 import './admin.css';
 
 type Campaign = {
@@ -124,6 +125,8 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
 }) {
   const [form, setForm] = useState<Item>(initial);
   const [error, setError] = useState('');
+  const [uploadsInProgress, setUploadsInProgress] = useState(0);
+  const changeUploadState = (busy: boolean) => setUploadsInProgress(count => count + (busy ? 1 : -1));
   const isNew = !('createdAt' in initial) && initial.id.startsWith(`${kind.slice(0, -1)}-`) &&
     !('sourceUrl' in initial && initial.sourceUrl) && !('title' in initial && initial.title) && !('name' in initial && initial.name);
   const value = (key: string): string => {
@@ -190,8 +193,15 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
               {field('amenities', 'المميزات', { full: true, multiline: true, hint: 'ميزة واحدة في كل سطر' })}
             </div></div>
             <div className="ad-form-section"><h3>الصور والموقع</h3><div className="ad-field-grid">
-              {field('image', 'رابط الصورة الرئيسية', { full: true, type: 'url', placeholder: 'https://...' })}
-              {field('gallery', 'روابط معرض الصور', { full: true, multiline: true, hint: 'رابط واحد في كل سطر' })}
+              <div className="ad-field full">{field('image', 'رابط الصورة الرئيسية', { type: 'text', placeholder: 'https://... أو ارفع صورة أدناه' })}
+                <ImageInput id="property-image" label="الصورة الرئيسية" value={value('image') ? [value('image')] : []} onBusyChange={changeUploadState} onChange={(url, action) => set('image', action === 'add' ? url : '')} /></div>
+              <div className="ad-field full">{field('gallery', 'روابط معرض الصور', { multiline: true, hint: 'رابط واحد في كل سطر' })}
+                <ImageInput id="property-gallery" label="صورة المعرض" multiple value={value('gallery').split('\n').map(x => x.trim()).filter(Boolean)}
+                  onBusyChange={changeUploadState} onChange={(url, action) => setForm(prev => {
+                    const gallery = (prev as PublishedProperty).gallery;
+                    const urls = (Array.isArray(gallery) ? gallery.join('\n') : String(gallery ?? '')).split('\n').map(x => x.trim()).filter(Boolean);
+                    return { ...prev, gallery: action === 'add' ? [...urls, url] : urls.filter(x => x !== url) };
+                  })} /></div>
               {field('sourceUrl', 'رابط الإعلان الأصلي', { full: true, type: 'url', placeholder: 'https://...' })}
               {field('latitude', 'خط العرض', { type: 'number', hint: 'مثال: 21.4225' })}
               {field('longitude', 'خط الطول', { type: 'number', hint: 'مثال: 39.8262' })}
@@ -207,7 +217,8 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
               {field('content', 'نص المقال', { required: true, full: true, multiline: true, hint: 'يمكن كتابة المحتوى بتنسيق HTML كما في المقالات الحالية.' })}
             </div></div>
             <div className="ad-form-section"><h3>بيانات النشر</h3><div className="ad-field-grid">
-              {field('image', 'رابط صورة المقال', { full: true, type: 'url', placeholder: 'https://...' })}
+              <div className="ad-field full">{field('image', 'رابط صورة المقال', { type: 'text', placeholder: 'https://... أو ارفع صورة أدناه' })}
+                <ImageInput id="article-image" label="صورة المقال" value={value('image') ? [value('image')] : []} onBusyChange={changeUploadState} onChange={(url, action) => set('image', action === 'add' ? url : '')} /></div>
               {field('date', 'تاريخ النشر', { type: 'date' })}
               {field('readTime', 'وقت القراءة')}
             </div>{checkbox('published', 'منشور على الموقع')}</div>
@@ -226,7 +237,7 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
           </>}
           {error && <p className="ad-form-error" role="alert" data-testid="status-form-error">{error}</p>}
         </div>
-        <div className="ad-form-footer"><button type="button" className="ad-button ad-button-plain" onClick={onClose} data-testid="button-cancel-editor">إلغاء</button><button type="submit" className="ad-button ad-button-primary" disabled={saving} data-testid="button-save-item"><Check />{saving ? 'جارٍ الحفظ...' : 'حفظ التغييرات'}</button></div>
+        <div className="ad-form-footer"><button type="button" className="ad-button ad-button-plain" onClick={onClose} data-testid="button-cancel-editor">إلغاء</button><button type="submit" className="ad-button ad-button-primary" disabled={saving || uploadsInProgress > 0} data-testid="button-save-item"><Check />{uploadsInProgress > 0 ? 'جارٍ رفع الصور...' : saving ? 'جارٍ الحفظ...' : 'حفظ التغييرات'}</button></div>
       </form>
     </div>
   </div>;
@@ -250,6 +261,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [siteKey, setSiteKey] = useState('');
   const [siteValue, setSiteValue] = useState('');
   const [savingKey, setSavingKey] = useState('');
+  const [siteUploads, setSiteUploads] = useState<string[]>([]);
 
   useEffect(() => { try { localStorage.setItem('alabnq-admin-theme', theme); } catch { /* storage unavailable */ } }, [theme]);
   useEffect(() => { if (!notice) return; const timeout = window.setTimeout(() => setNotice(null), 5000); return () => clearTimeout(timeout); }, [notice]);
@@ -441,9 +453,11 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                   const value = siteDraft[key] ?? '';
                   const imageKey = key.toLowerCase().includes('image');
                   return <div className="ad-card ad-site-card" key={key}><label htmlFor={`site-${key}`}>{detail?.[1] || key}</label><div className="ad-site-key">{detail?.[2] || key}</div>
-                    {imageKey && value && <img src={value} alt="معاينة الصورة" style={{ width: '100%', height: 120, objectFit: 'cover', borderRadius: 5, marginBottom: 11 }} onError={e => { e.currentTarget.style.display = 'none'; }} />}
                     {imageKey || key.includes('phone') || key.includes('whatsapp') ? <input id={`site-${key}`} className="ad-input" type="text" dir={imageKey ? 'ltr' : 'auto'} value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder={imageKey ? 'https://...' : 'اكتب المحتوى هنا'} data-testid={`input-site-${key}`} /> : <textarea id={`site-${key}`} className="ad-input" value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder="اكتب المحتوى هنا" data-testid={`textarea-site-${key}`} />}
-                    <button type="button" className="ad-button ad-button-plain" disabled={savingKey === key || value === (data.site?.[key] ?? '')} onClick={() => void saveSite(key, value)} data-testid={`button-save-site-${key}`}><Check />{savingKey === key ? 'جارٍ الحفظ...' : 'حفظ التعديل'}</button>
+                     {imageKey && <ImageInput id={`upload-site-${key}`} label={detail?.[1] || key} value={value ? [value] : []}
+                       onBusyChange={busy => setSiteUploads(keys => busy ? [...keys, key] : keys.filter(x => x !== key))}
+                       onChange={(url, action) => setSiteDraft(d => ({ ...d, [key]: action === 'add' ? url : '' }))} />}
+                     <button type="button" className="ad-button ad-button-plain" disabled={savingKey === key || siteUploads.includes(key) || value === (data.site?.[key] ?? '')} onClick={() => void saveSite(key, value)} data-testid={`button-save-site-${key}`}><Check />{savingKey === key ? 'جارٍ الحفظ...' : 'حفظ التعديل'}</button>
                   </div>;
                 })}</div>
                 <div className="ad-site-add ad-section-gap"><h3>إضافة مفتاح محتوى آخر</h3><div className="ad-field-grid"><input className="ad-input" value={siteKey} onChange={e => setSiteKey(e.target.value)} placeholder="اسم المفتاح، مثال: services.title" dir="ltr" aria-label="اسم مفتاح المحتوى" data-testid="input-site-new-key" /><input className="ad-input" value={siteValue} onChange={e => setSiteValue(e.target.value)} placeholder="النص الجديد" aria-label="قيمة المحتوى" data-testid="input-site-new-value" /></div><button type="button" className="ad-button ad-button-primary" onClick={() => void saveSite(siteKey, siteValue)} disabled={!!savingKey || !siteKey.trim()} data-testid="button-add-site-key"><Plus />حفظ المحتوى</button></div>

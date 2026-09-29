@@ -1,3 +1,4 @@
 - [Alabnq brand asset](alabnq-brand-asset.md) — source logo PDF is a tall brand board; preserve it and use display-time crops for compact placements.
 - [Artifact Vite build environment](artifact-vite-build-environment.md) — standalone production builds need the runtime routing variables injected by the managed artifact workflow.
 - [Official property catalog](official-property-catalog.md) — publish only current offers and public image links from alabannq.com; do not add fictional listings or stock-property photos.
+- [Site image storage](site-image-storage.md) — editorial uploads use admin-only writes but narrow public reads; never expose private attachments this way.

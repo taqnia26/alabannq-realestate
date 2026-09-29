@@ -3,6 +3,8 @@ import { clerkClient, getAuth } from "@clerk/express";
 import { db, contentTable, visitsTable, inquiriesTable } from "@workspace/db";
 import { eq, gte, sql, desc } from "drizzle-orm";
 import { z } from "zod";
+import siteImagesRouter from "./site-images";
+import { deleteUnreferencedImage, imageReferences, managedImageId, validateImageReferences } from "../lib/siteImages";
 
 const router: IRouter = Router();
 const kinds = ["properties", "articles", "campaigns"] as const;
@@ -71,6 +73,16 @@ router.post("/inquiries", async (req, res): Promise<void> => {
 });
 
 router.use("/admin", requireAdmin);
+router.use("/admin/media", siteImagesRouter);
+
+async function cleanupImages(req: Request, before: Record<string, unknown> | undefined, after: Record<string, unknown>): Promise<void> {
+  for (const url of imageReferences(before || {})) {
+    const id = managedImageId(url);
+    if (!id || imageReferences(after).includes(url)) continue;
+    try { await deleteUnreferencedImage(id); }
+    catch (err) { req.log.warn({ err }, "Unable to clean up unused image"); }
+  }
+}
 
 router.get("/admin/state", async (_req, res): Promise<void> => {
   const entries = await db.select().from(contentTable);
@@ -116,11 +128,20 @@ async function saveItem(req: Request, res: Response): Promise<void> {
     res.status(400).json({ error: "بيانات المحتوى غير صالحة" }); return;
   }
   const { id, published, ...data } = parsed.data;
+  if ((kind === "properties" || kind === "articles") &&
+    !await validateImageReferences([
+      ...(typeof data.image === "string" ? [data.image] : []),
+      ...(kind === "properties" && Array.isArray(data.gallery) ? data.gallery.filter((x): x is string => typeof x === "string") : []),
+    ])) {
+    res.status(400).json({ error: "إحدى الصور المرفوعة غير صالحة أو تجاوزت الحجم المسموح." }); return;
+  }
   if (kind === "properties" && data.city !== "مكة المكرمة") {
     res.status(400).json({ error: "العروض متاحة في مكة المكرمة فقط" }); return;
   }
+  const [previous] = await db.select({ data: contentTable.data }).from(contentTable).where(eq(contentTable.id, id));
   const [item] = await db.insert(contentTable).values({ id, kind, data, published: published !== false })
     .onConflictDoUpdate({ target: contentTable.id, set: { kind, data, published: published !== false, updatedAt: new Date() } }).returning();
+  await cleanupImages(req, previous?.data, data);
   res.json({ ...item.data, id: item.id, published: item.published });
 }
 router.post("/admin/items/:kind", saveItem);
@@ -132,16 +153,23 @@ router.delete("/admin/items/:kind/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: "معرّف غير صالح" }); return;
   }
   // Tombstones stop static catalog items from reappearing after removal.
+  const [previous] = await db.select({ data: contentTable.data }).from(contentTable).where(eq(contentTable.id, id));
   await db.insert(contentTable).values({ id, kind, data: { id, deleted: true }, published: false })
     .onConflictDoUpdate({ target: contentTable.id, set: { data: { id, deleted: true }, published: false, updatedAt: new Date() } });
+  await cleanupImages(req, previous?.data, {});
   res.status(204).end();
 });
 router.put("/admin/site", async (req, res): Promise<void> => {
   const parsed = siteSchema.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "قيمة غير صالحة" }); return; }
   const { key, value } = parsed.data;
+  if (key.toLowerCase().includes("image") && !await validateImageReferences([value])) {
+    res.status(400).json({ error: "الصورة المرفوعة غير صالحة أو تجاوزت الحجم المسموح." }); return;
+  }
+  const [previous] = await db.select({ data: contentTable.data }).from(contentTable).where(eq(contentTable.id, key));
   await db.insert(contentTable).values({ id: key, kind: "site", data: { value } })
     .onConflictDoUpdate({ target: contentTable.id, set: { data: { value }, updatedAt: new Date() } });
+  await cleanupImages(req, previous?.data, { value });
   res.json({ key, value });
 });
 export default router;
