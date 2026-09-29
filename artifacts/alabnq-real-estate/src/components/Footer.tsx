@@ -1,100 +1,40 @@
 import { Link } from "wouter";
-import { Mail, MapPin, Phone, Instagram, Twitter, Linkedin } from "lucide-react";
+import { ArrowUpLeft, Mail, MapPin, Phone, Instagram, Twitter, Linkedin } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
-import { useSiteValue } from "@/data/siteContent";
+import { useSiteValue, useLocalizedSiteValue } from "@/data/siteContent";
+import { usePreferences } from "@/lib/preferences";
 
 export function Footer() {
+  const { t } = usePreferences();
   const image = useSiteValue("footer.image", "/hero/drive-04.jpg");
-  const about = useSiteValue("footer.about", "شركة العبنق العقارية: خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.");
-  const address = useSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع");
+  const about = useLocalizedSiteValue("footer.about", "شركة العبنق العقارية: خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.", "Alabnq Real Estate: experience that builds trust, services that create value.");
+  const address = useLocalizedSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع", "Makkah – Al-Awali – Sheikh Mohammed bin Manea Street");
   const phone = useSiteValue("contact.phone", "8002450000");
   const email = useSiteValue("footer.email", "info@alabnq.com");
-  const twitter = useSiteValue("footer.twitter", "");
-  const instagram = useSiteValue("footer.instagram", "");
-  const linkedin = useSiteValue("footer.linkedin", "");
-  return (
-    <footer className="relative overflow-hidden border-t border-primary/20 bg-primary pt-16 pb-8 text-white">
-      <div className="footer-bg-motion absolute -inset-[4%]">
-        <img
-          src={image}
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          className="h-full w-full object-cover opacity-30"
-        />
+  const socials = [
+    { icon: Twitter, label: "X", url: useSiteValue("footer.twitter", "") },
+    { icon: Instagram, label: "Instagram", url: useSiteValue("footer.instagram", "") },
+    { icon: Linkedin, label: "LinkedIn", url: useSiteValue("footer.linkedin", "") },
+  ];
+  const links = [
+    ["/", t("الرئيسية", "Home")], ["/properties", t("العقارات", "Properties")],
+    ["/about", t("عن الشركة", "Our company")], ["/articles", t("الأخبار والمقالات", "Journal")],
+    ["/contact", t("تواصل معنا", "Contact")],
+  ];
+  return <footer className="site-always-dark relative isolate overflow-hidden bg-[#121b20] text-[#eee8db]">
+    <img src={image} loading="lazy" alt="" className="footer-bg-motion pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[.13]" />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#121b20] via-[#121b20]/95 to-[#121b20]/80" />
+    <div className="site-container relative">
+      <div className="grid gap-10 border-b border-[#e6d8b6]/20 py-20 lg:grid-cols-[1fr_auto] lg:items-end lg:py-28">
+        <div><span className="site-eyebrow">{t("دعنا نبدأ الحديث", "LET'S BEGIN")}</span><h2 className="site-display mt-7 max-w-3xl text-[clamp(2.5rem,4.5vw,5.5rem)]">{t("لكل عقار قصة. نود سماع قصتك.", "Every property has a story. Tell us yours.")}</h2></div>
+        <Link href="/contact" className="site-button inline-flex min-h-14 w-fit items-center gap-5 px-7 text-sm font-bold">{t("تواصل معنا", "Get in touch")} <ArrowUpLeft size={19} /></Link>
       </div>
-      <div className="absolute inset-0 bg-gradient-to-l from-primary via-primary/95 to-primary/80" />
-      <div className="footer-light-sweep absolute inset-y-0 -left-1/2 w-1/3" aria-hidden="true" />
-      <div className="footer-glow footer-glow--one absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-      <div className="footer-glow footer-glow--two absolute -right-24 top-0 h-72 w-72 rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-
-      <div className="container relative z-10 mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          
-          <div className="space-y-6">
-            <Link href="/" className="inline-block">
-              <BrandLogo className="h-24 w-24 rounded-md shadow-sm" />
-            </Link>
-            <p className="max-w-xs text-sm leading-relaxed text-white/70">
-              {about}
-            </p>
-          </div>
-
-          <div>
-            <h3 className="mb-6 text-lg font-bold text-accent">روابط سريعة</h3>
-            <ul className="space-y-4">
-              <li><Link href="/" className="text-white/70 transition-colors hover:text-accent">الرئيسية</Link></li>
-              <li><Link href="/properties" className="text-white/70 transition-colors hover:text-accent">العقارات</Link></li>
-              <li><Link href="/about" className="text-white/70 transition-colors hover:text-accent">عن الشركة</Link></li>
-              <li><Link href="/articles" className="text-white/70 transition-colors hover:text-accent">الأخبار والمقالات</Link></li>
-              <li><Link href="/contact" className="text-white/70 transition-colors hover:text-accent">تواصل معنا</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-6 text-lg font-bold text-accent">عروض مكة المكرمة</h3>
-            <ul className="space-y-4">
-              <li><Link href="/properties?q=العوالي" className="text-white/70 transition-colors hover:text-accent">عقارات العوالي</Link></li>
-              <li><Link href="/properties?q=العدل" className="text-white/70 transition-colors hover:text-accent">عقارات العدل</Link></li>
-              <li><Link href="/properties?q=الحسينية" className="text-white/70 transition-colors hover:text-accent">عقارات الحسينية</Link></li>
-              <li><Link href="/properties?q=مكة" className="text-white/70 transition-colors hover:text-accent">كل عروض مكة</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-6 text-lg font-bold text-accent">معلومات التواصل</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-white/70">
-                <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                <span>{address}</span>
-              </li>
-              <li className="flex items-center gap-3 text-white/70">
-                <Phone className="w-5 h-5 text-accent shrink-0" />
-                <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="hover:text-accent transition-colors" dir="ltr">{phone}</a>
-              </li>
-              <li className="flex items-center gap-3 text-white/70">
-                <Mail className="w-5 h-5 text-accent shrink-0" />
-                <a href={`mailto:${email}`} className="hover:text-accent transition-colors">{email}</a>
-              </li>
-            </ul>
-            <div className="flex items-center gap-4 mt-8">
-              {twitter && <a href={twitter} target="_blank" rel="noreferrer" aria-label="X" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
-                <Twitter className="w-4 h-4" />
-              </a>}
-              {instagram && <a href={instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
-                <Instagram className="w-4 h-4" />
-              </a>}
-              {linkedin && <a href={linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-all hover:bg-accent hover:text-primary">
-                <Linkedin className="w-4 h-4" />
-              </a>}
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-white/15 pt-8 text-sm text-white/60">
-          <p>© {new Date().getFullYear()} شركة العبنق العقارية. جميع الحقوق محفوظة.</p>
-        </div>
+      <div className="grid gap-14 py-16 md:grid-cols-2 lg:grid-cols-[1.35fr_.8fr_1fr] lg:gap-20 lg:py-20">
+        <div><Link href="/" className="inline-flex items-center gap-4"><BrandLogo className="h-16 w-16 rounded-[2px] ring-1 ring-[#d8b675]/30" label={t("شعار شركة العبنق العقارية", "Alabnq logo")} /><span className="text-base font-bold leading-6">{t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</span></Link><p className="mt-7 max-w-sm text-sm leading-8 text-[#eee8db]/65">{about}</p><div className="mt-8 flex gap-2">{socials.filter(s => s.url).map(s => <a key={s.label} href={s.url} target="_blank" rel="noreferrer" aria-label={s.label} className="flex h-10 w-10 items-center justify-center border border-[#e6d8b6]/20 transition-colors hover:border-[#d8b675] hover:text-[#d8b675]"><s.icon size={16} /></a>)}</div></div>
+        <div><h3 className="mb-7 text-[11px] font-bold tracking-[.17em] text-[#d8b675]">{t("استكشف", "EXPLORE")}</h3><ul className="space-y-4">{links.map(([href, label]) => <li key={href}><Link href={href} className="text-sm text-[#eee8db]/65 transition-colors hover:text-[#d8b675]">{label}</Link></li>)}</ul></div>
+        <div><h3 className="mb-7 text-[11px] font-bold tracking-[.17em] text-[#d8b675]">{t("بيانات التواصل", "CONTACT DETAILS")}</h3><div className="space-y-6 text-sm leading-7 text-[#eee8db]/70"><div className="flex items-start gap-4"><MapPin size={17} className="mt-1 shrink-0 text-[#d8b675]" /><span>{address}</span></div><a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="flex items-center gap-4 transition-colors hover:text-[#d8b675]"><Phone size={17} className="text-[#d8b675]" /><span dir="ltr">{phone}</span></a><a href={`mailto:${email}`} className="flex items-center gap-4 transition-colors hover:text-[#d8b675]"><Mail size={17} className="text-[#d8b675]" /><span>{email}</span></a></div></div>
       </div>
-    </footer>
-  );
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e6d8b6]/20 py-7 text-[11px] text-[#eee8db]/45"><span>© {new Date().getFullYear()} {t("شركة العبنق العقارية. جميع الحقوق محفوظة.", "Alabnq Real Estate. All rights reserved.")}</span><span>{t("المملكة العربية السعودية", "Saudi Arabia")}</span></div>
+    </div>
+  </footer>;
 }

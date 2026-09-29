@@ -1,267 +1,45 @@
-import { useParams, Link } from "wouter";
-import { useSiteContent } from "@/data/siteContent";
-import { MapPin, Bed, Bath, Square, Check, ChevronRight, Share2, Heart, Phone, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { BrandLogo } from "@/components/BrandLogo";
+import { useState } from "react";
+import { Link, useParams } from "wouter";
+import { ArrowUpLeft, Bath, Bed, Check, Heart, MapPin, Phone, Share2, Square } from "lucide-react";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useState } from "react";
+import { useSiteContent, useSiteValue } from "@/data/siteContent";
+import { localized, usePreferences } from "@/lib/preferences";
+import { BrandLogo } from "@/components/BrandLogo";
 
-// Fix for leaflet markers
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
-
-const customMarkerIcon = L.divIcon({
-  className: 'custom-map-marker-point',
-  html: `<div style="background-color: hsl(0 0% 13%); width: 24px; height: 24px; border-radius: 50%; border: 3px solid hsl(52 86% 60%); box-shadow: 0 4px 6px rgba(0,0,0,0.3);"></div>`,
-  iconSize: [24, 24],
-  iconAnchor: [12, 12],
-});
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
+L.Icon.Default.mergeOptions({ iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png", iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png", shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png" });
 
 export default function PropertyDetail() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError } = useSiteContent();
+  const { data, isLoading, isError, refetch } = useSiteContent();
+  const { locale, t } = usePreferences();
+  const phone = useSiteValue("contact.phone", "8002450000");
   const property = data?.properties.find(p => p.id === id);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [favorite, setFavorite] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  if (isLoading) return <main className="container mx-auto px-4 py-32">جارٍ تحميل العقار…</main>;
-  if (isError) return <main className="container mx-auto px-4 py-32">تعذر تحميل العقار. يرجى المحاولة لاحقًا.</main>;
-  if (!property) {
-    return (
-      <div className="container mx-auto px-4 py-32 text-center">
-        <h1 className="text-3xl font-bold mb-4">العقار غير موجود</h1>
-        <Link href="/properties">
-          <Button>العودة للعقارات</Button>
-        </Link>
-      </div>
-    );
-  }
-
+  const [copied, setCopied] = useState(false);
+  if (isLoading) return <main className="site-container min-h-[70dvh] animate-pulse py-24"><div className="h-96 bg-muted" /><div className="mt-10 h-8 w-2/3 bg-muted" /></main>;
+  if (isError) return <main className="site-container min-h-[60dvh] py-32 text-center"><p>{t("تعذر تحميل العقار.", "Could not load the property.")}</p><button onClick={() => void refetch()} className="site-button mt-6 px-7 py-3">{t("إعادة المحاولة", "Try again")}</button></main>;
+  if (!property) return <main className="site-container min-h-[60dvh] py-32 text-center"><h1 className="site-display text-3xl">{t("العقار غير موجود", "Property not found")}</h1><Link href="/properties" className="site-button mt-8 inline-block px-7 py-3">{t("العودة للعقارات", "Back to properties")}</Link></main>;
   const gallery = property.gallery?.length ? property.gallery : [property.image];
-  const heroImage = selectedImage ?? gallery[0];
-
-  return (
-    <main className="flex-1 w-full bg-background pb-24">
-      
-      {/* Breadcrumb */}
-      <div className="bg-secondary/50 border-b border-border py-4">
-        <div className="container mx-auto px-4 flex items-center text-sm text-muted-foreground gap-2">
-          <Link href="/" className="hover:text-primary transition-colors">الرئيسية</Link>
-          <ChevronRight className="w-4 h-4" />
-          <Link href="/properties" className="hover:text-primary transition-colors">العقارات</Link>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-primary font-medium">{property.title}</span>
-        </div>
+  const image = selectedImage ?? gallery[0];
+  const title = localized(property, "title", locale);
+  const amenities = locale === "en" ? property.amenitiesEn ?? [] : property.amenities;
+  const share = async () => { try { if (navigator.share) await navigator.share({ title, url: window.location.href }); else { await navigator.clipboard.writeText(window.location.href); setCopied(true); window.setTimeout(() => setCopied(false), 2500); } } catch { /* dismissed */ } };
+  return <main className="site-shell flex-1 pb-24">
+    <div className="site-container flex items-center gap-3 py-5 text-xs text-muted-foreground"><Link href="/" className="hover:text-accent">{t("الرئيسية", "Home")}</Link><span>/</span><Link href="/properties" className="hover:text-accent">{t("العقارات", "Properties")}</Link><span>/</span><span className="truncate text-foreground">{title}</span></div>
+    <div className="site-always-dark relative h-[500px] overflow-hidden bg-[#172329] text-[#f0ebdf] md:h-[680px]"><img src={image} alt={title} className="h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-[#11191d]/90 via-transparent to-transparent" /><div className="site-container absolute inset-x-0 bottom-0 pb-10 md:pb-14"><span className="border border-[#d8b675] px-3 py-1.5 text-xs text-[#d8b675]">{localized(property, "type", locale)}</span><h1 className="site-display mt-6 max-w-4xl text-3xl md:text-6xl">{title}</h1><p className="mt-4 flex items-center gap-2 text-sm text-[#f0ebdf]/80"><MapPin size={17} className="text-[#d8b675]" />{localized(property, "neighborhood", locale)}، {localized(property, "city", locale)}</p><div className="mt-6 flex gap-2"><button type="button" aria-label={favorite ? t("إزالة من المفضلة", "Remove from favorites") : t("إضافة للمفضلة", "Add to favorites")} aria-pressed={favorite} onClick={() => setFavorite(!favorite)} className="flex h-10 w-10 items-center justify-center border border-[#f0ebdf]/50 bg-[#11191d]/40"><Heart size={17} className={favorite ? "fill-[#d8b675] text-[#d8b675]" : ""} /></button><button type="button" onClick={() => void share()} aria-label={t("مشاركة العقار", "Share property")} className="flex h-10 items-center gap-2 border border-[#f0ebdf]/50 bg-[#11191d]/40 px-3"><Share2 size={17} />{copied && <span className="text-xs">{t("تم نسخ الرابط", "Link copied")}</span>}</button></div></div></div>
+    <div className="site-container grid gap-14 pt-14 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,.75fr)] lg:gap-20">
+      <div className="space-y-16">
+        <div className="grid gap-7 border-b border-[var(--line-soft)] pb-9 sm:grid-cols-[1fr_auto] sm:items-end"><div><p className="site-eyebrow">{property.purpose === "sale" ? t("سعر البيع", "ASKING PRICE") : t("الإيجار السنوي", "ANNUAL RENT")}</p><p className="mt-4 text-3xl font-bold text-accent" dir={locale === "en" ? "ltr" : undefined}>{localized(property, "priceLabel", locale)}</p></div><div className="flex gap-7 text-xs text-muted-foreground">{[{ Icon: Bed, value: property.rooms || "—", label: t("غرف", "Beds") }, { Icon: Bath, value: property.bathrooms || "—", label: t("حمامات", "Baths") }, { Icon: Square, value: property.area || "—", label: t("م²", "m²") }].map(({ Icon, value, label }, i) => <div key={i} className="flex flex-col gap-2"><Icon size={19} className="text-accent" /><span className="text-lg font-semibold text-foreground">{value}</span><span>{label}</span></div>)}</div></div>
+        <section><span className="site-eyebrow">{t("التفاصيل", "THE DETAILS")}</span><h2 className="site-display mt-5 text-3xl">{t("وصف العقار", "About this property")}</h2><p className="mt-6 whitespace-pre-line text-base leading-[2.2] text-muted-foreground">{localized(property, "description", locale)}</p></section>
+        {gallery.length > 1 && <section><h2 className="site-display mb-7 text-3xl">{t("صور العرض", "Gallery")}</h2><div className="grid grid-cols-3 gap-3">{gallery.map((src, i) => <button type="button" key={src} onClick={() => setSelectedImage(src)} aria-label={t(`عرض الصورة ${i + 1}`, `View image ${i + 1}`)} aria-pressed={src === image} className={`aspect-[4/3] overflow-hidden border-2 ${src === image ? "border-accent" : "border-transparent"}`}><img src={src} alt={`${title} ${i + 1}`} loading="lazy" className="h-full w-full object-cover" /></button>)}</div></section>}
+        <section><h2 className="site-display mb-7 text-3xl">{t("المميزات والمرافق", "Features and amenities")}</h2><div className="grid gap-3 sm:grid-cols-2">{amenities.map((amenity, i) => <div key={i} className="flex items-center gap-3 border-b border-[var(--line-soft)] py-3 text-sm"><Check size={16} className="text-accent" />{amenity}</div>)}</div></section>
+        <section><h2 className="site-display mb-7 text-3xl">{t("الموقع على الخريطة", "Location on map")}</h2><div className="h-[390px] overflow-hidden border border-border"><MapContainer center={property.coordinates} zoom={15} style={{ height: "100%", width: "100%" }}><TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" /><Marker position={property.coordinates} /></MapContainer></div></section>
       </div>
-
-      {/* Hero Image */}
-      <div className="w-full h-[50vh] md:h-[60vh] relative group bg-primary">
-        <img 
-          src={heroImage} 
-          alt={property.title}
-          className="w-full h-full object-cover opacity-90"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
-        
-        <div className="container mx-auto px-4 relative h-full flex items-end pb-8">
-          <div className="flex justify-between items-end w-full gap-4 flex-wrap">
-            <div className="text-white">
-              <div className="flex gap-2 mb-3">
-                <Badge className="bg-accent text-primary font-bold border-none">{property.type}</Badge>
-                {property.featured && <Badge className="bg-white/20 text-white border-white/20 backdrop-blur-sm">عقار مميز</Badge>}
-              </div>
-              <h1 className="text-3xl md:text-5xl font-bold mb-2">{property.title}</h1>
-              <div className="flex items-center gap-2 text-white/80 text-lg">
-                <MapPin className="w-5 h-5 text-accent" />
-                {property.city ?? "مكة المكرمة"}، حي {property.neighborhood}
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => setIsFavorite(!isFavorite)}
-                className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-              >
-                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-accent text-accent' : ''}`} />
-              </button>
-              <button className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
-                <Share2 className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-12">
-            
-            {/* Price & Key Features Card */}
-            <div className="bg-card rounded-2xl p-8 border border-border shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
-              <div>
-                <div className="text-sm font-medium text-muted-foreground mb-1">
-                  {property.purpose === 'sale' ? 'سعر البيع' : 'الإيجار السنوي'}
-                </div>
-                <div className="text-3xl font-bold text-primary">{property.priceLabel}</div>
-              </div>
-              
-              <div className="flex gap-8 text-center md:border-r border-border/50 md:pr-8 pl-4">
-                <div>
-                  <Bed className="w-6 h-6 text-accent mx-auto mb-2" />
-                  <div className="font-bold text-xl">{property.rooms || "—"}</div>
-                  <div className="text-sm text-muted-foreground">غرف نوم</div>
-                </div>
-                <div>
-                  <Bath className="w-6 h-6 text-accent mx-auto mb-2" />
-                  <div className="font-bold text-xl">{property.bathrooms || "—"}</div>
-                  <div className="text-sm text-muted-foreground">دورات مياه</div>
-                </div>
-                <div>
-                  <Square className="w-6 h-6 text-accent mx-auto mb-2" />
-                  <div className="font-bold text-xl">{property.area || "—"}</div>
-                  <div className="text-sm text-muted-foreground">مساحة (م²)</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <section>
-              <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
-                <span className="w-8 h-1 bg-accent rounded-full inline-block"></span>
-                وصف العقار
-              </h2>
-              <div className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
-                {property.description}
-              </div>
-            </section>
-
-            {gallery.length > 1 && (
-              <section>
-                <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
-                  <span className="w-8 h-1 bg-accent rounded-full inline-block"></span>
-                  صور العرض
-                </h2>
-                <div className="grid grid-cols-3 gap-3">
-                  {gallery.map((image, index) => (
-                    <button
-                      key={image}
-                      type="button"
-                      onClick={() => setSelectedImage(image)}
-                      className={`relative aspect-[4/3] overflow-hidden rounded-xl border-2 transition-all ${
-                        heroImage === image
-                          ? 'border-accent ring-4 ring-accent/15'
-                          : 'border-transparent hover:border-accent/50'
-                      }`}
-                      aria-label={`عرض الصورة ${index + 1}`}
-                    >
-                      <img
-                        src={image}
-                        alt={`${property.title} - صورة ${index + 1}`}
-                        loading="lazy"
-                        className="h-full w-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Amenities */}
-            <section>
-              <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
-                <span className="w-8 h-1 bg-accent rounded-full inline-block"></span>
-                المميزات والمرافق
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {property.amenities.map((amenity, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 bg-secondary/30 rounded-lg border border-border/50">
-                    <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
-                      <Check className="w-3.5 h-3.5 text-primary" />
-                    </div>
-                    <span className="font-medium text-foreground">{amenity}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Map */}
-            <section>
-              <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
-                <span className="w-8 h-1 bg-accent rounded-full inline-block"></span>
-                الموقع على الخريطة
-              </h2>
-              <div className="h-[400px] rounded-2xl overflow-hidden border border-border shadow-sm">
-                <MapContainer 
-                  center={property.coordinates} 
-                  zoom={15} 
-                  style={{ height: '100%', width: '100%' }}
-                >
-                  <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                  />
-                  <Marker position={property.coordinates} icon={customMarkerIcon} />
-                </MapContainer>
-              </div>
-            </section>
-
-          </div>
-
-          {/* Sidebar / CTA */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-32">
-              <div className="bg-primary text-white rounded-2xl p-8 shadow-xl">
-                <div className="text-center mb-8">
-                <BrandLogo className="h-16 w-32 mx-auto mb-4 rounded-sm opacity-90" />
-                  <h3 className="text-xl font-bold">مهتم بهذا العقار؟</h3>
-                  <p className="text-white/70 text-sm mt-2">تواصل معنا الآن لترتيب زيارة ومناقشة التفاصيل.</p>
-                </div>
-                
-                <div className="space-y-4">
-                  <Link href="/contact">
-                    <Button className="w-full h-14 bg-accent text-primary hover:bg-accent/90 text-lg font-bold">
-                      طلب موعد للزيارة
-                    </Button>
-                  </Link>
-                  <Button variant="outline" className="w-full h-14 border-white/20 text-white hover:bg-white/10 hover:text-white text-lg font-bold">
-                    <Phone className="w-5 h-5 ml-2" />
-                    اتصل بنا مباشرة
-                  </Button>
-                  <a href={property.sourceUrl} target="_blank" rel="noreferrer">
-                    <Button variant="outline" className="w-full h-14 border-white/20 text-white hover:bg-white/10 hover:text-white text-base font-bold">
-                      <ExternalLink className="w-5 h-5 ml-2" />
-                      الإعلان الأصلي
-                    </Button>
-                  </a>
-                </div>
-
-                <hr className="border-white/10 my-8" />
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">رقم المرجع:</span>
-                    <span className="font-mono">{property.id.toUpperCase()}-2024</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">حالة العقار:</span>
-                    <span className="text-accent font-medium">متاح</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </main>
-  );
+      <aside><div className="site-always-dark sticky top-28 bg-[#172329] p-7 text-[#f0ebdf] md:p-9"><BrandLogo className="mb-8 h-16 w-16" label={t("شعار العبنق", "Alabnq logo")} /><span className="site-eyebrow">{t("نحن هنا للمساعدة", "HERE TO HELP")}</span><h3 className="site-display mt-5 text-2xl">{t("مهتم بهذا العقار؟", "Interested in this property?")}</h3><p className="mt-4 text-sm leading-8 text-[#eee8db]/70">{t("تواصل معنا لترتيب زيارة ومناقشة التفاصيل.", "Contact us to arrange a viewing and discuss the details.")}</p><div className="mt-8 space-y-3"><Link href="/contact" className="site-button flex min-h-13 items-center justify-between px-5 text-sm font-bold">{t("طلب موعد للزيارة", "Request a viewing")} <ArrowUpLeft size={17} /></Link><a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="flex min-h-13 items-center gap-3 border border-[#eee8db]/30 px-5 text-sm"><Phone size={16} />{t("اتصل بنا مباشرة", "Call us directly")}</a><a href={property.sourceUrl} target="_blank" rel="noreferrer" className="flex min-h-13 items-center justify-between border border-[#eee8db]/30 px-5 text-sm">{t("الإعلان الأصلي", "Original listing")} <ArrowUpLeft size={17} /></a></div><div className="mt-8 flex justify-between border-t border-[#eee8db]/20 pt-5 text-xs"><span className="text-[#eee8db]/60">{t("رقم المرجع", "Reference")}</span><span dir="ltr">{property.id.toUpperCase()}</span></div></div></aside>
+    </div>
+  </main>;
 }

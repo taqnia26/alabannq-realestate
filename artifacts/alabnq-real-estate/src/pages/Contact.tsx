@@ -2,215 +2,43 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { ArrowUpLeft, Check, Mail, MapPin, Phone } from "lucide-react";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useSiteValue } from "@/data/siteContent";
+import { useLocalizedSiteValue, useSiteValue } from "@/data/siteContent";
+import { usePreferences } from "@/lib/preferences";
 
-const contactSchema = z.object({
-  name: z.string().min(2, { message: "الاسم يجب أن يكون أكثر من حرفين" }),
-  phone: z.string().min(9, { message: "رقم الجوال غير صحيح" }),
-  email: z.string().email({ message: "البريد الإلكتروني غير صحيح" }).optional().or(z.literal("")),
-  message: z.string().min(10, { message: "الرسالة قصيرة جداً" }),
-});
+const schema = z.object({ name: z.string().min(2), phone: z.string().min(9), email: z.string().email().optional().or(z.literal("")), message: z.string().min(10) });
+type Values = z.infer<typeof schema>;
 
 export default function Contact() {
-  const address = useSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع");
+  const { locale, t } = usePreferences();
+  const heading = useLocalizedSiteValue("contact.heading", "تواصل معنا", "Let's talk");
+  const intro = useLocalizedSiteValue("contact.intro", "شركة العبنق العقارية — شريككم في الخدمات العقارية.", "Alabnq Real Estate — your partner in property services.");
+  const address = useLocalizedSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع", "Makkah – Al-Awali – Sheikh Mohammed bin Manea Street");
   const phone = useSiteValue("contact.phone", "8002450000");
-  const heading = useSiteValue("contact.heading", "تواصل معنا");
-  const intro = useSiteValue("contact.intro", "شركة العبنق العقارية — شريككم في الخدمات العقارية.");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const email = useSiteValue("footer.email", "info@alabnq.com");
+  const [sent, setSent] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const form = useForm<z.infer<typeof contactSchema>>({
-    resolver: zodResolver(contactSchema),
-    defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      message: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof contactSchema>) {
-    setSubmitError("");
-    setSubmitting(true);
-    try {
-      const response = await fetch("/api/inquiries", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(values),
-      });
-      if (!response.ok) throw new Error("تعذر إرسال الرسالة. حاول مرة أخرى.");
-      setIsSubmitted(true);
-      form.reset();
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "تعذر إرسال الرسالة.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <main className="flex-1 w-full bg-background pt-16 pb-24">
-      
-      <div className="container mx-auto px-4">
-        
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h1 className="text-4xl font-bold text-primary mb-4">{heading}</h1>
-          <p className="text-lg text-muted-foreground">
-            {intro}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
-          
-          {/* Contact Info */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="bg-primary text-white p-10 rounded-2xl shadow-xl h-full flex flex-col relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-accent rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl opacity-20"></div>
-              
-              <h3 className="text-2xl font-bold mb-8 relative z-10">معلومات التواصل</h3>
-              
-              <div className="space-y-8 relative z-10 flex-1">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                    <MapPin className="w-5 h-5 text-accent" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">العنوان</h4>
-                    <p className="text-white/70">{address}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                    <Phone className="w-5 h-5 text-accent" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">الهاتف</h4>
-                    <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="text-white/70 hover:text-accent transition-colors" dir="ltr">{phone}</a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                    <Mail className="w-5 h-5 text-accent" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">البريد الإلكتروني</h4>
-                    <a href="mailto:info@alabnq.com" className="text-white/70 hover:text-accent transition-colors">info@alabnq.com</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="lg:col-span-3">
-            <div className="bg-card border border-border p-8 md:p-12 rounded-2xl shadow-sm h-full">
-              {isSubmitted ? (
-                <div className="flex flex-col items-center justify-center h-full text-center py-12 animate-in fade-in zoom-in duration-500">
-                  <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-6 text-green-600">
-                    <CheckCircle2 className="w-10 h-10" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-primary mb-4">شكراً لتواصلك معنا</h3>
-                  <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                    تم حفظ رسالتك بنجاح، وسيتمكن فريقنا من مراجعتها من لوحة التحكم.
-                  </p>
-                  <Button onClick={() => setIsSubmitted(false)} variant="outline">
-                    إرسال رسالة أخرى
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <h3 className="text-2xl font-bold text-primary mb-8">أرسل لنا رسالة</h3>
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-foreground">الاسم الكريم</FormLabel>
-                              <FormControl>
-                                <Input placeholder="الاسم الكامل" {...field} className="bg-secondary/30" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="phone"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-foreground">رقم الجوال</FormLabel>
-                              <FormControl>
-                                <Input placeholder="05XXXXXXXX" dir="ltr" className="text-right bg-secondary/30" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-foreground">البريد الإلكتروني (اختياري)</FormLabel>
-                            <FormControl>
-                              <Input placeholder="example@domain.com" dir="ltr" className="text-right bg-secondary/30" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="message"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-foreground">كيف يمكننا مساعدتك؟</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="اكتب رسالتك هنا..." 
-                                className="min-h-[150px] resize-none bg-secondary/30" 
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {submitError && <p role="alert" className="text-red-700 text-sm">{submitError}</p>}
-                      <Button type="submit" disabled={submitting} size="lg" className="w-full text-lg h-14 bg-primary text-primary-foreground hover:bg-primary/90 mt-4">
-                        <Send className="w-5 h-5 ml-2 rotate-180" />
-                        {submitting ? "جارٍ إرسال الرسالة…" : "إرسال الرسالة"}
-                      </Button>
-                    </form>
-                  </Form>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
+  const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { name: "", phone: "", email: "", message: "" } });
+  const onSubmit = async (values: Values) => { setSubmitError(""); setSubmitting(true); try { const response = await fetch("/api/inquiries", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(values) }); if (!response.ok) throw new Error(t("تعذر إرسال الرسالة. حاول مرة أخرى.", "Could not send your message. Please try again.")); setSent(true); form.reset(); } catch (error) { setSubmitError(error instanceof Error ? error.message : t("تعذر إرسال الرسالة.", "Could not send your message.")); } finally { setSubmitting(false); } };
+  return <main className="site-shell flex-1 pb-28">
+    <section className="site-always-dark relative isolate overflow-hidden bg-[#172329] py-24 text-[#f0ebdf] md:py-32"><img src="/hero/drive-06.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" /><div className="absolute inset-0 bg-gradient-to-l from-[#172329] via-[#172329]/85 to-[#172329]/55" /><div className="site-container relative"><span className="site-eyebrow">{t("لنبدأ الحديث", "START A CONVERSATION")}</span><h1 className="site-display mt-7 text-5xl md:text-7xl">{heading}</h1><p className="mt-7 max-w-xl text-base leading-9 text-[#eee8db]/75">{intro}</p></div></section>
+    <div className="site-container grid gap-14 py-20 lg:grid-cols-[.8fr_1.2fr] lg:gap-24 lg:py-28">
+      <aside><span className="site-eyebrow">{t("تجدنا هنا", "FIND US HERE")}</span><h2 className="site-display mt-6 text-3xl md:text-4xl">{t("معلومات التواصل", "Contact details")}</h2><div className="mt-12 space-y-7">
+        <div className="flex gap-5 border-b border-[var(--line-soft)] pb-7"><MapPin size={20} className="mt-1 shrink-0 text-accent" /><div><h3 className="mb-2 text-xs font-bold text-muted-foreground">{t("العنوان", "ADDRESS")}</h3><p className="text-sm leading-8">{address}</p></div></div>
+        <div className="flex gap-5 border-b border-[var(--line-soft)] pb-7"><Phone size={20} className="mt-1 shrink-0 text-accent" /><div><h3 className="mb-2 text-xs font-bold text-muted-foreground">{t("الهاتف", "PHONE")}</h3><a href={`tel:${phone.replace(/[^\d+]/g, "")}`} dir="ltr" className="text-sm hover:text-accent">{phone}</a></div></div>
+        <div className="flex gap-5 border-b border-[var(--line-soft)] pb-7"><Mail size={20} className="mt-1 shrink-0 text-accent" /><div><h3 className="mb-2 text-xs font-bold text-muted-foreground">{t("البريد الإلكتروني", "EMAIL")}</h3><a href={`mailto:${email}`} className="text-sm hover:text-accent">{email}</a></div></div>
+      </div></aside>
+      <div className="site-card p-7 md:p-12">{sent ? <div role="status" className="flex min-h-[440px] flex-col items-start justify-center"><span className="flex h-12 w-12 items-center justify-center border border-accent text-accent"><Check size={24} /></span><h2 className="site-display mt-7 text-3xl">{t("شكرًا لتواصلك معنا", "Thank you for reaching out")}</h2><p className="mt-4 text-sm leading-8 text-muted-foreground">{t("تم حفظ رسالتك بنجاح، وسيتمكن فريقنا من مراجعتها من لوحة التحكم.", "Your message has been saved. Our team will be able to review it.")}</p><button type="button" onClick={() => setSent(false)} className="site-button mt-8 px-7 py-3 text-sm">{t("إرسال رسالة أخرى", "Send another message")}</button></div> : <><span className="site-eyebrow">{t("اترك رسالة", "LEAVE A MESSAGE")}</span><h2 className="site-display mb-9 mt-5 text-3xl">{t("كيف يمكننا مساعدتك؟", "How can we help?")}</h2><Form {...form}><form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" noValidate>
+        <div className="grid gap-6 sm:grid-cols-2"><FormField control={form.control} name="name" render={({ field }) => <FormItem><FormLabel>{t("الاسم الكريم", "Your name")}</FormLabel><FormControl><Input data-testid="input-contact-name" placeholder={t("الاسم الكامل", "Full name")} className="site-input mt-2 h-12 rounded-none" {...field} /></FormControl><FormMessage>{form.formState.errors.name && t("أدخل اسمًا من حرفين على الأقل", "Enter a name with at least 2 characters")}</FormMessage></FormItem>} /><FormField control={form.control} name="phone" render={({ field }) => <FormItem><FormLabel>{t("رقم الجوال", "Phone number")}</FormLabel><FormControl><Input data-testid="input-contact-phone" placeholder="05XXXXXXXX" dir="ltr" className="site-input mt-2 h-12 rounded-none" {...field} /></FormControl><FormMessage>{form.formState.errors.phone && t("أدخل رقم هاتف صحيحًا", "Enter a valid phone number")}</FormMessage></FormItem>} /></div>
+        <FormField control={form.control} name="email" render={({ field }) => <FormItem><FormLabel>{t("البريد الإلكتروني (اختياري)", "Email (optional)")}</FormLabel><FormControl><Input data-testid="input-contact-email" placeholder="name@example.com" dir="ltr" className="site-input mt-2 h-12 rounded-none" {...field} /></FormControl><FormMessage>{form.formState.errors.email && t("أدخل بريدًا إلكترونيًا صحيحًا", "Enter a valid email address")}</FormMessage></FormItem>} />
+        <FormField control={form.control} name="message" render={({ field }) => <FormItem><FormLabel>{t("رسالتك", "Your message")}</FormLabel><FormControl><Textarea data-testid="input-contact-message" placeholder={t("اكتب رسالتك هنا...", "Write your message here...")} className="site-input mt-2 min-h-40 resize-y rounded-none" {...field} /></FormControl><FormMessage>{form.formState.errors.message && t("أدخل رسالة من 10 أحرف على الأقل", "Enter a message of at least 10 characters")}</FormMessage></FormItem>} />
+        {submitError && <p role="alert" className="text-sm text-destructive">{locale === "en" ? t("تعذر إرسال الرسالة. حاول مرة أخرى.", "Could not send your message. Please try again.") : submitError}</p>}
+        <button data-testid="button-contact-submit" type="submit" disabled={submitting} className="site-button flex min-h-14 w-full items-center justify-center gap-4 px-7 text-sm font-bold disabled:opacity-60">{submitting ? t("جارٍ الإرسال...", "Sending...") : t("إرسال الرسالة", "Send message")} <ArrowUpLeft size={17} /></button>
+      </form></Form></>}</div>
+    </div>
+  </main>;
 }

@@ -1,23 +1,8 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { Link } from "wouter";
+import { ArrowUpLeft } from "lucide-react";
+import { usePreferences } from "@/lib/preferences";
 
 export default function NotFound() {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md mx-4">
-        <CardContent className="pt-6">
-          <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-red-500" />
-            <h1 className="text-2xl font-bold text-gray-900">
-              404 Page Not Found
-            </h1>
-          </div>
-
-          <p className="mt-4 text-sm text-gray-600">
-            Did you forget to add the page to the router?
-          </p>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  const { t } = usePreferences();
+  return <main className="site-shell grid min-h-[70dvh] flex-1 place-items-center px-5 py-24 text-center"><div><span className="site-eyebrow">{t("صفحة غير متاحة", "PAGE NOT FOUND")}</span><p className="site-display mt-7 text-[clamp(6rem,15vw,13rem)] leading-none text-accent" dir="ltr">404</p><h1 className="site-display mt-6 text-3xl">{t("لم نجد الصفحة التي تبحث عنها", "This page isn't here")}</h1><p className="mt-5 text-sm text-muted-foreground">{t("قد يكون الرابط تغيّر. يمكنك العودة لاستكشاف الموقع.", "The link may have changed. Return to explore the site.")}</p><Link href="/" className="site-button mt-9 inline-flex items-center gap-3 px-7 py-3 text-sm font-bold">{t("العودة للرئيسية", "Back to home")} <ArrowUpLeft size={17} /></Link></div></main>;
 }

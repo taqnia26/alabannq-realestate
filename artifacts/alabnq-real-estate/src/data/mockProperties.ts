@@ -4,9 +4,13 @@ export type Purpose = 'sale' | 'rent';
 export interface Property {
   id: string;
   title: string;
+  titleEn?: string;
   neighborhood: string;
+  neighborhoodEn?: string;
   city: 'مكة المكرمة';
+  cityEn?: string;
   type: PropertyType;
+  typeEn?: string;
   purpose: Purpose;
   price: number;
   priceLabel: string;
@@ -19,19 +23,27 @@ export interface Property {
   sourceUrl: string;
   featured: boolean;
   description: string;
+  descriptionEn?: string;
   amenities: string[];
+  amenitiesEn?: string[];
+  priceLabelEn?: string;
 }
 
 export const officialProperties: Property[] = [
   {
     id: 'listing-366',
     title: 'عرض رقم 366 عمارة للبيع في العدل – مكة المكرمة',
+    titleEn: 'Listing No. 366: Building for Sale in Al-Adl – Makkah',
     neighborhood: 'العدل',
+    neighborhoodEn: 'Al-Adl',
     city: 'مكة المكرمة',
+    cityEn: 'Makkah',
     type: 'عمائر للبيع',
+    typeEn: 'Buildings for Sale',
     purpose: 'sale',
     price: 3300000,
     priceLabel: '3,300,000 ر.س',
+    priceLabelEn: 'SAR 3,300,000',
     area: 0,
     rooms: 0,
     bathrooms: 0,
@@ -46,16 +58,23 @@ export const officialProperties: Property[] = [
     featured: true,
     description: 'عمارة استثمارية في حي العدل تتكوّن من بدروم وثلاثة أدوار وملحق. تضم ست شقق؛ وفي كل دور شقتان تحتوي كل منهما على صالة وأربع غرف وثلاث دورات مياه ومطبخ.',
     amenities: ['3 أدوار + بدروم + ملحق', '6 شقق', '4 غرف لكل شقة', '3 دورات مياه لكل شقة'],
+    descriptionEn: 'An investment building in the Al-Adl district, consisting of a basement, three floors, and an annex. It contains six apartments; each floor has two apartments, each with a living room, four bedrooms, three bathrooms, and a kitchen.',
+    amenitiesEn: ['3 floors + basement + annex', '6 apartments', '4 rooms per apartment', '3 bathrooms per apartment'],
   },
   {
     id: 'listing-402',
     title: 'عرض رقم 402 شقة للإيجار في الحسينية – مكة المكرمة',
+    titleEn: 'Listing No. 402: Apartment for Rent in Al-Husayniyah – Makkah',
     neighborhood: 'الحسينية',
+    neighborhoodEn: 'Al-Husayniyah',
     city: 'مكة المكرمة',
+    cityEn: 'Makkah',
     type: 'شقق للإيجار',
+    typeEn: 'Apartments for Rent',
     purpose: 'rent',
     price: 27000,
     priceLabel: '27,000 ر.س / سنوياً',
+    priceLabelEn: 'SAR 27,000 / year',
     area: 0,
     rooms: 4,
     bathrooms: 3,
@@ -65,16 +84,23 @@ export const officialProperties: Property[] = [
     featured: true,
     description: 'شقة جديدة للإيجار السنوي بتوزيع عائلي عملي: غرفة ماستر بدورة مياه خاصة، وثلاث غرف إضافية، وصالة، ومطبخ، ودورتي مياه إضافيتين.',
     amenities: ['غرفة ماستر', '4 غرف', 'صالة عائلية', 'مطبخ'],
+    descriptionEn: 'A new apartment for annual rent with a practical family layout: a master bedroom with a private bathroom, three additional rooms, a living room, a kitchen, and two additional bathrooms.',
+    amenitiesEn: ['Master bedroom', '4 rooms', 'Family living room', 'Kitchen'],
   },
   {
     id: 'listing-405',
     title: 'عرض رقم 405 شقة للإيجار في العوالي – مكة المكرمة',
+    titleEn: 'Listing No. 405: Apartment for Rent in Al-Awali – Makkah',
     neighborhood: 'العوالي',
+    neighborhoodEn: 'Al-Awali',
     city: 'مكة المكرمة',
+    cityEn: 'Makkah',
     type: 'شقق للإيجار',
+    typeEn: 'Apartments for Rent',
     purpose: 'rent',
     price: 30000,
     priceLabel: '30,000 ر.س / سنوياً',
+    priceLabelEn: 'SAR 30,000 / year',
     area: 0,
     rooms: 5,
     bathrooms: 3,
@@ -89,16 +115,23 @@ export const officialProperties: Property[] = [
     featured: true,
     description: 'شقة للإيجار السنوي في حي العوالي بمكة المكرمة. تتوفر تفاصيل العرض الرسمية وصوره عبر صفحة الإعلان الأصلية.',
     amenities: ['5 غرف', '3 دورات مياه', 'إيجار سنوي', 'حي العوالي'],
+    descriptionEn: 'An apartment for annual rent in the Al-Awali district of Makkah. The official listing details and photos are available on the original listing page.',
+    amenitiesEn: ['5 rooms', '3 bathrooms', 'Annual rent', 'Al-Awali district'],
   },
   {
     id: 'listing-413',
     title: 'عرض رقم 413 شقة للإيجار في العوالي – مكة المكرمة',
+    titleEn: 'Listing No. 413: Apartment for Rent in Al-Awali – Makkah',
     neighborhood: 'العوالي',
+    neighborhoodEn: 'Al-Awali',
     city: 'مكة المكرمة',
+    cityEn: 'Makkah',
     type: 'شقق للإيجار',
+    typeEn: 'Apartments for Rent',
     purpose: 'rent',
     price: 40000,
     priceLabel: '40,000 ر.س / سنوياً',
+    priceLabelEn: 'SAR 40,000 / year',
     area: 260,
     rooms: 7,
     bathrooms: 4,
@@ -113,6 +146,8 @@ export const officialProperties: Property[] = [
     featured: true,
     description: 'شقة واسعة للإيجار السنوي بمساحة 260 م²، تضم صالتين وست غرف وغرفة خادمة وأربع دورات مياه ومطبخًا راكبًا، ومزوّدة بتسعة مكيفات سبليت.',
     amenities: ['260 م²', 'صالتان', 'غرفة خادمة', 'مطبخ راكب', '9 مكيفات سبليت'],
+    descriptionEn: 'A spacious apartment for annual rent with an area of 260 m². It has two living rooms, six rooms, a maid’s room, four bathrooms, a fitted kitchen, and is equipped with nine split air conditioners.',
+    amenitiesEn: ['260 m²', 'Two living rooms', 'Maid’s room', 'Fitted kitchen', '9 split air conditioners'],
   },
 ];
 

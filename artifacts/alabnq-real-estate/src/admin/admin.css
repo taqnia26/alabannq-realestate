@@ -149,6 +149,14 @@
 .admin-root textarea.ad-input { resize: vertical; min-height: 90px; }
 .admin-root .ad-input:focus { border-color: var(--ad-gold); }
 .admin-root .ad-site-card .ad-button { margin-top: 12px; }
+.admin-root .ad-site-language-field { margin-top: 12px; }
+.admin-root .ad-site-language-field label,
+.admin-root .ad-site-card > label { display: block; font-weight: 800; font-size: 11px; margin: 0 0 6px; }
+.admin-root .ad-site-language-field[dir="ltr"] { text-align: left; }
+.admin-root .ad-site-add label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+.admin-root .ad-site-add .ad-input { margin-bottom: 9px; }
+.admin-root .ad-site-language-field .ad-input { min-height: 75px; }
+.admin-root .ad-site-shared-note { color: #c0bfb2; font-size: 11px; margin-top: 8px !important; }
 .admin-root .ad-site-add { border: 1px dashed var(--ad-line); background: transparent; border-radius: 10px; padding: 20px; }
 .admin-root .ad-site-add h3 { font-size: 13px; margin-bottom: 12px; }
 .admin-root .ad-site-add .ad-input { margin-bottom: 9px; }

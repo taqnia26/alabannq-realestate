@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { officialProperties, type Property } from "./mockProperties";
 import { articles, type Article } from "./articles";
+import { usePreferences } from "@/lib/preferences";
 
 export type PublishedProperty = Property & { published?: boolean; deleted?: boolean };
 export type PublishedArticle = Article & { published?: boolean; deleted?: boolean };
@@ -15,7 +16,7 @@ export function mergeRecords<T extends { id: string }>(defaults: T[], overrides:
   const byId = new Map<string, T & { published?: boolean; deleted?: boolean }>(defaults.map(item => [item.id, item]));
   for (const item of overrides) {
     if (item.deleted) byId.delete(item.id);
-    else byId.set(item.id, item);
+    else byId.set(item.id, { ...byId.get(item.id), ...item });
   }
   return [...byId.values()];
 }
@@ -41,4 +42,12 @@ export function useSiteContent() {
 export function useSiteValue(key: string, fallback: string) {
   const { data } = useSiteContent();
   return data?.site[key] ?? fallback;
+}
+
+export function useLocalizedSiteValue(key: string, arabic: string, english: string) {
+  const { locale } = usePreferences();
+  const { data } = useSiteContent();
+  return locale === "en"
+    ? data?.site[`${key}.en`] ?? english
+    : data?.site[key] ?? arabic;
 }

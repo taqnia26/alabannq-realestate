@@ -1,550 +1,70 @@
-import { useState, useMemo } from "react";
-import { Search, MapPin, SlidersHorizontal, Filter, X, List, Map as MapIcon, ArrowDownUp, RotateCcw } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowDownUp, List, Map as MapIcon, RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-
+import { Link, useSearch } from "wouter";
 import { useSiteContent } from "@/data/siteContent";
 import { PropertyCard } from "@/components/PropertyCard";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { localized, usePreferences } from "@/lib/preferences";
 
-// Fix for leaflet markers in react
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
-
-const ALL_CATEGORIES = ['الكل', 'عمائر للبيع', 'شقق للبيع', 'شقق للإيجار', 'أراضي للبيع'];
-
-const PROPERTY_TYPES = [
-  { value: 'all', label: 'كل أنواع العقارات' },
-  { value: 'شقق', label: 'شقق' },
-  { value: 'عمائر', label: 'عمائر' },
-  { value: 'أراضي', label: 'أراضي' },
-];
-
-const formatNumber = (value: string | number) =>
-  new Intl.NumberFormat('en-US').format(Number(value));
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
+L.Icon.Default.mergeOptions({ iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png", iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png", shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png" });
+const categories = ["الكل", "عمائر للبيع", "شقق للبيع", "شقق للإيجار", "أراضي للبيع"];
+const typeOptions = ["all", "شقق", "عمائر", "أراضي"];
 
 export default function Properties() {
-  const { data, isLoading, isError } = useSiteContent();
-  const officialProperties = data?.properties ?? [];
-  const uniqueNeighborhoods = Array.from(new Set(officialProperties.map(property => property.neighborhood)));
-  // Parse query params if any
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialQuery = urlParams.get('q') || '';
-  
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [activeCategory, setActiveCategory] = useState<string>('الكل');
-  const [activeNeighborhood, setActiveNeighborhood] = useState<string>('الكل');
-  const [propertyTypeFilter, setPropertyTypeFilter] = useState<string>('all');
-  const [purposeFilter, setPurposeFilter] = useState<string>('all');
-  const [minPrice, setMinPrice] = useState<string>('');
-  const [maxPrice, setMaxPrice] = useState<string>('');
-  const [minRooms, setMinRooms] = useState<string>('all');
-  const [minBathrooms, setMinBathrooms] = useState<string>('all');
-  const [minArea, setMinArea] = useState<string>('');
-  const [maxArea, setMaxArea] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('latest');
-  
-  const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'map'>(urlParams.get('view') === 'map' ? 'map' : 'grid');
-
-  const filteredProperties = useMemo(() => {
-    const query = searchQuery.trim().toLocaleLowerCase();
-    const matchingProperties = officialProperties.filter(property => {
-      const matchSearch = !query ||
-                          property.title.toLocaleLowerCase().includes(query) ||
-                          property.neighborhood.toLocaleLowerCase().includes(query) ||
-                          property.description.toLocaleLowerCase().includes(query);
-      const matchCategory = activeCategory === 'الكل' || property.type === activeCategory;
-      const matchNeighborhood = activeNeighborhood === 'الكل' || property.neighborhood === activeNeighborhood;
-      const matchPropertyType = propertyTypeFilter === 'all' || property.type.startsWith(propertyTypeFilter);
-      const matchPurpose = purposeFilter === 'all' || property.purpose === purposeFilter;
-      const matchMinPrice = !minPrice || property.price >= Number(minPrice);
-      const matchMaxPrice = !maxPrice || property.price <= Number(maxPrice);
-      const matchRooms = minRooms === 'all' || property.rooms >= Number(minRooms);
-      const matchBathrooms = minBathrooms === 'all' || property.bathrooms >= Number(minBathrooms);
-      const matchMinArea = !minArea || (property.area > 0 && property.area >= Number(minArea));
-      const matchMaxArea = !maxArea || (property.area > 0 && property.area <= Number(maxArea));
-      
-      return matchSearch && matchCategory && matchNeighborhood && matchPropertyType &&
-        matchPurpose && matchMinPrice && matchMaxPrice && matchRooms &&
-        matchBathrooms && matchMinArea && matchMaxArea;
-    });
-
-    return [...matchingProperties].sort((a, b) => {
-      switch (sortBy) {
-        case 'price-low':
-          return a.price - b.price;
-        case 'price-high':
-          return b.price - a.price;
-        case 'area-large':
-          return b.area - a.area;
-        case 'rooms':
-          return b.rooms - a.rooms;
-        default:
-          return 0;
-      }
-    });
-  }, [
-    officialProperties,
-    searchQuery,
-    activeCategory,
-    activeNeighborhood,
-    propertyTypeFilter,
-    purposeFilter,
-    minPrice,
-    maxPrice,
-    minRooms,
-    minBathrooms,
-    minArea,
-    maxArea,
-    sortBy,
-  ]);
-
-  const resetFilters = () => {
-    setSearchQuery('');
-    setActiveCategory('الكل');
-    setActiveNeighborhood('الكل');
-    setPropertyTypeFilter('all');
-    setPurposeFilter('all');
-    setMinPrice('');
-    setMaxPrice('');
-    setMinRooms('all');
-    setMinBathrooms('all');
-    setMinArea('');
-    setMaxArea('');
-    setSortBy('latest');
-  };
-
-  const activeFilterChips = [
-    ...(searchQuery.trim() ? [{
-      id: 'search',
-      label: `بحث: ${searchQuery.trim()}`,
-      onRemove: () => setSearchQuery(''),
-    }] : []),
-    ...(activeCategory !== 'الكل' ? [{
-      id: 'category',
-      label: activeCategory,
-      onRemove: () => setActiveCategory('الكل'),
-    }] : []),
-    ...(propertyTypeFilter !== 'all' ? [{
-      id: 'property-type',
-      label: `النوع: ${PROPERTY_TYPES.find((type) => type.value === propertyTypeFilter)?.label}`,
-      onRemove: () => setPropertyTypeFilter('all'),
-    }] : []),
-    ...(purposeFilter !== 'all' ? [{
-      id: 'purpose',
-      label: purposeFilter === 'sale' ? 'للبيع' : 'للإيجار',
-      onRemove: () => setPurposeFilter('all'),
-    }] : []),
-    ...(activeNeighborhood !== 'الكل' ? [{
-      id: 'neighborhood',
-      label: `حي ${activeNeighborhood}`,
-      onRemove: () => setActiveNeighborhood('الكل'),
-    }] : []),
-    ...(minPrice || maxPrice ? [{
-      id: 'price',
-      label: `السعر: ${minPrice ? `من ${formatNumber(minPrice)}` : ''}${minPrice && maxPrice ? ' إلى ' : ''}${maxPrice ? `حتى ${formatNumber(maxPrice)}` : ''} ر.س`,
-      onRemove: () => {
-        setMinPrice('');
-        setMaxPrice('');
-      },
-    }] : []),
-    ...(minRooms !== 'all' ? [{
-      id: 'rooms',
-      label: `${minRooms} غرف فأكثر`,
-      onRemove: () => setMinRooms('all'),
-    }] : []),
-    ...(minBathrooms !== 'all' ? [{
-      id: 'bathrooms',
-      label: `${minBathrooms} دورات مياه فأكثر`,
-      onRemove: () => setMinBathrooms('all'),
-    }] : []),
-    ...(minArea || maxArea ? [{
-      id: 'area',
-      label: `المساحة: ${minArea ? `من ${formatNumber(minArea)}` : ''}${minArea && maxArea ? ' إلى ' : ''}${maxArea ? `حتى ${formatNumber(maxArea)}` : ''} م²`,
-      onRemove: () => {
-        setMinArea('');
-        setMaxArea('');
-      },
-    }] : []),
-  ];
-
-  const createCustomMarker = (price: string, propertyId: string) => {
-    return L.divIcon({
-      className: 'custom-map-marker',
-      html: `<div data-property-id="${propertyId}" style="background-color: hsl(0 0% 13%); color: hsl(52 86% 60%); padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px; white-space: nowrap; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 2px solid hsl(52 86% 60%); font-family: 'Cairo', sans-serif;">${price.replace(' ر.س', '')}</div>`,
-      iconSize: [80, 30],
-      iconAnchor: [40, 15],
-      popupAnchor: [0, -15]
-    });
-  };
-
-  return (
-    <main className="flex-1 w-full bg-background flex flex-col min-h-[calc(100vh-96px)]">
-      
-      {/* Search Header */}
-      <div className="bg-secondary/90 backdrop-blur pt-8 pb-12 sticky top-24 z-30 border-b border-border shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col gap-6">
-            
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input 
-                  type="text" 
-                  aria-label="البحث بالكلمات"
-                  placeholder="ابحث بالعنوان أو الحي أو الوصف..."
-                  className="w-full h-12 pl-4 pr-12 bg-white text-foreground border-none rounded-lg text-base"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Button 
-                variant="outline" 
-                className="h-12 border-primary/20 text-primary hover:bg-white shrink-0"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <Filter className="w-5 h-5 ml-2" />
-                التصفية المتقدمة
-              </Button>
-            </div>
-
-            {/* Quick Categories */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {ALL_CATEGORIES.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
-                    activeCategory === cat 
-                      ? 'bg-accent text-primary border-accent' 
-                      : 'bg-white/55 text-primary/80 border-primary/15 hover:border-accent hover:text-primary'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* Expanded Filters */}
-            {showFilters && (
-              <div className="bg-white rounded-2xl p-5 md:p-6 mt-2 animate-in fade-in slide-in-from-top-4 border border-border/60 shadow-sm">
-                <div className="flex items-center justify-between gap-4 mb-5">
-                  <div>
-                    <h2 className="text-lg font-bold text-primary">تصفية متقدمة</h2>
-                    <p className="text-sm text-muted-foreground mt-1">حدّد مواصفات العرض الذي تبحث عنه</p>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="إغلاق التصفية المتقدمة"
-                    onClick={() => setShowFilters(false)}
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-primary transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label htmlFor="property-type" className="text-sm font-bold text-primary mb-2 block">نوع العقار</label>
-                  <select
-                    id="property-type"
-                    className="w-full h-11 rounded-lg border border-border bg-background px-3 text-sm focus:ring-1 focus:ring-ring focus:border-accent"
-                    value={propertyTypeFilter}
-                    onChange={(e) => setPropertyTypeFilter(e.target.value)}
-                  >
-                    {PROPERTY_TYPES.map((type) => (
-                      <option key={type.value} value={type.value}>{type.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="neighborhood" className="text-sm font-bold text-primary mb-2 block">الحي</label>
-                  <select 
-                    id="neighborhood"
-                    className="w-full h-11 rounded-lg border border-border bg-background px-3 text-sm focus:ring-1 focus:ring-ring focus:border-accent"
-                    value={activeNeighborhood}
-                    onChange={(e) => setActiveNeighborhood(e.target.value)}
-                  >
-                    <option value="الكل">جميع الأحياء</option>
-                    {uniqueNeighborhoods.map(n => (
-                      <option key={n} value={n}>{n}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="purpose" className="text-sm font-bold text-primary mb-2 block">نوع العملية</label>
-                  <select
-                    id="purpose"
-                    className="w-full h-11 rounded-lg border border-border bg-background px-3 text-sm focus:ring-1 focus:ring-ring focus:border-accent"
-                    value={purposeFilter}
-                    onChange={(e) => setPurposeFilter(e.target.value)}
-                  >
-                    <option value="all">البيع والإيجار</option>
-                    <option value="sale">للبيع</option>
-                    <option value="rent">للإيجار</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-sm font-bold text-primary mb-2 block">نطاق السعر (ر.س)</label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      aria-label="الحد الأدنى للسعر"
-                      type="number"
-                      min="0"
-                      placeholder="من"
-                      className="h-11 bg-background"
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
-                    />
-                    <span className="text-muted-foreground">–</span>
-                    <Input
-                      aria-label="الحد الأعلى للسعر"
-                      type="number"
-                      min="0"
-                      placeholder="إلى"
-                      className="h-11 bg-background"
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="rooms" className="text-sm font-bold text-primary mb-2 block">عدد الغرف</label>
-                  <select
-                    id="rooms"
-                    className="w-full h-11 rounded-lg border border-border bg-background px-3 text-sm focus:ring-1 focus:ring-ring focus:border-accent"
-                    value={minRooms}
-                    onChange={(e) => setMinRooms(e.target.value)}
-                  >
-                    <option value="all">كل الأعداد</option>
-                    <option value="2">غرفتان فأكثر</option>
-                    <option value="3">3 غرف فأكثر</option>
-                    <option value="4">4 غرف فأكثر</option>
-                    <option value="5">5 غرف فأكثر</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="bathrooms" className="text-sm font-bold text-primary mb-2 block">دورات المياه</label>
-                  <select
-                    id="bathrooms"
-                    className="w-full h-11 rounded-lg border border-border bg-background px-3 text-sm focus:ring-1 focus:ring-ring focus:border-accent"
-                    value={minBathrooms}
-                    onChange={(e) => setMinBathrooms(e.target.value)}
-                  >
-                    <option value="all">كل الأعداد</option>
-                    <option value="1">دورة مياه فأكثر</option>
-                    <option value="2">دورتان فأكثر</option>
-                    <option value="3">3 دورات فأكثر</option>
-                    <option value="4">4 دورات فأكثر</option>
-                  </select>
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-sm font-bold text-primary mb-2 block">نطاق المساحة (م²)</label>
-                  <div className="flex items-center gap-2 max-w-md">
-                    <Input
-                      aria-label="الحد الأدنى للمساحة"
-                      type="number"
-                      min="0"
-                      placeholder="من"
-                      className="h-11 bg-background"
-                      value={minArea}
-                      onChange={(e) => setMinArea(e.target.value)}
-                    />
-                    <span className="text-muted-foreground">–</span>
-                    <Input
-                      aria-label="الحد الأعلى للمساحة"
-                      type="number"
-                      min="0"
-                      placeholder="إلى"
-                      className="h-11 bg-background"
-                      value={maxArea}
-                      onChange={(e) => setMaxArea(e.target.value)}
-                    />
-                  </div>
-                </div>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-3 mt-6 pt-5 border-t border-border/60">
-                  <span className="text-sm text-muted-foreground">تتحدث النتائج فوراً عند تغيير أي خيار</span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="text-primary hover:bg-secondary"
-                    onClick={resetFilters}
-                  >
-                    <RotateCcw className="w-4 h-4 ml-2" />
-                    إعادة ضبط كل الفلاتر
-                  </Button>
-                </div>
-              </div>
-            )}
-            
-          </div>
-        </div>
+  const { data, isLoading, isError, refetch } = useSiteContent();
+  const { locale, t } = usePreferences();
+  const properties = data?.properties ?? [];
+  const search = useSearch();
+  const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get("q") || "");
+  const [category, setCategory] = useState("الكل");
+  const [neighborhood, setNeighborhood] = useState("الكل");
+  const [type, setType] = useState("all");
+  const [purpose, setPurpose] = useState("all");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [minRooms, setMinRooms] = useState("all");
+  const [minBathrooms, setMinBathrooms] = useState("all");
+  const [minArea, setMinArea] = useState("");
+  const [maxArea, setMaxArea] = useState("");
+  const [sort, setSort] = useState("latest");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [view, setView] = useState<"grid" | "map">(() => new URLSearchParams(window.location.search).get("view") === "map" ? "map" : "grid");
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    setQuery(params.get("q") || "");
+    setView(params.get("view") === "map" ? "map" : "grid");
+  }, [search]);
+  const neighborhoods = [...new Set(properties.map(p => p.neighborhood))];
+  const neighborhoodLabel = (value: string) => localized(properties.find(p => p.neighborhood === value)!, "neighborhood", locale);
+  const categoryLabel = (value: string) => value === "الكل" ? t("جميع العقارات", "All properties") : localized(properties.find(p => p.type === value) || { type: value, typeEn: ({ "عمائر للبيع": "Buildings for sale", "شقق للبيع": "Apartments for sale", "شقق للإيجار": "Apartments for rent", "أراضي للبيع": "Land for sale" } as Record<string, string>)[value] }, "type", locale);
+  const results = useMemo(() => properties.filter(p => {
+    const term = query.trim().toLocaleLowerCase();
+    const matchText = !term || [p.title, p.titleEn, p.neighborhood, p.neighborhoodEn, p.description, p.descriptionEn].some(value => value?.toLocaleLowerCase().includes(term));
+    return matchText && (category === "الكل" || p.type === category) && (neighborhood === "الكل" || p.neighborhood === neighborhood) && (type === "all" || p.type.startsWith(type)) && (purpose === "all" || p.purpose === purpose) && (!minPrice || p.price >= Number(minPrice)) && (!maxPrice || p.price <= Number(maxPrice)) && (minRooms === "all" || p.rooms >= Number(minRooms)) && (minBathrooms === "all" || p.bathrooms >= Number(minBathrooms)) && (!minArea || (p.area > 0 && p.area >= Number(minArea))) && (!maxArea || (p.area > 0 && p.area <= Number(maxArea)));
+  }).sort((a, b) => sort === "price-low" ? a.price - b.price : sort === "price-high" ? b.price - a.price : sort === "area-large" ? b.area - a.area : sort === "rooms" ? b.rooms - a.rooms : 0), [properties, query, category, neighborhood, type, purpose, minPrice, maxPrice, minRooms, minBathrooms, minArea, maxArea, sort]);
+  const reset = () => { setQuery(""); setCategory("الكل"); setNeighborhood("الكل"); setType("all"); setPurpose("all"); setMinPrice(""); setMaxPrice(""); setMinRooms("all"); setMinBathrooms("all"); setMinArea(""); setMaxArea(""); setSort("latest"); };
+  const marker = (label: string) => L.divIcon({ className: "custom-map-marker", html: `<div style="background:#172329;color:#e5c180;padding:7px 12px;border:1px solid #e5c180;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 6px 20px #0004">${label.replace(/[<>]/g, "")}</div>`, iconSize: [100, 32], iconAnchor: [50, 16] });
+  return <main className="site-shell min-h-[100dvh] flex-1">
+    <section className="site-always-dark relative overflow-hidden bg-[#172329] py-20 text-[#f0ebdf] md:py-28"><img src="/hero/drive-02.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" /><div className="absolute inset-0 bg-gradient-to-l from-[#172329] via-[#172329]/85 to-[#172329]/50" /><div className="site-container relative"><span className="site-eyebrow">{t("استكشف العروض", "DISCOVER PROPERTIES")}</span><h1 className="site-display mt-6 text-5xl md:text-7xl">{t("عقارات العبنق", "The property collection")}</h1><p className="mt-5 max-w-lg text-sm leading-8 text-[#eee8db]/70">{t("تصفح العقارات المتاحة وابحث حسب ما يناسب احتياجاتك.", "Explore available properties and find the right fit for your needs.")}</p></div></section>
+    <div className="site-container py-10 md:py-14">
+      <div className="flex flex-col gap-4 border-b border-[var(--line-soft)] pb-8 md:flex-row">
+        <div className="relative flex-1"><Search size={18} className="absolute start-4 top-1/2 -translate-y-1/2 text-accent" /><input data-testid="input-property-search" type="search" value={query} onChange={event => setQuery(event.target.value)} aria-label={t("البحث بالكلمات", "Keyword search")} placeholder={t("ابحث بالعنوان أو الحي أو الوصف...", "Search title, district, or description...")} className="site-input h-13 w-full ps-12 pe-4 text-sm" /></div>
+        <button type="button" data-testid="button-toggle-filters" aria-expanded={filtersOpen} onClick={() => setFiltersOpen(!filtersOpen)} className="site-outline-button inline-flex h-13 items-center justify-center gap-3 px-6 text-sm font-bold"><SlidersHorizontal size={17} />{t("تصفية متقدمة", "Advanced filters")}{filtersOpen && <X size={15} />}</button>
       </div>
-
-      <div className="flex-1 bg-background">
-        <div className="container mx-auto px-4 py-7 md:py-10">
-          {/* Results toolbar: the view switch stays centered on every screen size. */}
-          <div className="flex flex-col gap-5 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center mb-5">
-            <div className="flex items-center gap-3 md:justify-self-end">
-              <div>
-                <h2 data-testid="results-count" className="text-xl md:text-2xl font-bold text-primary">
-                  {filteredProperties.length} {filteredProperties.length === 1 ? 'عقار متاح' : 'عقارات متاحة'}
-                </h2>
-                <p className="text-sm text-muted-foreground mt-1">من أصل {officialProperties.length} عروض رسمية</p>
-              </div>
-            </div>
-
-            <div
-              className="flex items-center justify-center gap-1 bg-primary/10 rounded-xl p-1 w-full md:w-auto md:min-w-[220px] justify-self-center"
-              role="tablist"
-              aria-label="طريقة عرض العقارات"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={viewMode === 'grid'}
-                className={`flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all ${viewMode === 'grid' ? 'bg-white text-primary shadow-sm' : 'text-primary/65 hover:bg-white/60'}`}
-                onClick={() => setViewMode('grid')}
-              >
-                <List className="w-4 h-4" />
-                قائمة
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={viewMode === 'map'}
-                className={`flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all ${viewMode === 'map' ? 'bg-white text-primary shadow-sm' : 'text-primary/65 hover:bg-white/60'}`}
-                onClick={() => setViewMode('map')}
-              >
-                <MapIcon className="w-4 h-4" />
-                خريطة
-              </button>
-            </div>
-
-            <div className="flex items-center gap-2 md:justify-self-start">
-              <ArrowDownUp className="w-4 h-4 text-muted-foreground shrink-0" />
-              <label htmlFor="sort-results" className="text-sm text-muted-foreground whitespace-nowrap">ترتيب حسب</label>
-              <select
-                id="sort-results"
-                className="h-10 rounded-lg border border-border bg-white px-3 text-sm font-medium text-primary focus:ring-1 focus:ring-ring focus:border-accent"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="latest">الأحدث</option>
-                <option value="price-low">السعر: الأقل أولاً</option>
-                <option value="price-high">السعر: الأعلى أولاً</option>
-                <option value="area-large">المساحة: الأكبر أولاً</option>
-                <option value="rooms">عدد الغرف: الأكثر أولاً</option>
-              </select>
-            </div>
-          </div>
-
-          {activeFilterChips.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 mb-7" aria-label="الفلاتر المفعلة">
-              <span className="text-sm font-bold text-primary ml-1">الفلاتر:</span>
-              {activeFilterChips.map((filter) => (
-                <Badge key={filter.id} variant="secondary" className="gap-1.5 rounded-full px-3 py-1.5 bg-white border border-border text-primary font-medium">
-                  {filter.label}
-                  <button
-                    type="button"
-                    aria-label={`إزالة فلتر ${filter.label}`}
-                    onClick={filter.onRemove}
-                    className="rounded-full hover:bg-primary/10 p-0.5"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </Badge>
-              ))}
-              <Button type="button" variant="ghost" className="h-8 px-2 text-sm text-muted-foreground hover:text-primary" onClick={resetFilters}>
-                إعادة ضبط
-              </Button>
-            </div>
-          )}
-
-          {viewMode === 'grid' ? (
-            filteredProperties.length > 0 ? (
-              <div data-testid="property-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProperties.map(property => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </div>
-            ) : (
-              <div data-testid="list-empty-state" className="text-center py-24 px-5 rounded-2xl border border-dashed border-border bg-white/60">
-                <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-5">
-                  <Search className="w-7 h-7 text-primary/60" />
-                </div>
-                <h3 className="text-2xl font-bold text-primary mb-2">لم نعثر على عقار بهذه المواصفات</h3>
-                <p className="text-muted-foreground max-w-md mx-auto mb-6">جرّب توسيع نطاق السعر أو المساحة، أو احذف أحد الفلاتر للوصول إلى العروض الرسمية المتاحة.</p>
-                <Button type="button" onClick={resetFilters} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  <RotateCcw className="w-4 h-4 ml-2" />
-                  عرض كل العقارات
-                </Button>
-              </div>
-            )
-          ) : (
-          <div data-testid="map-results" className="relative w-full overflow-hidden rounded-2xl border border-border shadow-sm">
-            <MapContainer 
-              center={[21.3891, 39.8579]} 
-              zoom={12} 
-              style={{ height: 'min(760px, calc(100dvh - 310px))', minHeight: '520px', width: '100%' }}
-              zoomControl={false}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              {filteredProperties.map((property) => (
-                <Marker 
-                  key={property.id} 
-                  position={property.coordinates}
-                  icon={createCustomMarker(property.priceLabel, property.id)}
-                >
-                  <Popup className="map-popup-custom">
-                    <div className="flex flex-col">
-                      <img src={property.image} alt={property.title} className="w-full h-32 object-cover" />
-                      <div className="p-3">
-                        <div className="text-xs text-muted-foreground mb-1">{property.type} • {property.city ?? "مكة المكرمة"}، حي {property.neighborhood}</div>
-                        <h4 className="font-bold text-sm mb-2 line-clamp-1">{property.title}</h4>
-                        <div className="font-bold text-primary mb-3">{property.priceLabel}</div>
-                        <div className="flex items-center gap-2">
-                          <a href={`/properties/${property.id}`} className="block flex-1 text-center bg-primary text-white py-1.5 rounded text-xs font-medium hover:bg-primary/90">
-                            التفاصيل
-                          </a>
-                          <a href={property.sourceUrl} target="_blank" rel="noreferrer" className="block flex-1 text-center border border-primary/20 text-primary py-1.5 rounded text-xs font-medium hover:bg-secondary">
-                            العرض الرسمي
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-            {filteredProperties.length === 0 && (
-              <div className="absolute inset-0 z-[1000] flex items-center justify-center p-5 pointer-events-none">
-                <div data-testid="map-empty-state" className="bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-border p-6 text-center max-w-sm pointer-events-auto">
-                  <Search className="w-9 h-9 text-muted-foreground mx-auto mb-3" />
-                  <h3 className="font-bold text-primary mb-1">لا توجد عروض في هذه المنطقة</h3>
-                  <p className="text-sm text-muted-foreground mb-4">غيّر خيارات البحث أو أعد ضبط الفلاتر لرؤية العروض الرسمية.</p>
-                  <Button type="button" size="sm" onClick={resetFilters}>
-                    إعادة ضبط الفلاتر
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-        </div>
-      </div>
-
-    </main>
-  );
+      <div className="mt-6 flex gap-2 overflow-x-auto pb-3">{categories.map(c => <button type="button" key={c} onClick={() => setCategory(c)} aria-pressed={category === c} className={`shrink-0 border px-4 py-2.5 text-xs font-bold transition-colors ${category === c ? "border-accent bg-accent text-accent-foreground" : "border-border text-muted-foreground hover:border-accent hover:text-foreground"}`}>{categoryLabel(c)}</button>)}</div>
+      {filtersOpen && <div className="site-card mt-5 p-6 md:p-8"><div className="mb-7 flex items-center justify-between"><h2 className="site-display text-xl">{t("خصص بحثك", "Refine your search")}</h2><button type="button" onClick={reset} className="site-link-arrow"><RotateCcw size={15} />{t("إعادة الضبط", "Reset")}</button></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <label className="text-xs font-bold">{t("نوع العقار", "Property type")}<select value={type} onChange={event => setType(event.target.value)} className="site-input mt-2 h-11 w-full px-3"><option value="all">{t("كل الأنواع", "All types")}</option>{typeOptions.slice(1).map((v, i) => <option value={v} key={v}>{[t("شقق", "Apartments"), t("عمائر", "Buildings"), t("أراضي", "Land")][i]}</option>)}</select></label>
+        <label className="text-xs font-bold">{t("الحي", "District")}<select value={neighborhood} onChange={event => setNeighborhood(event.target.value)} className="site-input mt-2 h-11 w-full px-3"><option value="الكل">{t("جميع الأحياء", "All districts")}</option>{neighborhoods.map(n => <option value={n} key={n}>{neighborhoodLabel(n)}</option>)}</select></label>
+        <label className="text-xs font-bold">{t("نوع العملية", "Transaction")}<select value={purpose} onChange={event => setPurpose(event.target.value)} className="site-input mt-2 h-11 w-full px-3"><option value="all">{t("البيع والإيجار", "Sale and rent")}</option><option value="sale">{t("للبيع", "For sale")}</option><option value="rent">{t("للإيجار", "For rent")}</option></select></label>
+        <label className="text-xs font-bold">{t("عدد الغرف الأدنى", "Minimum bedrooms")}<select value={minRooms} onChange={event => setMinRooms(event.target.value)} className="site-input mt-2 h-11 w-full px-3"><option value="all">{t("أي عدد", "Any")}</option>{[2,3,4,5].map(n => <option key={n} value={n}>{n}+</option>)}</select></label>
+        <label className="text-xs font-bold">{t("دورات المياه الأدنى", "Minimum bathrooms")}<select value={minBathrooms} onChange={event => setMinBathrooms(event.target.value)} className="site-input mt-2 h-11 w-full px-3"><option value="all">{t("أي عدد", "Any")}</option>{[1,2,3,4].map(n => <option key={n} value={n}>{n}+</option>)}</select></label>
+        {[[t("السعر من (ر.س)", "Min price (SAR)"), minPrice, setMinPrice], [t("السعر إلى (ر.س)", "Max price (SAR)"), maxPrice, setMaxPrice], [t("المساحة من (م²)", "Min area (m²)"), minArea, setMinArea], [t("المساحة إلى (م²)", "Max area (m²)"), maxArea, setMaxArea]] .map(([label, value, setter], i) => <label key={i} className="text-xs font-bold">{label as string}<input type="number" min="0" value={value as string} onChange={event => (setter as (v: string) => void)(event.target.value)} className="site-input mt-2 h-11 w-full px-3" /></label>)}
+      </div></div>}
+      <div className="my-10 flex flex-wrap items-center justify-between gap-5 border-b border-[var(--line-soft)] pb-6"><div><p data-testid="results-count" className="site-display text-2xl">{results.length} {t("عقار متاح", "properties available")}</p><p className="mt-1 text-xs text-muted-foreground">{t(`من أصل ${properties.length} عروض`, `Of ${properties.length} listings`)}</p></div><div className="flex flex-wrap items-center gap-3"><div className="flex border border-border p-1" role="tablist" aria-label={t("طريقة العرض", "View mode")}><button type="button" role="tab" aria-selected={view === "grid"} onClick={() => setView("grid")} className={`flex items-center gap-2 px-3 py-2 text-xs ${view === "grid" ? "bg-accent text-accent-foreground" : "text-muted-foreground"}`}><List size={15} />{t("قائمة", "Grid")}</button><button type="button" role="tab" aria-selected={view === "map"} onClick={() => setView("map")} className={`flex items-center gap-2 px-3 py-2 text-xs ${view === "map" ? "bg-accent text-accent-foreground" : "text-muted-foreground"}`}><MapIcon size={15} />{t("خريطة", "Map")}</button></div><div className="flex items-center gap-2"><ArrowDownUp size={15} className="text-accent" /><select aria-label={t("ترتيب النتائج", "Sort results")} value={sort} onChange={event => setSort(event.target.value)} className="site-input h-10 px-2 text-xs"><option value="latest">{t("الأحدث", "Latest")}</option><option value="price-low">{t("السعر: الأقل", "Price: low to high")}</option><option value="price-high">{t("السعر: الأعلى", "Price: high to low")}</option><option value="area-large">{t("المساحة: الأكبر", "Largest area")}</option><option value="rooms">{t("الغرف: الأكثر", "Most bedrooms")}</option></select></div></div></div>
+      {isLoading ? <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">{[0,1,2].map(i => <div key={i} className="site-card animate-pulse"><div className="aspect-[4/3] bg-muted" /><div className="space-y-4 p-7"><div className="h-5 w-3/4 bg-muted" /><div className="h-5 w-1/2 bg-muted" /></div></div>)}</div> : isError ? <div role="alert" className="site-card py-20 text-center"><p>{t("تعذر تحميل العقارات.", "Could not load properties.")}</p><button type="button" onClick={() => void refetch()} className="site-button mt-5 px-6 py-3">{t("إعادة المحاولة", "Try again")}</button></div> : view === "grid" ? results.length ? <div data-testid="property-list" className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">{results.map(p => <PropertyCard key={p.id} property={p} />)}</div> : <div data-testid="list-empty-state" className="site-card py-24 text-center"><Search size={30} className="mx-auto text-accent" /><h3 className="site-display mt-6 text-2xl">{t("لم نعثر على عقار بهذه المواصفات", "No properties match these filters")}</h3><p className="mt-3 text-sm text-muted-foreground">{t("جرّب توسيع نطاق البحث أو إعادة ضبط الفلاتر.", "Try broadening your search or resetting your filters.")}</p><button type="button" onClick={reset} className="site-button mt-7 px-6 py-3 text-sm">{t("عرض كل العقارات", "View all properties")}</button></div> : <div data-testid="map-results" className="relative overflow-hidden border border-border"><MapContainer center={[21.3891, 39.8579]} zoom={12} style={{ height: "min(720px,70dvh)", minHeight: "480px", width: "100%" }}><TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />{results.map(p => <Marker key={p.id} position={p.coordinates} icon={marker(localized(p, "priceLabel", locale))}><Popup className="map-popup-custom"><div className="bg-card text-foreground"><img src={p.image} alt={localized(p, "title", locale)} className="h-32 w-full object-cover" /><div className="p-4"><p className="text-xs text-muted-foreground">{localized(p, "neighborhood", locale)}</p><h3 className="my-2 font-bold">{localized(p, "title", locale)}</h3><p className="text-accent">{localized(p, "priceLabel", locale)}</p><div className="mt-3 flex flex-wrap gap-x-4 gap-y-2"><Link href={`/properties/${p.id}`} className="text-xs font-bold text-accent">{t("التفاصيل", "Details")} →</Link><a href={p.sourceUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-accent">{t("الإعلان الأصلي", "Official listing")} ↗</a></div></div></div></Popup></Marker>)}</MapContainer>{!results.length && <div className="absolute inset-0 z-[1000] grid place-items-center bg-[#172329]/60 p-5"><div className="site-card p-8 text-center"><p>{t("لا توجد عقارات مطابقة", "No matching properties")}</p><button type="button" onClick={reset} className="site-button mt-4 px-5 py-2 text-xs">{t("إعادة الضبط", "Reset filters")}</button></div></div>}</div>}
+    </div>
+  </main>;
 }

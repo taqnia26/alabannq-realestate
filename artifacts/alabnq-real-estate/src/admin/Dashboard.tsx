@@ -54,15 +54,28 @@ const siteFields = [
   ['home.title', 'عنوان الصفحة الرئيسية', 'العنوان الرئيسي الذي يراه الزائر أولاً'],
   ['home.subtitle', 'وصف الصفحة الرئيسية', 'النص التعريفي أسفل العنوان'],
   ['home.heroImage', 'صورة واجهة الرئيسية', 'رابط صورة الغلاف'],
+  ['home.intro', 'مقدمة الرئيسية', ''],
+  ['home.commitment', 'التزامنا في الرئيسية', ''],
+  ['home.customerService', 'خدمة العملاء في الرئيسية', ''],
   ['home.propertiesHeading', 'عنوان قسم العقارات في الرئيسية', ''],
   ['home.articlesHeading', 'عنوان قسم المقالات في الرئيسية', ''],
   ['about.heading', 'عنوان من نحن', 'عنوان قسم التعريف بالشركة'],
   ['about.intro', 'مقدمة من نحن', 'نبذة مختصرة عن الشركة'],
   ['about.story', 'النص التفصيلي عن الشركة', ''],
+  ['about.commitment', 'التزام الشركة', ''],
+  ['about.vision', 'رؤية الشركة', ''],
+  ['about.mission', 'رسالة الشركة', ''],
+  ['about.servicesIntro', 'مقدمة الخدمات', ''],
   ['about.servicesHeading', 'عنوان قسم الخدمات', ''],
   ['about.image', 'صورة من نحن', 'رابط صورة قسم من نحن'],
+  ['about.service.marketing', 'خدمة التسويق العقاري', ''],
+  ['about.service.auctions', 'خدمة المزادات', ''],
+  ['about.service.management', 'خدمة إدارة العقارات', ''],
+  ['about.service.facilities', 'خدمة إدارة المرافق', ''],
+  ['about.service.legal', 'الخدمات القانونية', ''],
   ['articles.heading', 'عنوان صفحة المقالات', ''],
   ['articles.intro', 'وصف صفحة المقالات', ''],
+  ['seo.description', 'الوصف التعريفي لمحركات البحث', ''],
   ['contact.heading', 'عنوان صفحة التواصل', ''],
   ['contact.intro', 'وصف صفحة التواصل', ''],
   ['contact.address', 'العنوان', 'عنوان المكتب المعروض للزوار'],
@@ -139,10 +152,10 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
     choices?: { value: string; label: string }[]; hint?: string; min?: number;
   } = {}) => <div className={`ad-field ${opts.full ? 'full' : ''}`} key={key}>
     <label htmlFor={`ad-${key}`}>{label} {opts.required && <span>*</span>}</label>
-    {opts.choices ? <select id={`ad-${key}`} className="ad-input" value={value(key)} onChange={e => set(key, e.target.value)} required={opts.required} data-testid={`select-${key}`}>
+     {opts.choices ? <select id={`ad-${key}`} className="ad-input" dir={key.endsWith('En') ? 'ltr' : undefined} value={value(key)} onChange={e => set(key, e.target.value)} required={opts.required} data-testid={`select-${key}`}>
       {opts.choices.map(choice => <option key={choice.value} value={choice.value}>{choice.label}</option>)}
-    </select> : opts.multiline ? <textarea id={`ad-${key}`} className="ad-input" value={value(key)} onChange={e => set(key, e.target.value)} required={opts.required} placeholder={opts.placeholder} rows={key === 'content' ? 9 : 3} data-testid={`textarea-${key}`} /> :
-      <input id={`ad-${key}`} className="ad-input" type={opts.type || 'text'} min={opts.min} step={opts.type === 'number' ? 'any' : undefined} value={value(key)} onChange={e => set(key, opts.type === 'number' ? Number(e.target.value) : e.target.value)} required={opts.required} placeholder={opts.placeholder} data-testid={`input-${key}`} />}
+     </select> : opts.multiline ? <textarea id={`ad-${key}`} className="ad-input" dir={key.endsWith('En') ? 'ltr' : undefined} value={value(key)} onChange={e => set(key, e.target.value)} required={opts.required} placeholder={opts.placeholder} rows={key === 'content' || key === 'contentEn' ? 9 : 3} data-testid={`textarea-${key}`} /> :
+       <input id={`ad-${key}`} className="ad-input" dir={key.endsWith('En') ? 'ltr' : undefined} type={opts.type || 'text'} min={opts.min} step={opts.type === 'number' ? 'any' : undefined} value={value(key)} onChange={e => set(key, opts.type === 'number' ? Number(e.target.value) : e.target.value)} required={opts.required} placeholder={opts.placeholder} data-testid={`input-${key}`} />}
     {opts.hint && <small>{opts.hint}</small>}
   </div>;
   const checkbox = (key: string, label: string) => <label className="ad-check" key={key}>
@@ -156,14 +169,17 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
     if (kind === 'properties') {
       const property = form as PublishedProperty;
       if (!property.title.trim() || !property.neighborhood.trim()) return setError('أدخل عنوان العقار والحي.');
+      if (property.published !== false && ![property.titleEn, property.neighborhoodEn, property.cityEn, property.typeEn, property.descriptionEn, property.priceLabelEn].every(text => text?.trim())) return setError('أكمل عنوان العقار والحي والمدينة والنوع والوصف والسعر بالإنجليزية قبل النشر، أو احفظه كمسودة.');
+      if (property.published !== false && property.amenities.length && !property.amenitiesEn?.length && !value('amenitiesEn').trim()) return setError('أكمل المميزات بالإنجليزية قبل النشر، أو احفظ العقار كمسودة.');
       if (property.price < 0 || property.area < 0 || property.rooms < 0 || property.bathrooms < 0) return setError('القيم الرقمية يجب ألا تكون سالبة.');
       const lat = Number(value('latitude')), lng = Number(value('longitude'));
       if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) return setError('أدخل إحداثيات صحيحة للموقع.');
-      payload = { ...property, coordinates: [lat, lng], amenities: value('amenities').split('\n').map(s => s.trim()).filter(Boolean), gallery: value('gallery').split('\n').map(s => s.trim()).filter(Boolean), priceLabel: property.priceLabel.trim() || `${formatNumber(property.price)} ر.س` };
+       payload = { ...property, coordinates: [lat, lng], amenities: value('amenities').split('\n').map(s => s.trim()).filter(Boolean), amenitiesEn: value('amenitiesEn').split('\n').map(s => s.trim()).filter(Boolean), gallery: value('gallery').split('\n').map(s => s.trim()).filter(Boolean), priceLabel: property.priceLabel.trim() || `${formatNumber(property.price)} ر.س` } as Item;
     }
     if (kind === 'articles') {
       const article = form as PublishedArticle;
       if (!article.title.trim() || !article.content.trim() || !article.excerpt.trim()) return setError('العنوان والملخص والمحتوى حقول مطلوبة.');
+      if (article.published !== false && ![article.titleEn, article.excerptEn, article.contentEn, article.categoryEn, article.authorEn, article.readTimeEn].every(text => text?.trim())) return setError('أكمل العنوان والملخص والمحتوى والتصنيف والكاتب ووقت القراءة بالإنجليزية قبل النشر، أو احفظ المقال كمسودة.');
     }
     if (kind === 'campaigns') {
       const campaign = form as Campaign;
@@ -192,6 +208,15 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
               {field('description', 'وصف العقار', { full: true, multiline: true })}
               {field('amenities', 'المميزات', { full: true, multiline: true, hint: 'ميزة واحدة في كل سطر' })}
             </div></div>
+            <div className="ad-form-section"><h3>الترجمة الإنجليزية (اختيارية)</h3><p className="ad-subtitle">يُرجى إكمال الترجمة الإنجليزية لمساعدة زوار الموقع.</p><div className="ad-field-grid">
+              {field('titleEn', 'Property title (English)', { full: true, placeholder: 'Apartment for sale in Al Awali' })}
+              {field('neighborhoodEn', 'Neighborhood (English)')}
+              {field('cityEn', 'City (English)')}
+              {field('typeEn', 'Property type (English)')}
+              {field('priceLabelEn', 'Displayed price label (English)', { placeholder: 'Optional custom price text' })}
+              {field('descriptionEn', 'Property description (English)', { full: true, multiline: true })}
+              {field('amenitiesEn', 'Amenities (English)', { full: true, multiline: true, hint: 'One amenity per line' })}
+            </div></div>
             <div className="ad-form-section"><h3>الصور والموقع</h3><div className="ad-field-grid">
               <div className="ad-field full">{field('image', 'رابط الصورة الرئيسية', { type: 'text', placeholder: 'https://... أو ارفع صورة أدناه' })}
                 <ImageInput id="property-image" label="الصورة الرئيسية" value={value('image') ? [value('image')] : []} onBusyChange={changeUploadState} onChange={(url, action) => set('image', action === 'add' ? url : '')} /></div>
@@ -215,6 +240,14 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
               {field('author', 'الكاتب')}
               {field('excerpt', 'الملخص', { required: true, full: true, multiline: true })}
               {field('content', 'نص المقال', { required: true, full: true, multiline: true, hint: 'يمكن كتابة المحتوى بتنسيق HTML كما في المقالات الحالية.' })}
+            </div></div>
+            <div className="ad-form-section"><h3>الترجمة الإنجليزية (اختيارية)</h3><p className="ad-subtitle">يُرجى إكمال الترجمة الإنجليزية لمساعدة زوار الموقع.</p><div className="ad-field-grid">
+              {field('titleEn', 'Article title (English)', { full: true })}
+              {field('categoryEn', 'Category (English)')}
+              {field('authorEn', 'Author (English)')}
+              {field('excerptEn', 'Excerpt (English)', { full: true, multiline: true })}
+              {field('contentEn', 'Article content (English)', { full: true, multiline: true, hint: 'HTML formatting is supported, as in the Arabic article.' })}
+              {field('readTimeEn', 'Reading time (English)')}
             </div></div>
             <div className="ad-form-section"><h3>بيانات النشر</h3><div className="ad-field-grid">
               <div className="ad-field full">{field('image', 'رابط صورة المقال', { type: 'text', placeholder: 'https://... أو ارفع صورة أدناه' })}
@@ -260,6 +293,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [siteDraft, setSiteDraft] = useState<Record<string, string>>({});
   const [siteKey, setSiteKey] = useState('');
   const [siteValue, setSiteValue] = useState('');
+  const [siteValueEn, setSiteValueEn] = useState('');
   const [savingKey, setSavingKey] = useState('');
   const [siteUploads, setSiteUploads] = useState<string[]>([]);
 
@@ -306,17 +340,28 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       setDeleting(null);
     } catch (err) { showError(err); } finally { setSaving(false); }
   };
-  const saveSite = async (key: string, value: string) => {
-    if (!key.trim()) { setNotice({ text: 'أدخل مفتاح المحتوى أولاً.', error: true }); return; }
+  const saveSite = async (key: string, value: string): Promise<boolean> => {
+    if (!key.trim()) { setNotice({ text: 'أدخل مفتاح المحتوى أولاً.', error: true }); return false; }
     setSavingKey(key);
     try {
       await request('/site', { method: 'PUT', body: JSON.stringify({ key: key.trim(), value }) });
       await queryClient.invalidateQueries({ queryKey: contentQueryKey });
       setData(current => current ? { ...current, site: { ...current.site, [key.trim()]: value } } : current);
       setSiteDraft(current => ({ ...current, [key.trim()]: value }));
-      setSiteKey(''); setSiteValue('');
       setNotice({ text: 'تم حفظ محتوى الموقع بنجاح.' });
-    } catch (err) { showError(err); } finally { setSavingKey(''); }
+      return true;
+    } catch (err) { showError(err); return false; } finally { setSavingKey(''); }
+  };
+  const saveNewSiteKey = async () => {
+    const key = siteKey.trim();
+    if (!key) { setNotice({ text: 'أدخل مفتاح المحتوى أولاً.', error: true }); return; }
+    try {
+      if (!await saveSite(key, siteValue)) return;
+      if (siteValueEn.trim() && !await saveSite(`${key}.en`, siteValueEn)) return;
+      setSiteKey('');
+      setSiteValue('');
+      setSiteValueEn('');
+    } catch { /* Keep entered values if an unexpected save error occurs. */ }
   };
   const changeSection = (next: Section) => { setSection(next); setSearch(''); };
   const openNew = (kind: Kind) => setEditor({ kind, item: newItem(kind), creating: true });
@@ -385,7 +430,13 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       </div></td>
     </tr>)}</tbody></table> : <Empty title={compact ? 'لا توجد عناصر بعد' : search ? 'لا توجد نتائج مطابقة' : `لا توجد ${sectionNames[kind]} بعد`} text={search ? 'جرّب البحث بكلمة أخرى.' : `ابدأ بإضافة ${itemNames[kind]} جديد لإدارته من هنا.`} action={!compact && !search ? { label: `إضافة ${itemNames[kind]}`, onClick: () => openNew(kind) } : undefined} />}
   </div>;
-  const siteKeys = [...siteFields.map(entry => entry[0]), ...Object.keys(data?.site || {}).filter(key => !siteFields.some(entry => entry[0] === key))];
+  const siteKeys = [...new Set([...siteFields.map(entry => entry[0]), ...Object.keys(data?.site || {}).map(key => key.endsWith('.en') ? key.slice(0, -3) : key)])];
+  const isLanguageNeutralSiteKey = (key: string) => {
+    const normalized = key.toLowerCase();
+    return normalized.includes('image') || normalized.includes('link') || normalized.includes('url') ||
+      normalized.includes('phone') || normalized.includes('whatsapp') || normalized.includes('email') ||
+      normalized.includes('twitter') || normalized.includes('instagram') || normalized.includes('linkedin');
+  };
 
   return <div className="admin-root" dir="rtl" data-theme={theme}>
     <div className="ad-shell">
@@ -447,20 +498,28 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                 </div> : <Empty title="لا توجد رسائل بعد" text="تظهر هنا الرسائل التي يرسلها الزوار عبر صفحة التواصل." />}
               </section>}
               {section === 'site' && <>
-                <div className="ad-dashboard-hero"><div><span className="ad-eyebrow">إدارة المحتوى</span><h2>موقعك، بصوتك.</h2><p>عدّل النصوص والروابط مباشرة، ثم احفظ كل حقل على حدة.</p></div></div>
+                <div className="ad-dashboard-hero"><div><span className="ad-eyebrow">إدارة المحتوى</span><h2>موقعك، بصوتك.</h2><p>عدّل النصوص والروابط مباشرة، ثم احفظ كل حقل على حدة.</p><p className="ad-site-shared-note">الصور والوسائط والروابط وأرقام الهاتف مشتركة بين اللغتين.</p></div></div>
                 <div className="ad-site-grid">{siteKeys.map(key => {
                   const detail = siteFields.find(entry => entry[0] === key);
                   const value = siteDraft[key] ?? '';
+                  const englishValue = siteDraft[`${key}.en`] ?? '';
                   const imageKey = key.toLowerCase().includes('image');
+                  const neutral = isLanguageNeutralSiteKey(key);
                   return <div className="ad-card ad-site-card" key={key}><label htmlFor={`site-${key}`}>{detail?.[1] || key}</label><div className="ad-site-key">{detail?.[2] || key}</div>
-                    {imageKey || key.includes('phone') || key.includes('whatsapp') ? <input id={`site-${key}`} className="ad-input" type="text" dir={imageKey ? 'ltr' : 'auto'} value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder={imageKey ? 'https://...' : 'اكتب المحتوى هنا'} data-testid={`input-site-${key}`} /> : <textarea id={`site-${key}`} className="ad-input" value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder="اكتب المحتوى هنا" data-testid={`textarea-site-${key}`} />}
+                    {neutral ? <>
+                      <label htmlFor={`site-${key}`}>{imageKey ? 'رابط / صورة (مشترك بين اللغتين)' : 'قيمة مشتركة بين اللغتين'}</label>
+                      {imageKey || isLanguageNeutralSiteKey(key) ? <input id={`site-${key}`} className="ad-input" type="text" dir={imageKey || /link|url|email|twitter|instagram|linkedin/i.test(key) ? 'ltr' : 'auto'} value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder={imageKey ? 'https://...' : 'اكتب المحتوى هنا'} data-testid={`input-site-${key}`} /> : <textarea id={`site-${key}`} className="ad-input" value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder="اكتب المحتوى هنا" data-testid={`textarea-site-${key}`} />}
+                    </> : <>
+                      <div className="ad-site-language-field"><label htmlFor={`site-${key}`}>العربية</label><textarea id={`site-${key}`} className="ad-input" value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder="اكتب النص بالعربية" data-testid={`textarea-site-${key}`} /><button type="button" className="ad-button ad-button-plain" disabled={savingKey === key || value === (data.site?.[key] ?? '')} onClick={() => void saveSite(key, value)} data-testid={`button-save-site-${key}`}><Check />{savingKey === key ? 'جارٍ الحفظ...' : 'حفظ العربية'}</button></div>
+                      <div className="ad-site-language-field" dir="ltr"><label htmlFor={`site-${key}-en`}>English</label><textarea id={`site-${key}-en`} className="ad-input" dir="ltr" value={englishValue} onChange={e => setSiteDraft(d => ({ ...d, [`${key}.en`]: e.target.value }))} placeholder="Enter the English text" data-testid={`textarea-site-${key}-en`} /><button type="button" className="ad-button ad-button-plain" disabled={savingKey === `${key}.en` || englishValue === (data.site?.[`${key}.en`] ?? '')} onClick={() => void saveSite(`${key}.en`, englishValue)} data-testid={`button-save-site-${key}-en`}><Check />{savingKey === `${key}.en` ? 'Saving...' : 'Save English'}</button></div>
+                    </>}
                      {imageKey && <ImageInput id={`upload-site-${key}`} label={detail?.[1] || key} value={value ? [value] : []}
                        onBusyChange={busy => setSiteUploads(keys => busy ? [...keys, key] : keys.filter(x => x !== key))}
                        onChange={(url, action) => setSiteDraft(d => ({ ...d, [key]: action === 'add' ? url : '' }))} />}
-                     <button type="button" className="ad-button ad-button-plain" disabled={savingKey === key || siteUploads.includes(key) || value === (data.site?.[key] ?? '')} onClick={() => void saveSite(key, value)} data-testid={`button-save-site-${key}`}><Check />{savingKey === key ? 'جارٍ الحفظ...' : 'حفظ التعديل'}</button>
+                      {neutral && <button type="button" className="ad-button ad-button-plain" disabled={savingKey === key || siteUploads.includes(key) || value === (data.site?.[key] ?? '')} onClick={() => void saveSite(key, value)} data-testid={`button-save-site-${key}`}><Check />{savingKey === key ? 'جارٍ الحفظ...' : 'حفظ التعديل'}</button>}
                   </div>;
                 })}</div>
-                <div className="ad-site-add ad-section-gap"><h3>إضافة مفتاح محتوى آخر</h3><div className="ad-field-grid"><input className="ad-input" value={siteKey} onChange={e => setSiteKey(e.target.value)} placeholder="اسم المفتاح، مثال: services.title" dir="ltr" aria-label="اسم مفتاح المحتوى" data-testid="input-site-new-key" /><input className="ad-input" value={siteValue} onChange={e => setSiteValue(e.target.value)} placeholder="النص الجديد" aria-label="قيمة المحتوى" data-testid="input-site-new-value" /></div><button type="button" className="ad-button ad-button-primary" onClick={() => void saveSite(siteKey, siteValue)} disabled={!!savingKey || !siteKey.trim()} data-testid="button-add-site-key"><Plus />حفظ المحتوى</button></div>
+                <div className="ad-site-add ad-section-gap"><h3>إضافة مفتاح محتوى آخر</h3><div className="ad-field-grid"><input className="ad-input" value={siteKey} onChange={e => setSiteKey(e.target.value)} placeholder="اسم المفتاح، مثال: services.title" dir="ltr" aria-label="اسم مفتاح المحتوى" data-testid="input-site-new-key" /><div><label htmlFor="input-site-new-value">العربية</label><textarea id="input-site-new-value" className="ad-input" value={siteValue} onChange={e => setSiteValue(e.target.value)} placeholder="النص بالعربية" aria-label="قيمة المحتوى بالعربية" data-testid="input-site-new-value" /></div><div dir="ltr"><label htmlFor="input-site-new-value-en">English (optional)</label><textarea id="input-site-new-value-en" className="ad-input" value={siteValueEn} onChange={e => setSiteValueEn(e.target.value)} placeholder="English text" aria-label="English content value" data-testid="input-site-new-value-en" /></div></div><button type="button" className="ad-button ad-button-primary" onClick={() => void saveNewSiteKey()} disabled={!!savingKey || !siteKey.trim()} data-testid="button-add-site-key"><Plus />حفظ المحتوى</button></div>
               </>}
             </>}
         </div>

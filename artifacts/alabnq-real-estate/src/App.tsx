@@ -18,6 +18,8 @@ import {
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { PreferencesProvider, usePreferences } from '@/lib/preferences';
+import { useLocalizedSiteValue } from '@/data/siteContent';
 
 // Pages
 import Home from '@/pages/Home';
@@ -38,21 +40,23 @@ function stripBase(path: string): string {
 }
 
 function AdminRoute() {
+  const { t, locale } = usePreferences();
   const { isLoaded, isSignedIn, user } = useUser();
   const { signOut } = useClerk();
-  if (!isLoaded) return <main className="min-h-screen grid place-items-center">جارٍ التحقق من الحساب…</main>;
+  if (!isLoaded) return <main className="min-h-screen grid place-items-center">{t('جارٍ التحقق من الحساب…', 'Checking your account…')}</main>;
   if (!isSignedIn) return <AuthScreen signUp={false} />;
   const email = user.primaryEmailAddress;
   if (email?.emailAddress.toLowerCase() !== 'info@alabannaq.com' || email.verification?.status !== 'verified') {
-    return <main className="min-h-screen grid place-items-center p-6 text-center" dir="rtl"><div><h1 className="text-2xl font-bold mb-4">غير مصرح بالدخول</h1><p>هذا الحساب ليس حساب مدير الموقع.</p><button className="mt-6 underline" onClick={() => signOut({ redirectUrl: basePath || '/' })}>تسجيل الخروج</button></div></main>;
+    return <main className="min-h-screen grid place-items-center p-6 text-center" dir={locale === 'ar' ? 'rtl' : 'ltr'}><div><h1 className="text-2xl font-bold mb-4">{t('غير مصرح بالدخول', 'Access denied')}</h1><p>{t('هذا الحساب ليس حساب مدير الموقع.', 'This account is not a site administrator.')}</p><button className="mt-6 underline" onClick={() => signOut({ redirectUrl: basePath || '/' })}>{t('تسجيل الخروج', 'Sign out')}</button></div></main>;
   }
   return <Dashboard onLogout={() => void signOut({ redirectUrl: basePath || '/' })} />;
 }
 
 function AuthScreen({ signUp }: { signUp: boolean }) {
-  return <main dir="rtl" className="min-h-screen flex flex-col items-center justify-center gap-8 bg-[#f8f6f0] px-4 py-16">
-    <img src={`${basePath}/brand/alabnq-logo.png`} alt="العبنق العقارية" className="h-20 w-20 rounded-lg object-cover object-center" />
-    <div className="text-center"><h1 className="text-2xl font-bold">إدارة العبنق العقارية</h1><p className="text-sm text-gray-600 mt-2">الدخول مخصص لمدير الموقع المعتمد</p></div>
+  const { t, locale } = usePreferences();
+  return <main dir={locale === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col items-center justify-center gap-8 bg-background px-4 py-16">
+    <img src={`${basePath}/brand/alabnq-logo.png`} alt={t('العبنق العقارية', 'Alabnq Real Estate')} className="h-20 w-20 rounded-lg object-cover object-center" />
+    <div className="text-center"><h1 className="text-2xl font-bold">{t('إدارة العبنق العقارية', 'Alabnq Administration')}</h1><p className="text-sm text-muted-foreground mt-2">{t('الدخول مخصص لمدير الموقع المعتمد', 'Sign-in is reserved for the authorized administrator.')}</p></div>
     {signUp
       ? <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} />
       : <SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} fallbackRedirectUrl={`${basePath}/admin`} />}
@@ -78,6 +82,7 @@ function VisitTracker() {
 function Router() {
   return (
     <>
+      <DocumentMetadata />
       <ScrollToTop />
       <VisitTracker />
       <div className="flex flex-col min-h-[100dvh] w-full font-sans selection:bg-accent selection:text-primary">
@@ -105,6 +110,26 @@ function Router() {
   );
 }
 
+function DocumentMetadata() {
+  const { locale } = usePreferences();
+  const description = useLocalizedSiteValue(
+    'seo.description',
+    'شركة العبنق العقارية — خبرة عقارية.. وخدمات متكاملة.',
+    'Alabnq Real Estate Company — real estate expertise and integrated services.',
+  );
+  useEffect(() => {
+    const name = locale === 'ar' ? 'شركة العبنق العقارية' : 'Alabnq Real Estate Company';
+    document.title = name;
+    for (const selector of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']) {
+      document.querySelector(selector)?.setAttribute('content', description);
+    }
+    for (const selector of ['meta[property="og:title"]', 'meta[name="twitter:title"]']) {
+      document.querySelector(selector)?.setAttribute('content', name);
+    }
+  }, [description, locale]);
+  return null;
+}
+
 function ScrollToTop() {
   const [location] = useLocation();
 
@@ -126,11 +151,12 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  return <WouterRouter base={basePath}><AppWithRouter /></WouterRouter>;
+  return <WouterRouter base={basePath}><PreferencesProvider><AppWithRouter /></PreferencesProvider></WouterRouter>;
 }
 
 function AppWithRouter() {
   const [, setLocation] = useLocation();
+  const { locale } = usePreferences();
   if (!clerkPubKey) throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY in .env file');
   return (
     <ClerkProvider
@@ -144,12 +170,12 @@ function AppWithRouter() {
       }}
       signInUrl={`${basePath}/sign-in`}
       signUpUrl={`${basePath}/sign-up`}
-      localization={{ signIn: { start: { title: 'تسجيل الدخول', subtitle: 'أدخل بريد المدير وكلمة المرور' } }, signUp: { start: { title: 'إنشاء حساب المدير', subtitle: 'أنشئ حسابك ببريد المدير المعتمد' } } }}
+       localization={locale === 'ar' ? { signIn: { start: { title: 'تسجيل الدخول', subtitle: 'أدخل بريد المدير وكلمة المرور' } }, signUp: { start: { title: 'إنشاء حساب المدير', subtitle: 'أنشئ حسابك ببريد المدير المعتمد' } } } : undefined}
       routerPush={(to) => setLocation(stripBase(to))}
       routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
     >
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+       <TooltipProvider>
           <Router />
         <Toaster />
       </TooltipProvider>

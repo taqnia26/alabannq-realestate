@@ -1,212 +1,43 @@
 import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Building2, MapPin, Newspaper, Search } from "lucide-react";
+import { ArrowUpLeft, Building2, MapPin, Newspaper, Search } from "lucide-react";
 import { useSiteContent } from "@/data/siteContent";
+import { localized, usePreferences } from "@/lib/preferences";
 
 type SearchMode = "hero" | "navbar" | "mobile";
+type Suggestion = { id: string; title: string; subtitle: string; href: string; type: "property" | "article" | "neighborhood"; searchText: string };
+const normalize = (s: string) => s.toLocaleLowerCase().replace(/[\u064B-\u065F\u0670]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").trim();
+const icons = { property: Building2, article: Newspaper, neighborhood: MapPin };
 
-interface SiteSearchProps {
-  mode?: SearchMode;
-  className?: string;
-}
-
-interface SearchSuggestion {
-  id: string;
-  title: string;
-  subtitle: string;
-  href: string;
-  type: "property" | "article" | "neighborhood";
-}
-
-const normalizeArabic = (value: string) =>
-  value
-    .toLocaleLowerCase("ar")
-    .replace(/[\u064B-\u065F\u0670]/g, "")
-    .replace(/[أإآ]/g, "ا")
-    .replace(/ى/g, "ي")
-    .replace(/ة/g, "ه")
-    .trim();
-
-const suggestionIcon = {
-  property: Building2,
-  article: Newspaper,
-  neighborhood: MapPin,
-};
-
-const suggestionLabel = {
-  property: "عقار",
-  article: "خبر",
-  neighborhood: "حي",
-};
-
-export function SiteSearch({ mode = "navbar", className = "" }: SiteSearchProps) {
+export function SiteSearch({ mode = "navbar", className = "", onNavigate }: { mode?: SearchMode; className?: string; onNavigate?: () => void }) {
   const { data } = useSiteContent();
-  const articles = data?.articles ?? [];
-  const officialProperties = data?.properties ?? [];
-  const uniqueNeighborhoods = Array.from(new Set(officialProperties.map(item => item.neighborhood)));
+  const { locale, t } = usePreferences();
   const [, setLocation] = useLocation();
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
+  const properties = data?.properties ?? [];
+  const articles = data?.articles ?? [];
   const suggestions = useMemo(() => {
-    const normalizedQuery = normalizeArabic(query);
-    if (!normalizedQuery) return [];
-
-    const items: SearchSuggestion[] = [
-      ...officialProperties.map((property) => ({
-        id: `property-${property.id}`,
-        title: property.title,
-        subtitle: `${property.type} · حي ${property.neighborhood} · ${property.priceLabel}`,
-        href: `/properties/${property.id}`,
-        type: "property" as const,
-      })),
-      ...articles.map((article) => ({
-        id: `article-${article.id}`,
-        title: article.title,
-        subtitle: `${article.category} · ${article.readTime}`,
-        href: `/articles/${article.id}`,
-        type: "article" as const,
-      })),
-      ...uniqueNeighborhoods.map((neighborhood) => ({
-        id: `neighborhood-${neighborhood}`,
-        title: `عقارات حي ${neighborhood}`,
-        subtitle: "استعراض العروض الرسمية في الحي",
-        href: `/properties?q=${encodeURIComponent(neighborhood)}`,
-        type: "neighborhood" as const,
-      })),
+    if (!normalize(query)) return [];
+    const items: Suggestion[] = [
+      ...properties.map(p => ({ id: `property-${p.id}`, title: localized(p, "title", locale), subtitle: `${localized(p, "type", locale)} · ${localized(p, "neighborhood", locale)} · ${localized(p, "priceLabel", locale)}`, href: `/properties/${p.id}`, type: "property" as const, searchText: `${p.title} ${p.titleEn} ${p.neighborhood} ${p.neighborhoodEn} ${p.description} ${p.descriptionEn}` })),
+      ...articles.map(a => ({ id: `article-${a.id}`, title: localized(a, "title", locale), subtitle: `${localized(a, "category", locale)} · ${localized(a, "readTime", locale)}`, href: `/articles/${a.id}`, type: "article" as const, searchText: `${a.title} ${a.titleEn} ${a.excerpt} ${a.excerptEn}` })),
+      ...Array.from(new Set(properties.map(p => p.neighborhood))).map(n => { const p = properties.find(item => item.neighborhood === n)!; return { id: `neighborhood-${n}`, title: t(`عقارات حي ${n}`, `Properties in ${localized(p, "neighborhood", "en")}`), subtitle: t("استعراض العقارات في الحي", "Explore properties in this district"), href: `/properties?q=${encodeURIComponent(n)}`, type: "neighborhood" as const, searchText: `${n} ${p.neighborhoodEn}` }; }),
     ];
-
-    return items
-      .map((item) => {
-        const searchable = normalizeArabic(`${item.title} ${item.subtitle}`);
-        const title = normalizeArabic(item.title);
-        const score = title.startsWith(normalizedQuery)
-          ? 0
-          : title.includes(normalizedQuery)
-            ? 1
-            : searchable.includes(normalizedQuery)
-              ? 2
-              : 3;
-        return { item, score };
-      })
-      .filter(({ score }) => score < 3)
-      .sort((a, b) => a.score - b.score)
-      .slice(0, 7)
-      .map(({ item }) => item);
-  }, [query, articles, officialProperties, uniqueNeighborhoods]);
-
-  const navigateTo = (href: string) => {
-    setLocation(href);
-    setQuery("");
-    setIsOpen(false);
-  };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const trimmedQuery = query.trim();
-    if (!trimmedQuery) return;
-
-    if (suggestions[0]) {
-      navigateTo(suggestions[0].href);
-      return;
-    }
-
-    navigateTo(`/properties?q=${encodeURIComponent(trimmedQuery)}`);
-  };
-
-  const isHero = mode === "hero";
-  const inputHeight = isHero ? "h-14" : "h-11";
-
-  return (
-    <form
-      role="search"
-      onSubmit={handleSubmit}
-      className={`relative ${isHero ? "flex flex-col md:flex-row gap-3" : ""} ${className}`}
-      onBlur={() => window.setTimeout(() => setIsOpen(false), 120)}
-    >
-      <div className="relative flex-1">
-        <Search className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 ${isHero ? "text-muted-foreground" : "text-primary/55"}`} />
-        <input
-          type="search"
-          value={query}
-          onFocus={() => setIsOpen(true)}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setIsOpen(true);
-          }}
-          placeholder={isHero ? "ابحث عن عقار، حي، أو خبر..." : "ابحث في الموقع..."}
-          aria-label="البحث في العقارات والأخبار"
-          aria-autocomplete="list"
-          autoComplete="off"
-          className={`w-full ${inputHeight} rounded-xl border border-border/70 bg-white pr-12 pl-4 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-accent focus:ring-4 focus:ring-accent/10 ${isHero ? "text-base border-none shadow-sm" : ""}`}
-        />
-
-        {isOpen && query.trim() && (
-          <div
-            role="listbox"
-            className="absolute top-[calc(100%+10px)] right-0 left-0 z-[80] overflow-hidden rounded-2xl border border-border bg-white text-right shadow-2xl"
-          >
-            <div className="flex items-center justify-between border-b border-border/60 bg-secondary/50 px-4 py-3">
-              <span className="text-xs font-bold text-primary">اقتراحات من داخل الموقع</span>
-              <span className="text-[11px] text-muted-foreground">{suggestions.length} نتائج</span>
-            </div>
-
-            {suggestions.length > 0 ? (
-              <div className="max-h-[360px] overflow-y-auto py-2">
-                {suggestions.map((suggestion) => {
-                  const Icon = suggestionIcon[suggestion.type];
-                  return (
-                    <button
-                      key={suggestion.id}
-                      type="button"
-                      role="option"
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => navigateTo(suggestion.href)}
-                      className="group flex w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-secondary/70"
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-accent">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-bold text-primary">{suggestion.title}</span>
-                        <span className="mt-0.5 block truncate text-xs text-muted-foreground">{suggestion.subtitle}</span>
-                      </span>
-                      <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] font-bold text-primary">
-                        {suggestionLabel[suggestion.type]}
-                      </span>
-                    </button>
-                  );
-                })}
-
-                <button
-                  type="button"
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => navigateTo(`/properties?q=${encodeURIComponent(query.trim())}`)}
-                  className="flex w-full items-center justify-between border-t border-border/60 px-4 py-3 text-sm font-bold text-primary transition-colors hover:bg-secondary/70"
-                >
-                  <span>عرض نتائج العقارات عن “{query.trim()}”</span>
-                  <ArrowLeft className="h-4 w-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="px-5 py-8 text-center">
-                <p className="font-bold text-primary">لا توجد نتيجة مطابقة داخل الموقع</p>
-                <p className="mt-1 text-xs text-muted-foreground">جرّب اسم حي، نوع عقار، أو كلمة من عنوان خبر.</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {isHero && (
-        <button
-          type="submit"
-          className="inline-flex h-14 items-center justify-center rounded-xl bg-accent px-8 text-base font-bold text-primary transition-colors hover:bg-accent/90"
-        >
-          <Search className="ml-2 h-5 w-5" />
-          بحث في الموقع
-        </button>
-      )}
-    </form>
-  );
+    return items.map(item => ({ item, score: normalize(item.title).startsWith(normalize(query)) ? 0 : normalize(item.title).includes(normalize(query)) ? 1 : normalize(`${item.subtitle} ${item.searchText}`).includes(normalize(query)) ? 2 : 3 })).filter(({ score }) => score < 3).sort((a, b) => a.score - b.score).slice(0, 7).map(({ item }) => item);
+  }, [query, properties, articles, locale, t]);
+  const navigate = (href: string) => { setLocation(href); setQuery(""); setIsOpen(false); onNavigate?.(); };
+  const hero = mode === "hero";
+  return <form role="search" onSubmit={event => { event.preventDefault(); if (!query.trim()) return; navigate(suggestions[0]?.href || `/properties?q=${encodeURIComponent(query.trim())}`); }} onBlur={() => window.setTimeout(() => setIsOpen(false), 120)} className={`relative ${hero ? "flex flex-col gap-2 sm:flex-row" : ""} ${className}`}>
+    <div className="relative flex-1">
+      <Search size={19} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+      <input type="search" data-testid={`input-search-${mode}`} value={query} onFocus={() => setIsOpen(true)} onChange={event => { setQuery(event.target.value); setIsOpen(true); }} placeholder={hero ? t("ابحث عن عقار أو حي أو مقال", "Search property, district or article") : t("ابحث في الموقع", "Search the site")} aria-label={t("البحث في العقارات والأخبار", "Search properties and articles")} aria-autocomplete="list" autoComplete="off" className={`site-input w-full ps-12 pe-4 text-sm ${hero ? "h-14 border-[#eee8db]/30 bg-[#182329]/85 text-[#f3eee4] placeholder:text-[#eee8db]/55" : "h-11"}`} />
+      {isOpen && query.trim() && <div role="listbox" className="absolute inset-x-0 top-[calc(100%+7px)] z-[80] max-h-[400px] overflow-y-auto border border-border bg-popover p-2 text-popover-foreground shadow-2xl">
+        <div className="border-b border-border px-3 py-2 text-[11px] font-bold text-accent">{t("اقتراحات من الموقع", "SITE SUGGESTIONS")} · {suggestions.length}</div>
+        {suggestions.length ? suggestions.map(s => { const Icon = icons[s.type]; return <button key={s.id} type="button" role="option" aria-selected="false" onMouseDown={event => event.preventDefault()} onClick={() => navigate(s.href)} className="flex w-full items-center gap-3 border-b border-border/50 p-3 text-start transition-colors hover:bg-secondary"><Icon size={17} className="shrink-0 text-accent" /><span className="min-w-0 flex-1"><span className="block truncate text-sm font-bold">{s.title}</span><span className="block truncate text-xs text-muted-foreground">{s.subtitle}</span></span></button>; }) : <p className="p-4 text-sm text-muted-foreground">{t("لا توجد نتيجة مطابقة. جرّب كلمة أخرى.", "No matching results. Try another search.")}</p>}
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={() => navigate(`/properties?q=${encodeURIComponent(query.trim())}`)} className="flex w-full items-center justify-between p-3 text-sm font-bold text-accent">{t("عرض كل نتائج العقارات", "View property search results")} <ArrowUpLeft size={16} /></button>
+      </div>}
+    </div>
+    {hero && <button type="submit" data-testid="button-search-submit" className="site-button flex h-14 items-center justify-center gap-3 px-7 text-sm font-bold">{t("ابحث الآن", "Search now")} <ArrowUpLeft size={17} /></button>}
+  </form>;
 }

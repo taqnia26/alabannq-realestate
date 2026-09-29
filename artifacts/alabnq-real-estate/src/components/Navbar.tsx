@@ -1,90 +1,43 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpLeft, Menu, Moon, Sun, X } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 import { SiteSearch } from "./SiteSearch";
+import { usePreferences } from "@/lib/preferences";
 
 export function Navbar() {
   const [location] = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const { locale, setLocale, theme, setTheme, t } = usePreferences();
+  useEffect(() => setOpen(false), [location]);
   const links = [
-    { href: "/", label: "الرئيسية" },
-    { href: "/properties", label: "العقارات" },
-    { href: "/about", label: "عن الشركة" },
-    { href: "/articles", label: "الأخبار" },
-    { href: "/contact", label: "تواصل معنا" },
+    { href: "/", label: t("الرئيسية", "Home") },
+    { href: "/properties", label: t("العقارات", "Properties") },
+    { href: "/about", label: t("من نحن", "Our company") },
+    { href: "/articles", label: t("الأخبار والمقالات", "Journal") },
+    { href: "/contact", label: t("تواصل معنا", "Contact") },
   ];
-
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur shadow-sm">
-      <div className="container mx-auto px-4 min-h-24 flex items-center justify-between gap-4">
-        
-        {/* Logo */}
-        <Link href="/" className="flex shrink-0 items-center gap-3 group" aria-label="العودة إلى الرئيسية">
-          <BrandLogo className="h-20 w-20 rounded-md shadow-sm ring-1 ring-accent/30" />
-          <span className="text-base font-extrabold leading-tight text-primary md:hidden lg:block lg:text-lg">شركة العبنق<br />العقارية</span>
-        </Link>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-5 xl:gap-7">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-accent",
-                location === link.href ? "text-accent" : "text-foreground/80"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Action Button */}
-        <div className="hidden md:flex items-center gap-3">
-          <div className="hidden xl:block w-[270px]">
-            <SiteSearch mode="navbar" />
-          </div>
-          <Link href="/contact" className={cn("inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50", "bg-accent text-accent-foreground shadow hover:bg-accent/90 h-11 px-6")}>
-            احجز استشارة
-          </Link>
-        </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-primary p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+  return <header className="site-header sticky top-0 z-50 border-b border-[var(--line-soft)] bg-background/95 backdrop-blur-xl">
+    <div className="site-container flex h-[76px] items-center justify-between gap-5 lg:h-[88px]">
+      <Link href="/" data-testid="link-home-logo" className="group flex min-w-0 shrink-0 items-center gap-3" aria-label={t("العبنق العقارية، الرئيسية", "Alabnq Real Estate, home")}>
+        <BrandLogo className="h-[53px] w-[53px] rounded-[2px] ring-1 ring-accent/30 lg:h-[62px] lg:w-[62px]" label={t("شعار شركة العبنق العقارية", "Alabnq Real Estate logo")} />
+        <span className="text-[13px] font-bold leading-[1.5] tracking-tight text-foreground lg:hidden xl:block xl:text-[15px]">{t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</span>
+      </Link>
+      <nav aria-label={t("التنقل الرئيسي", "Main navigation")} className="hidden items-center gap-3 lg:flex xl:gap-6">
+        {links.map(link => <Link key={link.href} href={link.href} data-testid={`link-nav-${link.href.replace(/\W/g, "") || "home"}`} aria-current={location === link.href ? "page" : undefined} className={`relative whitespace-nowrap py-2 text-[13px] font-semibold transition-colors hover:text-accent ${location === link.href ? "text-accent" : "text-foreground/75"}`}>{link.label}{location === link.href && <span className="absolute inset-x-0 -bottom-1 h-px bg-accent" />}</Link>)}
+      </nav>
+      <div className="flex items-center gap-1.5 lg:gap-3">
+        <div className="hidden w-36 lg:block xl:w-48"><SiteSearch mode="navbar" /></div>
+        <button type="button" data-testid="button-locale" onClick={() => setLocale(locale === "ar" ? "en" : "ar")} aria-label={t("التبديل إلى الإنجليزية", "Switch to Arabic")} className="flex h-9 min-w-10 items-center justify-center border border-[var(--line-soft)] px-2 text-[11px] font-bold tracking-widest text-foreground transition-colors hover:border-accent">{locale === "ar" ? "EN" : "عربي"}</button>
+        <button type="button" data-testid="button-theme" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? t("الوضع الفاتح", "Light mode") : t("الوضع الداكن", "Dark mode")} className="flex h-9 w-9 items-center justify-center border border-[var(--line-soft)] text-foreground transition-colors hover:border-accent">{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}</button>
+        <Link href="/contact" data-testid="link-consultation" className="site-button hidden h-10 items-center gap-3 px-5 text-xs font-bold xl:inline-flex">{t("احجز استشارة", "Book a consultation")} <ArrowUpLeft size={15} /></Link>
+        <button type="button" data-testid="button-menu" aria-expanded={open} aria-label={open ? t("إغلاق القائمة", "Close menu") : t("فتح القائمة", "Open menu")} onClick={() => setOpen(!open)} className="flex h-9 w-9 items-center justify-center border border-[var(--line-soft)] text-foreground lg:hidden">{open ? <X size={20} /> : <Menu size={20} />}</button>
       </div>
-
-      {/* Mobile Nav */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border shadow-lg py-4 px-4 flex flex-col gap-4">
-          <SiteSearch mode="mobile" className="mb-1" />
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "block py-3 px-4 rounded-md text-base font-medium transition-colors",
-                location === link.href ? "bg-accent/20 text-primary" : "text-foreground hover:bg-secondary"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Link href="/contact" className={cn("mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50", "bg-accent text-accent-foreground shadow hover:bg-accent/90 h-12 w-full")} onClick={() => setIsMobileMenuOpen(false)}>
-            احجز استشارة
-          </Link>
-        </div>
-      )}
-    </header>
-  );
+    </div>
+    {open && <nav aria-label={t("قائمة الجوال", "Mobile menu")} className="absolute inset-x-0 top-full max-h-[calc(100dvh-76px)] overflow-y-auto border-b border-[var(--line-soft)] bg-background px-5 py-6 shadow-2xl lg:hidden">
+      <SiteSearch mode="mobile" className="mb-5" onNavigate={() => setOpen(false)} />
+      {links.map((link, i) => <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="flex items-center justify-between border-b border-[var(--line-soft)] py-4 text-lg text-foreground"><span>{link.label}</span><span className="text-xs text-accent" dir="ltr">0{i + 1}</span></Link>)}
+      <Link href="/contact" data-testid="link-mobile-consultation" onClick={() => setOpen(false)} className="site-button mt-6 flex min-h-12 items-center justify-between px-5 text-sm font-bold">{t("احجز استشارة", "Book a consultation")} <ArrowUpLeft size={17} /></Link>
+    </nav>}
+  </header>;
 }
