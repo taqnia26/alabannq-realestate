@@ -86,8 +86,7 @@ export default function Home() {
 
         <div className="container relative z-10 px-4 flex flex-col items-center text-center mt-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight max-w-5xl">
-            {heroTitle} <br/>
-            <span className="text-accent">في مكة والرياض</span>
+            {heroTitle}
           </h1>
           {heroSubtitle && <p className="max-w-2xl text-lg text-white/90 md:text-xl">{heroSubtitle}</p>}
           <div className="mt-6 w-full max-w-3xl bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-2xl">
