@@ -52,7 +52,7 @@ export const articles: Article[] = [
     date: "2026-08-20",
     readTime: "4 دقائق قراءة",
     readTimeEn: "4 min read",
-    image: officialProperties[0]?.image || "https://alabannq.com/wp-content/uploads/2026/08/3-592x444.png",
+    image: officialProperties[0]?.image || "https://alabannq.com/wp-content/uploads/2026/08/3.png",
     author: "فريق العبنق العقارية",
     authorEn: "Alabnq Real Estate Team"
   },
@@ -130,7 +130,7 @@ export const articles: Article[] = [
     date: "2026-08-04",
     readTime: "5 دقائق قراءة",
     readTimeEn: "5 min read",
-    image: officialProperties[1]?.image || "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1-592x444.jpeg",
+    image: officialProperties[1]?.image || "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1.jpeg",
     author: "فريق العبنق العقارية",
     authorEn: "Alabnq Real Estate Team"
   }

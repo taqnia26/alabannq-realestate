@@ -6,7 +6,7 @@ import { usePreferences } from "@/lib/preferences";
 import { SiteSearch } from "@/components/SiteSearch";
 import { FeaturedSlider } from "@/components/FeaturedSlider";
 
-const heroSlides = ["/hero/drive-01.jpg", "/hero/drive-02.jpg", "/hero/drive-03.jpg", "/hero/drive-04.jpg", "/hero/drive-05.jpg", "/hero/drive-06.jpg"];
+const heroSlides = ["/hero/riyadh-kingdom.jpg", "/hero/riyadh-aerial.jpg", "/hero/riyadh-financial.jpg"];
 
 export default function Home() {
   const { data, isLoading, isError, refetch } = useSiteContent();
@@ -15,7 +15,7 @@ export default function Home() {
   const heroSubtitle = useLocalizedSiteValue("home.subtitle", "خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.", "Experience that builds trust. Services that create value.");
   const featuredHeading = useLocalizedSiteValue("home.propertiesHeading", "أحدث العروض المميزة", "Selected properties");
   const heroImage = useSiteValue("home.heroImage", "");
-  const aboutImage = useSiteValue("about.image", "/hero/drive-03.jpg");
+  const aboutImage = useSiteValue("about.image", "/hero/riyadh-financial.jpg");
   const intro = useLocalizedSiteValue("home.intro", "تعمل شركة العبنق العقارية في السوق العقاري بالمملكة، مستندة إلى خبرة ميدانية ممتدة وفهم متكامل لاحتياجات ملاك العقارات والمستثمرين ومتطلبات السوق.", "Alabnq Real Estate operates in the Kingdom's property market, drawing on extensive field experience and a thorough understanding of property owners, investors, and market needs.");
   const commitment = useLocalizedSiteValue("home.commitment", "نجاحنا لا يقاس بتقديم الخدمة فحسب، بل بقدرتنا على تقديمها بمهنية ووضوح، وبما يحقق مصلحة عملائنا ويحفظ حقوقهم.", "Our success is measured not merely by providing a service, but by delivering it with professionalism and clarity, protecting our clients' interests and rights.");
   const customerService = useLocalizedSiteValue("home.customerService", "تقديم خدمات عقارية احترافية ومتكاملة تستند إلى الخبرة والمعرفة بالسوق", "Providing professional, integrated real estate services grounded in experience and market knowledge.");
@@ -31,11 +31,11 @@ export default function Home() {
     <section aria-label={t("المشهد الرئيسي", "Introduction")} className="site-always-dark relative isolate flex min-h-[720px] items-end overflow-hidden bg-[#162127] text-[#eee8db] md:min-h-[min(860px,calc(100dvh-88px))]" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
       <div className="hero-frame absolute inset-0">
         {images.map((image, index) => <img key={image} src={image} alt="" fetchPriority={index === 0 ? "high" : "auto"} aria-hidden="true" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] ease-in-out ${index === active || !!heroImage ? "active opacity-100" : "opacity-0"}`} />)}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#121a1e] via-[#121a1e]/45 to-[#121a1e]/25" />
-        <div className="absolute inset-0 bg-gradient-to-l from-[#121a1e]/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#121a1e]/90 via-[#121a1e]/25 to-[#121a1e]/10" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#121a1e]/40 via-transparent to-transparent" />
       </div>
       <div className="site-container relative z-10 pb-16 pt-36 md:pb-20">
-        <div className="mb-9 flex items-center gap-3 text-[10px] font-bold tracking-[.26em] text-[#d8b675]"><span className="h-px w-8 bg-current" /> {t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</div>
+        <div className="mb-9 flex items-center gap-4 text-xl font-bold text-[#e4bd70] md:text-[1.75rem]"><span className="h-px w-10 bg-current" /> {t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</div>
         <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-24">
           <div className="site-reveal">
             <h1 data-testid="text-hero-title" className="site-display max-w-[870px] text-[clamp(2.8rem,5.8vw,6.8rem)] font-semibold text-[#f3eee4]">{heroTitle}</h1>
@@ -85,7 +85,7 @@ export default function Home() {
        </div>
     </section>
     <section className="site-always-dark relative isolate overflow-hidden bg-[#172329] py-24 text-[#f0ebdf] md:py-32">
-      <img src="/hero/drive-04.jpg" loading="lazy" alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+      <img src="/hero/riyadh-kingdom.jpg" loading="lazy" alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
       <div className="absolute inset-0 bg-gradient-to-l from-[#172329] via-[#172329]/90 to-[#172329]/60" />
       <div className="site-container relative grid gap-10 lg:grid-cols-2 lg:items-end">
          <div><span className="site-eyebrow">{t("عروض عقارية", "PROPERTY LISTINGS")}</span><h2 className="site-display mt-7 max-w-xl text-4xl md:text-6xl">{t("الخدمات العقارية المتكاملة", "Integrated real estate services")}</h2></div>

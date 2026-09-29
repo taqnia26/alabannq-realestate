@@ -6,7 +6,7 @@ import { usePreferences } from "@/lib/preferences";
 
 export function Footer() {
   const { t } = usePreferences();
-  const image = useSiteValue("footer.image", "/hero/drive-04.jpg");
+  const image = useSiteValue("footer.image", "/hero/riyadh-kingdom.jpg");
   const about = useLocalizedSiteValue("footer.about", "شركة العبنق العقارية: خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.", "Alabnq Real Estate: experience that builds trust, services that create value.");
   const address = useLocalizedSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع", "Makkah – Al-Awali – Sheikh Mohammed bin Manea Street");
   const phone = useSiteValue("contact.phone", "8002450000");
