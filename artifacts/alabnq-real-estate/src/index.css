@@ -147,6 +147,18 @@ html[lang="ar"] .site-display { letter-spacing: -.025em; line-height: 1.4; }
 .site-outline-button:hover { border-color: hsl(var(--accent)); transform: translateY(-2px); }
 .site-reveal { animation: site-rise .9s both cubic-bezier(.18,.75,.26,1); }
 @keyframes site-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.motion-ready [data-scroll-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity .85s ease, transform .85s cubic-bezier(.2,.75,.25,1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.motion-ready [data-scroll-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.home-metric strong { transition: color .35s ease; }
+.home-metric:hover strong { color: hsl(var(--accent)); }
 .hero-frame img.active { animation: hero-approach 8s ease-out both; }
 @keyframes hero-approach { from { transform: scale(1.08); } to { transform: scale(1); } }
 .site-progress { transform-origin: left; animation: progress 6.5s linear forwards; }
@@ -203,7 +215,7 @@ html:not(.dark) .site-always-dark { --foreground: 42 28% 91%; --muted-foreground
 }
 
 .footer-light-sweep {
-  background: linear-gradient(105deg, transparent 0%, rgba(255, 228, 92, 0.9) 48%, transparent 100%);
+  background: linear-gradient(105deg, transparent 0%, rgba(216, 182, 117, 0.35) 48%, transparent 100%);
   filter: blur(22px);
   animation: footer-light-sweep 12s ease-in-out infinite;
   pointer-events: none;
@@ -211,6 +223,7 @@ html:not(.dark) .site-always-dark { --foreground: 42 28% 91%; --muted-foreground
 }
 
 .footer-glow {
+  background: radial-gradient(circle, rgba(216, 182, 117, .13), transparent 68%);
   animation: footer-glow-drift 9s ease-in-out infinite;
   will-change: transform, opacity;
 }
@@ -218,6 +231,34 @@ html:not(.dark) .site-always-dark { --foreground: 42 28% 91%; --muted-foreground
 .footer-glow--two {
   animation-delay: -4.5s;
 }
+
+@keyframes footer-rule-travel {
+  from { background-position: 130% 0; }
+  to { background-position: -30% 0; }
+}
+
+.footer-cta-motion::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  inset-inline: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d8b675, transparent) no-repeat;
+  background-size: 30% 100%;
+  animation: footer-rule-travel 11s linear infinite;
+  pointer-events: none;
+}
+
+.footer-cta-link svg { transition: transform .3s ease; }
+.footer-cta-link:hover svg { transform: translate(-3px, -3px); }
+.motion-ready .footer-cta-link.is-visible:hover { transform: translateY(-3px); }
+.footer-nav-link {
+  background: linear-gradient(#d8b675, #d8b675) no-repeat 100% 100%;
+  background-size: 0 1px;
+  transition: color .3s ease, background-size .35s ease;
+}
+.footer-nav-link:hover { background-size: 100% 1px; }
+html[dir="ltr"] .footer-nav-link { background-position: 0 100%; }
 
 @keyframes showcase-image-drift {
   0%, 100% { transform: scale(1.06) translate3d(0, 0, 0); }
@@ -241,7 +282,7 @@ html:not(.dark) .site-always-dark { --foreground: 42 28% 91%; --muted-foreground
 }
 
 .value-showcase-sheen {
-  background: linear-gradient(105deg, transparent 0%, rgba(255, 228, 92, 0.85) 50%, transparent 100%);
+  background: linear-gradient(105deg, transparent 0%, rgba(216, 182, 117, 0.3) 50%, transparent 100%);
   filter: blur(18px);
   animation: showcase-sheen 10s ease-in-out infinite;
   pointer-events: none;
@@ -256,7 +297,11 @@ html:not(.dark) .site-always-dark { --foreground: 42 28% 91%; --muted-foreground
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .site-reveal, .hero-frame img.active, .site-progress { animation: none !important; }
+  .motion-ready [data-scroll-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
   .site-image, .site-link-arrow, .site-button, .site-outline-button { transition-duration: .01ms !important; }
+  .footer-cta-motion::after { animation: none; }
+  .footer-cta-link svg, .footer-nav-link, .home-metric strong { transition: none; }
+  .motion-ready .footer-cta-link.is-visible:hover, .footer-cta-link:hover svg { transform: none; }
   .footer-bg-motion,
   .footer-light-sweep,
   .footer-glow,

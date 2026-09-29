@@ -6,6 +6,7 @@ import { usePreferences } from "@/lib/preferences";
 import { SiteSearch } from "@/components/SiteSearch";
 import { FeaturedSlider } from "@/components/FeaturedSlider";
 import { CityGallerySlider } from "@/components/CityGallerySlider";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const heroSlides = [
   "/hero/riyadh-kingdom.jpg",
@@ -16,6 +17,7 @@ const heroSlides = [
 ];
 
 export default function Home() {
+  const mainRef = useScrollReveal<HTMLElement>();
   const { data, isLoading, isError, refetch } = useSiteContent();
   const { t } = usePreferences();
   const heroTitle = useLocalizedSiteValue("home.title", "خبرة عقارية.. وخدمات متكاملة", "Real estate expertise. Complete service.");
@@ -34,7 +36,7 @@ export default function Home() {
     return () => window.clearInterval(timer);
   }, [heroImage, paused]);
   const images = heroImage ? [heroImage] : heroSlides;
-  return <main className="site-shell flex-1">
+  return <main ref={mainRef} className="site-shell flex-1">
     <section aria-label={t("المشهد الرئيسي", "Introduction")} className="site-always-dark relative isolate flex min-h-[720px] items-end overflow-hidden bg-[#162127] text-[#eee8db] md:min-h-[min(860px,calc(100dvh-88px))]" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
       <div className="hero-frame absolute inset-0">
         {images.map((image, index) => <img key={image} src={image} alt="" loading={index === 0 ? "eager" : "lazy"} fetchPriority={index === 0 ? "high" : "low"} aria-hidden="true" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] ease-in-out ${image.includes("/hero/makkah-") ? "md:object-[center_15%]" : ""} ${index === active || !!heroImage ? "active opacity-100" : "opacity-0"}`} />)}
@@ -64,11 +66,11 @@ export default function Home() {
     </section>
 
     <section id="introduction" className="site-container grid gap-12 py-24 md:py-36 lg:grid-cols-[.88fr_1.12fr] lg:gap-28">
-      <div className="relative order-2 lg:order-1">
+      <div data-scroll-reveal className="relative order-2 lg:order-1">
         <div className="group relative aspect-[4/5] overflow-hidden bg-secondary"><img src={aboutImage} alt={t("مشهد معماري", "Architectural scene")} loading="lazy" className="site-image h-full w-full object-cover" /><div className="pointer-events-none absolute inset-5 border border-[#e4c187]/50" /></div>
          <span className="absolute bottom-8 end-8 bg-[#142127] px-6 py-4 text-[11px] font-bold tracking-wider text-[#d8b675]">{t("الخدمات العقارية", "REAL ESTATE SERVICES")}</span>
       </div>
-      <div className="order-1 flex flex-col justify-center lg:order-2">
+      <div data-scroll-reveal className="order-1 flex flex-col justify-center lg:order-2" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
         <span className="site-eyebrow">{t("من نحن", "OUR COMPANY")}</span>
          <h2 className="site-display mt-7 max-w-[660px] text-[clamp(2.5rem,4vw,5rem)]">{t("خبرة ميدانية وفهم متكامل", "Field experience and comprehensive understanding")}</h2>
         <p className="mt-9 max-w-xl text-base leading-[2.3] text-muted-foreground">{intro}</p>
@@ -84,7 +86,7 @@ export default function Home() {
            { valueAr: "+300 ألف", valueEn: "300,000+", labelAr: "مساحات", labelEn: "Areas" },
            { valueAr: "+10 آلاف عميل", valueEn: "10,000+ clients", labelAr: "قاعدة عملاء", labelEn: "Client base" },
            { valueAr: "6 أيام، 12 ساعة", valueEn: "6 days, 12 hours", labelAr: "أوقات العمل", labelEn: "Working hours" },
-         ].map((metric, index) => <div key={metric.labelEn} className="border-s border-accent/50 ps-4 md:ps-6">
+          ].map((metric, index) => <div key={metric.labelEn} data-scroll-reveal className="home-metric border-s border-accent/50 ps-4 md:ps-6" style={{ "--reveal-delay": `${index * 85}ms` } as React.CSSProperties}>
            <span className="block text-[10px] tracking-widest text-accent" dir="ltr">0{index + 1}</span>
            <strong className="mt-3 block text-xl font-semibold leading-relaxed text-foreground md:text-2xl">{t(metric.valueAr, metric.valueEn)}</strong>
            <span className="mt-1 block text-xs text-muted-foreground">{t(metric.labelAr, metric.labelEn)}</span>
@@ -92,14 +94,16 @@ export default function Home() {
        </div>
     </section>
     <section className="site-always-dark relative isolate overflow-hidden bg-[#172329] py-24 text-[#f0ebdf] md:py-32">
-      <img src="/hero/riyadh-kingdom.jpg" loading="lazy" alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+      <img src="/hero/riyadh-kingdom.jpg" loading="lazy" alt="" className="value-showcase-image absolute inset-0 h-full w-full object-cover opacity-20" />
       <div className="absolute inset-0 bg-gradient-to-l from-[#172329] via-[#172329]/90 to-[#172329]/60" />
+      <div aria-hidden="true" className="value-showcase-glow pointer-events-none absolute -end-32 -top-44 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(216,182,117,.15),transparent_68%)]" />
+      <div aria-hidden="true" className="value-showcase-sheen absolute -inset-y-1/2 start-[-25%] w-[15%]" />
       <div className="site-container relative grid gap-10 lg:grid-cols-2 lg:items-end">
-         <div><span className="site-eyebrow">{t("عروض عقارية", "PROPERTY LISTINGS")}</span><h2 className="site-display mt-7 max-w-xl text-4xl md:text-6xl">{t("الخدمات العقارية المتكاملة", "Integrated real estate services")}</h2></div>
-        <div className="lg:justify-self-end"><p className="max-w-md text-sm leading-9 text-[#eee8db]/75">{customerService}</p><Link href="/properties?view=map" className="mt-7 inline-flex items-center gap-3 border-b border-[#d8b675] pb-3 text-xs font-bold text-[#d8b675]"><MapPin size={17} /> {t("استعرض خريطة العقارات", "Explore the property map")} <ArrowUpLeft size={17} /></Link></div>
+          <div data-scroll-reveal><span className="site-eyebrow">{t("عروض عقارية", "PROPERTY LISTINGS")}</span><h2 className="site-display mt-7 max-w-xl text-4xl md:text-6xl">{t("الخدمات العقارية المتكاملة", "Integrated real estate services")}</h2></div>
+         <div data-scroll-reveal className="lg:justify-self-end" style={{ "--reveal-delay": "120ms" } as React.CSSProperties}><p className="max-w-md text-sm leading-9 text-[#eee8db]/75">{customerService}</p><Link href="/properties?view=map" className="mt-7 inline-flex items-center gap-3 border-b border-[#d8b675] pb-3 text-xs font-bold text-[#d8b675]"><MapPin size={17} /> {t("استعرض خريطة العقارات", "Explore the property map")} <ArrowUpLeft size={17} /></Link></div>
       </div>
     </section>
     {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل العقارات المميزة.", "Could not load featured properties.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <FeaturedSlider properties={(data?.properties ?? []).filter(property => property.featured)} heading={featuredHeading} />}
-    <CityGallerySlider />
+    <div data-scroll-reveal><CityGallerySlider /></div>
   </main>;
 }
