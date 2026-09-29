@@ -5,7 +5,7 @@ import { useSiteValue } from "@/data/siteContent";
 
 export function Footer() {
   const image = useSiteValue("footer.image", "/hero/drive-04.jpg");
-  const about = useSiteValue("footer.about", "العبنق عقارات مكتب متخصص في إدارة وتشغيل الأملاك والتسويق العقاري نيابةً عن الملاك.");
+  const about = useSiteValue("footer.about", "شركة العبنق العقارية: خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.");
   const address = useSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع");
   const phone = useSiteValue("contact.phone", "8002450000");
   const email = useSiteValue("footer.email", "info@alabnq.com");
@@ -91,12 +91,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/15 pt-8 text-sm text-white/60 md:flex-row">
+        <div className="border-t border-white/15 pt-8 text-sm text-white/60">
           <p>© {new Date().getFullYear()} شركة العبنق العقارية. جميع الحقوق محفوظة.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="transition-colors hover:text-accent">سياسة الخصوصية</a>
-            <a href="#" className="transition-colors hover:text-accent">الشروط والأحكام</a>
-          </div>
         </div>
       </div>
     </footer>

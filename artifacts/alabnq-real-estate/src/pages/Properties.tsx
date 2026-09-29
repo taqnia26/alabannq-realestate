@@ -52,7 +52,7 @@ export default function Properties() {
   const [sortBy, setSortBy] = useState<string>('latest');
   
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>(urlParams.get('view') === 'map' ? 'map' : 'grid');
 
   const filteredProperties = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase();

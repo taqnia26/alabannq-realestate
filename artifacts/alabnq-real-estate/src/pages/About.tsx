@@ -1,13 +1,12 @@
-import { MapPin, CheckCircle2, Building2 } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { useSiteValue } from "@/data/siteContent";
 
 export default function About() {
-  const heading = useSiteValue("about.heading", "العبنق عقارات لإدارة الأملاك والتسويق العقاري");
-  const intro = useSiteValue("about.intro", "مكتب فهاد سعد منصور السبيعي لإدارة الأملاك والتسويق العقاري في مكة المكرمة، نقدّم خدمات عملية تساعد الملاك والباحثين عن العقار.");
+  const heading = useSiteValue("about.heading", "شركة العبنق العقارية");
+  const intro = useSiteValue("about.intro", "على مدى أكثر من عشرين عامًا، تعمل شركة العبنق العقارية في السوق العقاري بالمملكة، مستندة إلى خبرة ميدانية ممتدة وفهم متكامل لاحتياجات ملاك العقارات والمستثمرين ومتطلبات السوق.");
   const image = useSiteValue("about.image", "/hero/alabnq-company-exterior.png");
-  const story = useSiteValue("about.story", "العبنق عقارات مكتب متخصص في استلام وإدارة وتشغيل العقارات والأراضي داخل مكة المكرمة، ويعمل كشريك استراتيجي للمالكين الراغبين في تحقيق أقصى قدر من الفوائد من استثماراتهم العقارية.");
-  const servicesHeading = useSiteValue("about.servicesHeading", "خدمات متكاملة للمالك والعميل");
+  const story = useSiteValue("about.story", "تقدم الشركة مجموعة من الخدمات العقارية المتخصصة التي تشمل التسويق العقاري، والمزادات العقارية، وإدارة الأملاك، وإدارة المرافق، والمتابعة القانونية والإدارية وغيرها من الخدمات العقارية، وفق منهجية عمل تهدف إلى رفع كفاءة الأصول، والمحافظة على قيمتها، وتحسين إدارتها وتشغيلها.");
+  const servicesHeading = useSiteValue("about.servicesHeading", "خدمات الشركة");
   return (
     <main className="flex-1 w-full bg-background pt-24">
       
@@ -49,72 +48,58 @@ export default function About() {
               {story}
             </p>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              نسهّل إدارة الأملاك والتسويق العقاري داخل مكة المكرمة من خلال التواصل السلس، وتنسيق إجراءات التأجير والبيع، وإعداد التقارير المالية وفق احتياجات المالك.
+              ونؤمن في العبنق العقارية بأن نجاحنا لا يقاس بتقديم الخدمة فحسب، بل بقدرتنا على تقديمها بمهنية ووضوح، وبما يحقق مصلحة عملائنا ويحفظ حقوقهم، في إطار من الالتزام بالأنظمة واللوائح المعمول بها في المملكة.
             </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-8 h-8 text-accent shrink-0" />
-                <div>
-                  <h4 className="font-bold text-primary mb-1">خدمة عملاء مستمرة</h4>
-                  <p className="text-sm text-muted-foreground">فريق خدمة يعمل على مدار الأسبوع</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-8 h-8 text-accent shrink-0" />
-                <div>
-                  <h4 className="font-bold text-primary mb-1">تسويق أكثر فاعلية</h4>
-                  <p className="text-sm text-muted-foreground">قاعدة عملاء تساعد على سرعة الوصول</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-8 h-8 text-accent shrink-0" />
-                <div>
-                  <h4 className="font-bold text-primary mb-1">تقارير مالية مخصصة</h4>
-                  <p className="text-sm text-muted-foreground">حسب رغبة المالك ومواعيد التحويل</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-8 h-8 text-accent shrink-0" />
-                <div>
-                  <h4 className="font-bold text-primary mb-1">مرونة وسهولة</h4>
-                  <p className="text-sm text-muted-foreground">في التعاقد وإضافة البنود أو إلغائها</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Leadership / Team (Placeholder) */}
+      <section className="container mx-auto px-4 pb-24">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-2xl border border-border bg-secondary p-8 md:p-10">
+            <h2 className="mb-4 text-2xl font-bold text-primary">رؤيتنا</h2>
+            <p className="leading-loose text-primary/75">أن تكون شركة العبنق العقارية من الشركات العقارية الموثوقة والرائدة في تقديم الخدمات العقارية المتكاملة بالمملكة، وأن نكون خيارًا مفضلًا لملاك العقارات والمستثمرين الباحثين عن الخبرة والمهنية وجودة الخدمة.</p>
+          </div>
+          <div className="rounded-2xl border border-border bg-secondary p-8 md:p-10">
+            <h2 className="mb-4 text-2xl font-bold text-primary">رسالتنا</h2>
+            <p className="leading-loose text-primary/75">تقديم خدمات عقارية احترافية ومتكاملة تستند إلى الخبرة والمعرفة بالسوق، وتلتزم بالشفافية والامتثال للأنظمة واللوائح، بما يسهم في رفع كفاءة الأصول العقارية، وتعظيم قيمتها، وتوفير تجربة موثوقة لعملائنا وشركائنا.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-primary text-white py-24">
         <div className="container mx-auto px-4 text-center">
-          <div className="inline-flex items-center justify-center p-4 bg-white/5 rounded-full mb-8">
-            <Building2 className="w-12 h-12 text-accent" />
-          </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-6">{servicesHeading}</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed mb-16">
-            فريق من الكفاءات في مختلف الإدارات يقدّم متابعة أسرع وخدمة أكثر سلاسة للملاك والمستأجرين.
+            خدمات عقارية متكاملة تغطي جوانب متعددة من دورة العقار، من التسويق والمزادات إلى إدارة الأملاك والمرافق والمتابعة القانونية والإدارية.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition-colors">
-                <h3 className="text-xl font-bold text-accent mb-3">إدارة وتشغيل الأملاك</h3>
-              <p className="text-white/70 text-sm leading-relaxed">
-                  متابعة احتياجات العقار والتواصل مع الملاك والمستأجرين بصورة منظمة.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
             <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition-colors">
                 <h3 className="text-xl font-bold text-accent mb-3">التسويق العقاري</h3>
               <p className="text-white/70 text-sm leading-relaxed">
-                  تسويق عقارات البيع والإيجار ومتابعة آراء العملاء والمهتمين بالعروض.
+                  دراسة العقار وتحديد خصائصه، وإعداد خطته التسويقية، والوصول إلى الفئات المستهدفة من المشترين والمستثمرين.
               </p>
             </div>
             <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition-colors">
-                <h3 className="text-xl font-bold text-accent mb-3">التقارير والمتابعة المالية</h3>
+                <h3 className="text-xl font-bold text-accent mb-3">المزادات العقارية</h3>
               <p className="text-white/70 text-sm leading-relaxed">
-                  إعداد تقارير مالية ومتابعة تحويل الإيجارات وفق المواعيد التي يحددها المالك.
+                  دراسة العقار وتجهيزه، والتسويق واستقطاب المهتمين، وإدارة إجراءات المزايدة والترسية.
               </p>
+            </div>
+            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition-colors">
+                <h3 className="text-xl font-bold text-accent mb-3">إدارة الأملاك العقارية</h3>
+              <p className="text-white/70 text-sm leading-relaxed">
+                  إدارة العقار ومتابعة تفاصيله التشغيلية والمالية والإيجارية.
+              </p>
+            </div>
+            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition-colors">
+              <h3 className="text-xl font-bold text-accent mb-3">إدارة المرافق العقارية</h3>
+              <p className="text-white/70 text-sm leading-relaxed">إعداد ومتابعة خطط الصيانة الوقائية، والإشراف على الأعمال الفنية والتشغيلية، والمحافظة على جاهزية العقار ومرافقه.</p>
+            </div>
+            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition-colors">
+              <h3 className="text-xl font-bold text-accent mb-3">المتابعة القانونية والإدارية</h3>
+              <p className="text-white/70 text-sm leading-relaxed">متابعة المطالبات والإجراءات القضائية والتنفيذية المتعلقة بحقوق العقار، وفق الأنظمة ونطاق التكليف.</p>
             </div>
           </div>
         </div>

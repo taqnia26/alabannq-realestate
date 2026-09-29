@@ -28,7 +28,7 @@ export default function Contact() {
   const address = useSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع");
   const phone = useSiteValue("contact.phone", "8002450000");
   const heading = useSiteValue("contact.heading", "تواصل معنا");
-  const intro = useSiteValue("contact.intro", "تواصل مع العبنق عقارات للاستفسار عن إدارة الأملاك، أو التسويق العقاري، أو العروض المتاحة.");
+  const intro = useSiteValue("contact.intro", "شركة العبنق العقارية — شريككم في الخدمات العقارية.");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);

@@ -20,15 +20,16 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur shadow-sm">
-      <div className="container mx-auto px-4 h-24 flex items-center justify-between">
+      <div className="container mx-auto px-4 min-h-24 flex items-center justify-between gap-4">
         
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group" aria-label="العودة إلى الرئيسية">
-          <BrandLogo className="h-[72px] w-20 rounded-md shadow-sm" />
+        <Link href="/" className="flex shrink-0 items-center gap-3 group" aria-label="العودة إلى الرئيسية">
+          <BrandLogo className="h-20 w-20 rounded-md shadow-sm ring-1 ring-accent/30" />
+          <span className="text-base font-extrabold leading-tight text-primary md:hidden lg:block lg:text-lg">شركة العبنق<br />العقارية</span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-5 xl:gap-7">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -64,7 +65,7 @@ export function Navbar() {
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-24 left-0 w-full bg-background border-b border-border shadow-lg py-4 px-4 flex flex-col gap-4">
+        <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border shadow-lg py-4 px-4 flex flex-col gap-4">
           <SiteSearch mode="mobile" className="mb-1" />
           {links.map((link) => (
             <Link

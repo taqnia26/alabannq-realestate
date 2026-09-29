@@ -1,0 +1,30 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "aP4yRZ_wFWsdQBNmJBxV2"
+uri = "file://screenshots/alabnq-home-desktop.jpg"
+type = "image"
+title = "الرئيسية بعد تحديث المحتوى — ديسكتوب"
+description = "لقطة للصفحة الرئيسية بالهوية والنصوص المعتمدة."
+logical_id = "81121c8a-5ea0-450e-969e-0cc4e659df36"
+content_hash = "sha256:b844323117bc6ecaee8cdcad290105af4a3f0397ed2f761e0c5bbd33b197db2c"
+size = 388732
+mtime_ms = 1790680829128
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/81121c8a-5ea0-450e-969e-0cc4e659df36/7967a30c-1b56-4b32-8383-f34c041d8361"
+storage_version_token = "1790680850744676"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "ANWVqIJJ9UcHK49BZKgen"
+uri = "file://screenshots/alabnq-home-mobile.jpg"
+type = "image"
+title = "الرئيسية بعد تحديث المحتوى — جوال"
+description = "لقطة متجاوبة للصفحة الرئيسية على شاشة الجوال."
+logical_id = "41f1f2d4-d8b8-44b7-937b-ca5964cbf2f1"
+content_hash = "sha256:4d8a33e98fa71ffaf221423b9b6f25cf7033c56bf2085d80d9812581cefda735"
+size = 144431
+mtime_ms = 1790680832260
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/41f1f2d4-d8b8-44b7-937b-ca5964cbf2f1/27833a2d-bebf-4ef3-a6f5-88b1ff959eb4"
+storage_version_token = "1790680852061128"
+content_type = "image/jpeg"

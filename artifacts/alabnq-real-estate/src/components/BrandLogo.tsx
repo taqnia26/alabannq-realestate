@@ -9,7 +9,7 @@ type BrandLogoProps = {
 export function BrandLogo({
   className,
   imageClassName,
-  label = "العبنق العقارية",
+  label = "شركة العبنق العقارية",
 }: BrandLogoProps) {
   return (
     <span
