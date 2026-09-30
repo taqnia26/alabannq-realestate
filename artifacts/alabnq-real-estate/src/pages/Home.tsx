@@ -5,7 +5,8 @@ import { useSiteContent, useLocalizedSiteValue, useSiteValue } from "@/data/site
 import { usePreferences } from "@/lib/preferences";
 import { SiteSearch } from "@/components/SiteSearch";
 import { FeaturedSlider } from "@/components/FeaturedSlider";
-import { CityGallerySlider } from "@/components/CityGallerySlider";
+import { ArticleSlider } from "@/components/ArticleSlider";
+import { HomeMetrics } from "@/components/HomeMetrics";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const heroSlides = [
@@ -23,6 +24,7 @@ export default function Home() {
   const heroTitle = useLocalizedSiteValue("home.title", "خبرة عقارية.. وخدمات متكاملة", "Real estate expertise. Complete service.");
   const heroSubtitle = useLocalizedSiteValue("home.subtitle", "خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.", "Experience that builds trust. Services that create value.");
   const featuredHeading = useLocalizedSiteValue("home.propertiesHeading", "أحدث العروض المميزة", "Selected properties");
+  const articlesHeading = useLocalizedSiteValue("home.articlesHeading", "الأخبار والمقالات", "News & articles");
   const heroImage = useSiteValue("home.heroImage", "");
   const aboutImage = useSiteValue("about.image", "/hero/riyadh-financial.jpg");
   const intro = useLocalizedSiteValue("home.intro", "تعمل شركة العبنق العقارية في السوق العقاري بالمملكة، مستندة إلى خبرة ميدانية ممتدة وفهم متكامل لاحتياجات ملاك العقارات والمستثمرين ومتطلبات السوق.", "Alabnq Real Estate operates in the Kingdom's property market, drawing on extensive field experience and a thorough understanding of property owners, investors, and market needs.");
@@ -76,22 +78,11 @@ export default function Home() {
         <p className="mt-9 max-w-xl text-base leading-[2.3] text-muted-foreground">{intro}</p>
         <p className="mt-7 max-w-xl border-s border-accent ps-6 text-sm leading-[2.2] text-muted-foreground">{commitment}</p>
         <div className="mt-12 grid gap-4 border-t border-[var(--line-soft)] pt-8 sm:grid-cols-2">
-          {[t("التسويق العقاري", "Property marketing"), t("المزادات العقارية", "Property auctions"), t("إدارة الأملاك", "Property management"), t("إدارة المرافق", "Facilities management"), t("المتابعة القانونية والإدارية", "Legal and administrative follow-up")].map((service, index) => <div key={index} className="flex items-center gap-3 text-sm font-semibold"><span className="text-xs text-accent" dir="ltr">0{index + 1}</span><span>{service}</span></div>)}
+          {[t("التسويق العقاري", "Property marketing"), t("المزادات العقارية", "Property auctions"), t("إدارة الأملاك", "Property management"), t("إدارة المرافق", "Facilities management"), t("المتابعة القانونية والإدارية", "Legal and administrative follow-up"), t("إدارة أملاك متكاملة", "Comprehensive property management")].map((service, index) => <div key={index} className="flex items-center gap-3 text-sm font-semibold"><span className="text-xs text-accent" dir="ltr">0{index + 1}</span><span>{service}</span></div>)}
         </div>
         <Link href="/about" className="site-link-arrow mt-11">{t("تعرّف على الشركة", "Meet the company")} <ArrowUpLeft size={17} /></Link>
       </div>
-       <div className="order-3 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-[var(--line-soft)] pt-9 lg:col-span-2 lg:grid-cols-4 lg:gap-x-10 lg:pt-12">
-         {[
-           { valueAr: "+100 مليون", valueEn: "100+ million", labelAr: "مبيعاتنا", labelEn: "Sales" },
-           { valueAr: "+300 ألف", valueEn: "300,000+", labelAr: "مساحات", labelEn: "Areas" },
-           { valueAr: "+10 آلاف عميل", valueEn: "10,000+ clients", labelAr: "قاعدة عملاء", labelEn: "Client base" },
-           { valueAr: "6 أيام، 12 ساعة", valueEn: "6 days, 12 hours", labelAr: "أوقات العمل", labelEn: "Working hours" },
-          ].map((metric, index) => <div key={metric.labelEn} data-scroll-reveal className="home-metric border-s border-accent/50 ps-4 md:ps-6" style={{ "--reveal-delay": `${index * 85}ms` } as React.CSSProperties}>
-           <span className="block text-[10px] tracking-widest text-accent" dir="ltr">0{index + 1}</span>
-           <strong className="mt-3 block text-xl font-semibold leading-relaxed text-foreground md:text-2xl">{t(metric.valueAr, metric.valueEn)}</strong>
-           <span className="mt-1 block text-xs text-muted-foreground">{t(metric.labelAr, metric.labelEn)}</span>
-         </div>)}
-       </div>
+       <HomeMetrics />
     </section>
     <section className="site-always-dark relative isolate overflow-hidden bg-[#172329] py-24 text-[#f0ebdf] md:py-32">
       <img src="/hero/riyadh-kingdom.jpg" loading="lazy" alt="" className="value-showcase-image absolute inset-0 h-full w-full object-cover opacity-20" />
@@ -104,6 +95,6 @@ export default function Home() {
       </div>
     </section>
     {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل العقارات المميزة.", "Could not load featured properties.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <FeaturedSlider properties={(data?.properties ?? []).filter(property => property.featured)} heading={featuredHeading} />}
-    <div data-scroll-reveal><CityGallerySlider /></div>
+    {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل الأخبار والمقالات.", "Could not load news and articles.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <div className="site-reveal"><ArticleSlider articles={[...(data?.articles ?? [])].sort((a, b) => b.date.localeCompare(a.date))} heading={articlesHeading} /></div>}
   </main>;
 }
