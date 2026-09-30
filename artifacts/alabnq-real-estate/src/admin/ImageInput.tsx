@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { ImagePlus, Trash2 } from 'lucide-react';
 
 const MAX_SIZE = 8 * 1024 * 1024;
-const TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const pendingUploads = new Set<string>();
 
 async function jsonResponse<T>(response: Response): Promise<T> {
   const body = await response.json().catch(() => ({}));
@@ -12,24 +13,28 @@ async function jsonResponse<T>(response: Response): Promise<T> {
 
 export async function uploadImage(file: File): Promise<string> {
   if (!TYPES.includes(file.type) || file.size < 1 || file.size > MAX_SIZE) {
-    throw new Error('اختر صورة JPG أو PNG أو WebP أو GIF بحجم لا يتجاوز 8 ميغابايت.');
+    throw new Error('اختر صورة JPG أو PNG أو WebP بحجم لا يتجاوز 8 ميغابايت.');
   }
-  const { uploadURL, imageURL } = await jsonResponse<{ uploadURL: string; imageURL: string }>(
+  const { imageURL } = await jsonResponse<{ imageURL: string }>(
     await fetch('/api/admin/media/images', {
-      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type }),
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/octet-stream' },
+      body: file,
     }),
   );
-  const uploaded = await fetch(uploadURL, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
-  if (!uploaded.ok) throw new Error('تعذر إرسال الصورة إلى التخزين. حاول مجددًا.');
   return imageURL;
 }
 
-function discardUploaded(url: string) {
+async function discardUploaded(url: string) {
   const match = /^\/api\/media\/images\/([0-9a-f-]{36})$/i.exec(url);
-  if (match) void fetch(`/api/admin/media/images/${match[1]}`, {
+  if (match) await fetch(`/api/admin/media/images/${match[1]}`, {
     method: 'DELETE', credentials: 'include',
-  }).catch(() => { /* a referenced image cannot be removed; the server protects it */ });
+  }).then(response => {
+    if (response.ok || response.status === 409) pendingUploads.delete(url);
+  }).catch(() => { /* Keep it in the pending set for a later cleanup attempt. */ });
+}
+
+export async function discardPendingImages() {
+  await Promise.all([...pendingUploads].map(discardUploaded));
 }
 
 export function ImageInput({ label, value, onChange, onBusyChange, multiple = false, id }: {
@@ -49,6 +54,7 @@ export function ImageInput({ label, value, onChange, onBusyChange, multiple = fa
       for (const file of files) {
         const url = await uploadImage(file);
         uploads.current.add(url);
+        pendingUploads.add(url);
         onChange(url, 'add');
       }
     } catch (err) {
@@ -70,7 +76,7 @@ export function ImageInput({ label, value, onChange, onBusyChange, multiple = fa
     <label className="ad-button ad-button-plain ad-image-picker" htmlFor={id}><ImagePlus size={16} />{busy ? 'جارٍ رفع الصور...' : multiple ? 'رفع صور من الجهاز' : 'رفع صورة من الجهاز'}</label>
     <input id={id} type="file" accept={TYPES.join(',')} multiple={multiple} onChange={e => void change(e)}
       disabled={busy} className="ad-visually-hidden" />
-    <small>JPG أو PNG أو WebP أو GIF · الحد الأقصى 8 ميغابايت لكل صورة</small>
+    <small>JPG أو PNG أو WebP · الحد الأقصى 8 ميغابايت لكل صورة</small>
     {error && <p role="alert" className="ad-form-error">{error}</p>}
   </div>;
 }

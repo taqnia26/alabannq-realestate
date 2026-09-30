@@ -1,7 +1,4 @@
-import { useEffect, useLayoutEffect, type ReactNode } from 'react';
-import { ClerkProvider, SignIn, SignUp, useClerk, useUser } from '@clerk/react';
-import { publishableKeyFromHost } from '@clerk/react/internal';
-import { shadcn } from '@clerk/themes';
+import { useEffect, useLayoutEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -30,36 +27,73 @@ import Contact from '@/pages/Contact';
 import Articles from '@/pages/Articles';
 import ArticleDetail from '@/pages/ArticleDetail';
 import Dashboard from '@/admin/Dashboard';
+import { discardPendingImages } from '@/admin/ImageInput';
 
 const queryClient = new QueryClient();
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
-const clerkPubKey = publishableKeyFromHost(window.location.hostname, import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
-const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
-function stripBase(path: string): string {
-  return basePath && path.startsWith(basePath) ? path.slice(basePath.length) || '/' : path;
-}
-
 function AdminRoute() {
-  const { t, locale } = usePreferences();
-  const { isLoaded, isSignedIn, user } = useUser();
-  const { signOut } = useClerk();
-  if (!isLoaded) return <main className="min-h-screen grid place-items-center">{t('جارٍ التحقق من الحساب…', 'Checking your account…')}</main>;
-  if (!isSignedIn) return <AuthScreen signUp={false} />;
-  const email = user.primaryEmailAddress;
-  if (email?.emailAddress.toLowerCase() !== 'info@alabannaq.com' || email.verification?.status !== 'verified') {
-    return <main className="min-h-screen grid place-items-center p-6 text-center" dir={locale === 'ar' ? 'rtl' : 'ltr'}><div><h1 className="text-2xl font-bold mb-4">{t('غير مصرح بالدخول', 'Access denied')}</h1><p>{t('هذا الحساب ليس حساب مدير الموقع.', 'This account is not a site administrator.')}</p><button className="mt-6 underline" onClick={() => signOut({ redirectUrl: basePath || '/' })}>{t('تسجيل الخروج', 'Sign out')}</button></div></main>;
-  }
-  return <Dashboard onLogout={() => void signOut({ redirectUrl: basePath || '/' })} />;
+  const { t } = usePreferences();
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/auth/session', { credentials: 'include', signal: controller.signal })
+      .then(response => { if (response.status === 401) return false; if (!response.ok) throw new Error(); return true; })
+      .then(setAuthorized)
+      .catch(() => { if (!controller.signal.aborted) setError(t('تعذر التحقق من الجلسة. أعد تحميل الصفحة.', 'Could not check your session. Reload the page.')); });
+    return () => controller.abort();
+  }, []);
+  if (error) return <main role="alert" className="min-h-screen grid place-items-center">{error}</main>;
+  if (authorized === null) return <main className="min-h-screen grid place-items-center">{t('جارٍ التحقق من الحساب…', 'Checking your account…')}</main>;
+  if (!authorized) return <AuthScreen onSuccess={() => setAuthorized(true)} />;
+  const logout = async () => {
+    await discardPendingImages();
+    const response = await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    if (!response.ok) { setError(t('تعذر تسجيل الخروج. حاول مجددًا.', 'Could not sign out. Try again.')); return; }
+    queryClient.clear();
+    setAuthorized(false);
+  };
+  return <Dashboard onLogout={() => void logout()} />;
 }
 
-function AuthScreen({ signUp }: { signUp: boolean }) {
+function AuthScreen({ onSuccess }: { onSuccess?: () => void }) {
   const { t, locale } = usePreferences();
+  const [, setLocation] = useLocation();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setBusy(true); setError('');
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.get('email'), password: data.get('password') }),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        setError(body.error || t('تعذر تسجيل الدخول.', 'Could not sign in.'));
+        return;
+      }
+      form.reset();
+      if (onSuccess) onSuccess();
+      else setLocation('/admin');
+    } catch { setError(t('تعذر الاتصال بالخادم. حاول مجددًا.', 'Could not reach the server. Try again.')); }
+    finally { setBusy(false); }
+  };
   return <main dir={locale === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col items-center justify-center gap-8 bg-background px-4 py-16">
     <img src={`${basePath}/brand/alabnq-logo.png`} alt={t('العبنق العقارية', 'Alabnq Real Estate')} className="h-20 w-20 rounded-lg object-cover object-center" />
     <div className="text-center"><h1 className="text-2xl font-bold">{t('إدارة العبنق العقارية', 'Alabnq Administration')}</h1><p className="text-sm text-muted-foreground mt-2">{t('الدخول مخصص لمدير الموقع المعتمد', 'Sign-in is reserved for the authorized administrator.')}</p></div>
-    {signUp
-      ? <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} />
-      : <SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} fallbackRedirectUrl={`${basePath}/admin`} />}
+    <form onSubmit={e => void submit(e)} className="w-full max-w-[440px] space-y-5 rounded-2xl border border-border bg-card p-8 shadow-sm">
+      <h2 className="text-xl font-bold">{t('تسجيل الدخول', 'Sign in')}</h2>
+      <label className="block text-sm font-semibold" htmlFor="admin-email">{t('البريد الإلكتروني', 'Email')}</label>
+      <input id="admin-email" data-testid="input-admin-email" name="email" type="email" autoComplete="username" required maxLength={254} className="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground" />
+      <label className="block text-sm font-semibold" htmlFor="admin-password">{t('كلمة المرور', 'Password')}</label>
+      <input id="admin-password" data-testid="input-admin-password" name="password" type="password" autoComplete="current-password" required className="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground" />
+      {error && <p role="alert" data-testid="error-admin-login" className="text-sm text-red-600">{error}</p>}
+      <button data-testid="button-admin-login" className="site-button w-full px-5 py-3" type="submit" disabled={busy}>{busy ? t('جارٍ الدخول...', 'Signing in...') : t('دخول', 'Sign in')}</button>
+    </form>
   </main>;
 }
 
@@ -89,8 +123,8 @@ function Router() {
         <RoutedErrorBoundary>
           <Switch>
             <Route path="/admin" component={AdminRoute} />
-            <Route path="/sign-in/*?" component={() => <AuthScreen signUp={false} />} />
-            <Route path="/sign-up/*?" component={() => <AuthScreen signUp />} />
+            <Route path="/sign-in" component={() => <AuthScreen />} />
+            <Route path="/sign-up" component={() => <AuthScreen />} />
             <Route>
               <><Navbar /><Switch>
             <Route path="/" component={Home} />
@@ -155,32 +189,13 @@ function App() {
 }
 
 function AppWithRouter() {
-  const [, setLocation] = useLocation();
-  const { locale } = usePreferences();
-  if (!clerkPubKey) throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY in .env file');
   return (
-    <ClerkProvider
-      publishableKey={clerkPubKey}
-      proxyUrl={clerkProxyUrl}
-      appearance={{
-        theme: shadcn, cssLayerName: 'clerk',
-        options: { logoPlacement: 'inside', logoImageUrl: `${window.location.origin}${basePath}/logo.svg`, logoLinkUrl: basePath || '/' },
-        variables: { colorPrimary: '#b39445', colorForeground: '#222222', colorMutedForeground: '#595959', colorBackground: '#ffffff', colorInput: '#f8f6f0', colorInputForeground: '#222222', colorNeutral: '#dedbd1', fontFamily: 'Cairo, sans-serif', borderRadius: '12px' },
-        elements: { cardBox: 'bg-white rounded-2xl w-[440px] max-w-full overflow-hidden', card: '!shadow-none !border-0 !bg-transparent', footer: '!shadow-none !border-0 !bg-transparent', headerTitle: 'text-[#222]', headerSubtitle: 'text-[#595959]', formFieldLabel: 'text-[#222]', footerActionLink: 'text-[#806223]', footerActionText: 'text-[#595959]', dividerText: 'text-[#595959]', socialButtonsBlockButtonText: 'text-[#222]', formButtonPrimary: 'bg-[#b39445] text-white', formFieldInput: 'bg-[#f8f6f0] text-[#222]' },
-      }}
-      signInUrl={`${basePath}/sign-in`}
-      signUpUrl={`${basePath}/sign-up`}
-       localization={locale === 'ar' ? { signIn: { start: { title: 'تسجيل الدخول', subtitle: 'أدخل بريد المدير وكلمة المرور' } }, signUp: { start: { title: 'إنشاء حساب المدير', subtitle: 'أنشئ حسابك ببريد المدير المعتمد' } } } : undefined}
-      routerPush={(to) => setLocation(stripBase(to))}
-      routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
-    >
     <QueryClientProvider client={queryClient}>
        <TooltipProvider>
           <Router />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
-    </ClerkProvider>
   );
 }
 

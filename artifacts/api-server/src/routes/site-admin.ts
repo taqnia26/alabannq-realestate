@@ -1,10 +1,10 @@
-import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
-import { clerkClient, getAuth } from "@clerk/express";
+import { Router, type IRouter, type Request, type Response } from "express";
 import { db, contentTable, visitsTable, inquiriesTable } from "@workspace/db";
 import { eq, gte, sql, desc } from "drizzle-orm";
 import { z } from "zod";
 import siteImagesRouter from "./site-images";
 import { deleteUnreferencedImage, imageReferences, managedImageId, validateImageReferences } from "../lib/siteImages";
+import { requireAdmin } from "../lib/adminAuth";
 
 const router: IRouter = Router();
 const kinds = ["properties", "articles", "campaigns"] as const;
@@ -23,27 +23,6 @@ const inquirySchema = z.object({
   email: z.union([z.string().email(), z.literal("")]).optional(),
   message: z.string().trim().min(10).max(4000),
 });
-
-async function requireAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
-  try {
-    const { userId } = getAuth(req);
-    if (!userId) { res.status(401).json({ error: "سجّل الدخول أولًا" }); return; }
-    const user = await clerkClient.users.getUser(userId);
-    const email = user.emailAddresses.find(entry => entry.id === user.primaryEmailAddressId);
-    if (!email || email.emailAddress.toLowerCase() !== "info@alabannaq.com" ||
-      email.verification?.status !== "verified") {
-      res.status(403).json({ error: "هذا الحساب لا يملك صلاحية الإدارة" }); return;
-    }
-    if (req.method !== "GET") {
-      const origin = req.get("origin");
-      const host = req.get("x-forwarded-host")?.split(",")[0] || req.get("host");
-      if (origin && new URL(origin).host !== host) {
-        res.status(403).json({ error: "مصدر الطلب غير مسموح" }); return;
-      }
-    }
-    next();
-  } catch (error) { next(error); }
-}
 
 router.get("/content", async (_req, res): Promise<void> => {
   const entries = await db.select().from(contentTable);
