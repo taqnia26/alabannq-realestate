@@ -7,6 +7,7 @@ import { SiteSearch } from "@/components/SiteSearch";
 import { FeaturedSlider } from "@/components/FeaturedSlider";
 import { ArticleSlider } from "@/components/ArticleSlider";
 import { HomeMetrics } from "@/components/HomeMetrics";
+import { GoldMotionLines } from "@/components/GoldMotionLines";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const heroSlides = [
@@ -45,6 +46,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#121a1e]/90 via-[#121a1e]/25 to-[#121a1e]/10" />
         <div className="absolute inset-0 bg-gradient-to-l from-[#121a1e]/40 via-transparent to-transparent" />
       </div>
+      <GoldMotionLines />
       <div className="site-container relative z-10 pb-16 pt-36 md:pb-20">
         <div className="mb-9 flex items-center gap-4 text-xl font-bold text-[#e4bd70] md:text-[1.75rem]"><span className="h-px w-10 bg-current" /> {t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</div>
         <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-24">
@@ -67,12 +69,13 @@ export default function Home() {
       </div>
     </section>
 
-    <section id="introduction" className="site-container grid gap-12 py-24 md:py-36 lg:grid-cols-[.88fr_1.12fr] lg:gap-28">
-      <div data-scroll-reveal className="relative order-2 lg:order-1">
+    <section id="introduction" className="site-container relative isolate grid gap-12 overflow-hidden py-24 md:py-36 lg:grid-cols-[.88fr_1.12fr] lg:gap-28">
+      <GoldMotionLines />
+      <div data-scroll-reveal className="relative z-10 order-2 lg:order-1">
         <div className="group relative aspect-[4/5] overflow-hidden bg-secondary"><img src={aboutImage} alt={t("مشهد معماري", "Architectural scene")} loading="lazy" className="site-image h-full w-full object-cover" /><div className="pointer-events-none absolute inset-5 border border-[#e4c187]/50" /></div>
          <span className="absolute bottom-8 end-8 bg-[#142127] px-6 py-4 text-[11px] font-bold tracking-wider text-[#d8b675]">{t("الخدمات العقارية", "REAL ESTATE SERVICES")}</span>
       </div>
-      <div data-scroll-reveal className="order-1 flex flex-col justify-center lg:order-2" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+      <div data-scroll-reveal className="relative z-10 order-1 flex flex-col justify-center lg:order-2" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
         <span className="site-eyebrow">{t("من نحن", "OUR COMPANY")}</span>
          <h2 className="site-display mt-7 max-w-[660px] text-[clamp(2.5rem,4vw,5rem)]">{t("خبرة ميدانية وفهم متكامل", "Field experience and comprehensive understanding")}</h2>
         <p className="mt-9 max-w-xl text-base leading-[2.3] text-muted-foreground">{intro}</p>
@@ -82,19 +85,20 @@ export default function Home() {
         </div>
         <Link href="/about" className="site-link-arrow mt-11">{t("تعرّف على الشركة", "Meet the company")} <ArrowUpLeft size={17} /></Link>
       </div>
-       <HomeMetrics />
+       <div className="relative z-10 order-3 lg:col-span-2"><HomeMetrics /></div>
     </section>
     <section className="site-always-dark relative isolate overflow-hidden bg-[#172329] py-24 text-[#f0ebdf] md:py-32">
       <img src="/hero/riyadh-kingdom.jpg" loading="lazy" alt="" className="value-showcase-image absolute inset-0 h-full w-full object-cover opacity-20" />
       <div className="absolute inset-0 bg-gradient-to-l from-[#172329] via-[#172329]/90 to-[#172329]/60" />
       <div aria-hidden="true" className="value-showcase-glow pointer-events-none absolute -end-32 -top-44 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(216,182,117,.15),transparent_68%)]" />
       <div aria-hidden="true" className="value-showcase-sheen absolute -inset-y-1/2 start-[-25%] w-[15%]" />
-      <div className="site-container relative grid gap-10 lg:grid-cols-2 lg:items-end">
+      <GoldMotionLines />
+      <div className="site-container relative z-10 grid gap-10 lg:grid-cols-2 lg:items-end">
           <div data-scroll-reveal><span className="site-eyebrow">{t("عروض عقارية", "PROPERTY LISTINGS")}</span><h2 className="site-display mt-7 max-w-xl text-4xl md:text-6xl">{t("الخدمات العقارية المتكاملة", "Integrated real estate services")}</h2></div>
          <div data-scroll-reveal className="lg:justify-self-end" style={{ "--reveal-delay": "120ms" } as React.CSSProperties}><p className="max-w-md text-sm leading-9 text-[#eee8db]/75">{customerService}</p><Link href="/properties?view=map" className="mt-7 inline-flex items-center gap-3 border-b border-[#d8b675] pb-3 text-xs font-bold text-[#d8b675]"><MapPin size={17} /> {t("استعرض خريطة العقارات", "Explore the property map")} <ArrowUpLeft size={17} /></Link></div>
       </div>
     </section>
-    {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل العقارات المميزة.", "Could not load featured properties.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <FeaturedSlider properties={(data?.properties ?? []).filter(property => property.featured)} heading={featuredHeading} />}
-    {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل الأخبار والمقالات.", "Could not load news and articles.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <div className="site-reveal"><ArticleSlider articles={[...(data?.articles ?? [])].sort((a, b) => b.date.localeCompare(a.date))} heading={articlesHeading} /></div>}
+    {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل العقارات المميزة.", "Could not load featured properties.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <div className="relative isolate overflow-hidden"><GoldMotionLines /><div className="relative z-10"><FeaturedSlider properties={(data?.properties ?? []).filter(property => property.featured)} heading={featuredHeading} /></div></div>}
+    {isLoading ? <section className="site-container py-24"><div className="mb-8 h-10 w-1/2 animate-pulse bg-muted" /><div className="h-[490px] animate-pulse bg-muted md:h-[650px]" /></section> : isError ? <section className="site-container py-24 text-center"><p>{t("تعذر تحميل الأخبار والمقالات.", "Could not load news and articles.")}</p><button type="button" className="site-button mt-6 px-7 py-3" onClick={() => void refetch()}>{t("إعادة المحاولة", "Try again")}</button></section> : <div className="site-reveal relative isolate overflow-hidden"><GoldMotionLines /><div className="relative z-10"><ArticleSlider articles={[...(data?.articles ?? [])].sort((a, b) => b.date.localeCompare(a.date))} heading={articlesHeading} /></div></div>}
   </main>;
 }

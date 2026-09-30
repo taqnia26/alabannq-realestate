@@ -24,8 +24,8 @@ export function Footer() {
     ["/contact", t("تواصل معنا", "Contact")],
   ];
   return <footer ref={footerRef} className="site-always-dark relative isolate overflow-hidden bg-[#121b20] text-[#eee8db]">
-    <img src={image} loading="lazy" alt="" className="footer-bg-motion pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[.13]" />
-    <div className="absolute inset-0 bg-gradient-to-t from-[#121b20] via-[#121b20]/95 to-[#121b20]/80" />
+    <img src={image} loading="lazy" alt="" className="footer-bg-motion pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[.45]" />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#121b20]/90 via-[#121b20]/72 to-[#121b20]/55" />
     <div aria-hidden="true" className="footer-glow pointer-events-none absolute -end-40 -top-44 h-[560px] w-[560px] rounded-full" />
     <div aria-hidden="true" className="footer-glow footer-glow--two pointer-events-none absolute -bottom-52 -start-40 h-[480px] w-[480px] rounded-full" />
     <div className="site-container relative">

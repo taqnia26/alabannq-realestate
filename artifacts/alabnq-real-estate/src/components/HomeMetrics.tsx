@@ -51,13 +51,13 @@ export function HomeMetrics() {
 
   return <div ref={sectionRef} className="order-3 grid grid-cols-2 gap-3 border-t border-[var(--line-soft)] pt-9 lg:col-span-2 lg:grid-cols-4 lg:gap-4 lg:pt-12">
     {metrics.map((metric, index) => <div key={metric.titleEn} data-scroll-reveal className="home-metric min-w-0 border border-[var(--line-soft)] bg-secondary/20 p-4 sm:p-6" style={{ "--reveal-delay": `${index * 85}ms` } as React.CSSProperties}>
-      <div className="mb-8 flex items-start justify-between text-accent"><metric.icon size={22} strokeWidth={1.5} aria-hidden="true" /><span className="text-[10px] tracking-widest" dir="ltr">0{index + 1}</span></div>
+      <div className="mb-8 flex justify-start text-accent"><metric.icon size={22} strokeWidth={1.5} aria-hidden="true" /></div>
       <span className="block text-[11px] font-semibold text-muted-foreground">{t(metric.titleAr, metric.titleEn)}</span>
       <strong className="mt-2 block whitespace-nowrap font-sans text-[clamp(1.15rem,2.3vw,2.15rem)] font-semibold leading-tight tracking-tight text-foreground tabular-nums" dir="ltr">{Math.round(metric.value * progress).toLocaleString("en-US")}{progress === 1 ? "+" : ""}</strong>
       <span className="mt-3 block text-xs leading-6 text-muted-foreground">{t(metric.labelAr, metric.labelEn)}</span>
     </div>)}
     <div data-scroll-reveal className="home-metric min-w-0 border border-[var(--line-soft)] bg-secondary/20 p-4 sm:p-6" style={{ "--reveal-delay": "255ms" } as React.CSSProperties}>
-      <div className="mb-8 flex items-start justify-between text-accent"><MapPinned size={22} strokeWidth={1.5} aria-hidden="true" /><span className="text-[10px] tracking-widest" dir="ltr">04</span></div>
+      <div className="mb-8 flex justify-start text-accent"><MapPinned size={22} strokeWidth={1.5} aria-hidden="true" /></div>
       <span className="block text-[11px] font-semibold text-muted-foreground">{t("نطاق أعمالنا", "Our reach")}</span>
       <strong className="mt-2 block text-[clamp(1.15rem,2.3vw,2.15rem)] font-semibold leading-tight text-foreground">{t("أنحاء المملكة", "Across the Kingdom")}</strong>
       <span className="mt-3 block text-xs leading-6 text-muted-foreground">{t("تغطية في مختلف مناطق المملكة", "Coverage across the Kingdom's regions")}</span>

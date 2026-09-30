@@ -158,6 +158,24 @@ html[lang="ar"] .site-display { letter-spacing: -.025em; line-height: 1.4; }
 }
 .home-metric strong { transition: color .35s ease; }
 .home-metric:hover strong { color: hsl(var(--accent)); }
+.home-motion-line {
+  position: absolute;
+  display: block;
+  width: clamp(160px, 30vw, 480px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(216, 182, 117, .18) 18%, rgba(226, 196, 134, .85) 53%, rgba(216, 182, 117, .18) 82%, transparent);
+  box-shadow: 0 0 14px rgba(216, 182, 117, .22);
+  animation: home-line-travel 14s ease-in-out infinite;
+}
+.home-motion-line--first { top: 16%; inset-inline-start: -4%; }
+.home-motion-line--second { top: 54%; inset-inline-end: -9%; animation-duration: 18s; animation-delay: -7s; animation-direction: reverse; }
+.home-motion-line--third { bottom: 13%; inset-inline-start: 35%; animation-duration: 20s; animation-delay: -11s; }
+@keyframes home-line-travel {
+  0%, 100% { transform: translate3d(-7vw, -18px, 0) rotate(-24deg); opacity: 0; }
+  22%, 74% { opacity: .7; }
+  88% { opacity: .3; }
+  50% { transform: translate3d(8vw, 22px, 0) rotate(-24deg); opacity: .8; }
+}
 .hero-frame img.active { animation: hero-approach 8s ease-out both; }
 @keyframes hero-approach { from { transform: scale(1.08); } to { transform: scale(1); } }
 .site-progress { transform-origin: left; animation: progress 6.5s linear forwards; }
@@ -304,6 +322,7 @@ html[dir="ltr"] .footer-nav-link { background-position: 0 100%; }
   .footer-bg-motion,
   .footer-light-sweep,
   .footer-glow,
+  .home-motion-line,
   .value-showcase-image,
   .value-showcase-sheen,
   .value-showcase-glow {
