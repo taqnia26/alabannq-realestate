@@ -17,6 +17,7 @@ import { HERO_SLIDER_KEY } from '@workspace/slider-config';
 import { ImageInput } from './ImageInput';
 import SliderEditor from './SliderEditor';
 import { discardSliderDraft } from './sliderDraft';
+import { BrandLogo } from '../components/BrandLogo';
 import './admin.css';
 
 type Campaign = {
@@ -492,7 +493,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   return <div className="admin-root" dir="rtl" data-theme={theme}>
     <div className="ad-shell">
       <aside className="ad-sidebar">
-        <div className="ad-brand"><span className="ad-brand-mark"><img src="/brand/alabnq-logo.png" alt="" /></span><div><strong>العبنق العقارية</strong><small>OWNER CONSOLE</small></div></div>
+        <div className="ad-brand"><BrandLogo className="ad-brand-mark" tone={theme} /><div><strong>العبنق العقارية</strong><small>OWNER CONSOLE</small></div></div>
         <div className="ad-nav-label">مساحة الإدارة</div>
         <nav className="ad-nav" aria-label="أقسام لوحة الإدارة">
           {nav.map(entry => <button key={entry.id} type="button" className={section === entry.id ? 'active' : ''} onClick={() => changeSection(entry.id)} data-testid={`button-nav-${entry.id}`} aria-current={section === entry.id ? 'page' : undefined}><entry.icon />{entry.label}{data && ['properties', 'articles', 'campaigns'].includes(entry.id) && <span>{data[entry.id as Kind].length}</span>}</button>)}

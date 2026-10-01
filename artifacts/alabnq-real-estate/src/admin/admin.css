@@ -48,8 +48,8 @@
 .admin-root .ad-shell { display: flex; min-height: 100dvh; }
 .admin-root .ad-sidebar { width: 250px; flex: 0 0 250px; background: var(--ad-sidebar); color: #eae9df; display: flex; flex-direction: column; padding: 29px 16px 20px; position: sticky; top: 0; height: 100dvh; z-index: 10; }
 .admin-root .ad-brand { display: flex; align-items: center; gap: 12px; padding: 0 11px 28px; border-bottom: 1px solid #ffffff1c; }
-.admin-root .ad-brand-mark { width: 44px; height: 44px; border: 1px solid #d4b85466; border-radius: 11px; overflow: hidden; background: #222; position: relative; flex: none; }
-.admin-root .ad-brand-mark img { position: absolute; width: 130px; height: 230px; max-width: none; object-fit: cover; top: -75px; left: -43px; }
+.admin-root .ad-brand-mark { width: 36px; height: 44px; flex: none; }
+.admin-root .ad-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
 .admin-root .ad-brand strong { display: block; font-size: 16px; line-height: 1.2; font-weight: 800; }
 .admin-root .ad-brand small { color: #c9b26c; display: block; font-size: 10px; letter-spacing: .07em; margin-top: 4px; }
 .admin-root .ad-nav-label { font-size: 10px; color: #8f948b; letter-spacing: .12em; font-weight: 800; padding: 29px 17px 11px; }

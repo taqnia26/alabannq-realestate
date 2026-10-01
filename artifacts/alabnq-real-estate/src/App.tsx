@@ -28,6 +28,7 @@ import Articles from '@/pages/Articles';
 import ArticleDetail from '@/pages/ArticleDetail';
 import Dashboard from '@/admin/Dashboard';
 import { discardPendingImages } from '@/admin/ImageInput';
+import { BrandLogo } from '@/components/BrandLogo';
 
 const queryClient = new QueryClient();
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -83,7 +84,7 @@ function AuthScreen({ onSuccess }: { onSuccess?: () => void }) {
     finally { setBusy(false); }
   };
   return <main dir={locale === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col items-center justify-center gap-8 bg-background px-4 py-16">
-    <img src={`${basePath}/brand/alabnq-logo.png`} alt={t('العبنق العقارية', 'Alabnq Real Estate')} className="h-20 w-20 rounded-lg object-cover object-center" />
+    <BrandLogo className="h-20 w-[65px]" label={t('العبنق العقارية', 'Alabnq Real Estate')} />
     <div className="text-center"><h1 className="text-2xl font-bold">{t('إدارة العبنق العقارية', 'Alabnq Administration')}</h1><p className="text-sm text-muted-foreground mt-2">{t('الدخول مخصص لمدير الموقع المعتمد', 'Sign-in is reserved for the authorized administrator.')}</p></div>
     <form onSubmit={e => void submit(e)} className="w-full max-w-[440px] space-y-5 rounded-2xl border border-border bg-card p-8 shadow-sm">
       <h2 className="text-xl font-bold">{t('تسجيل الدخول', 'Sign in')}</h2>

@@ -20,7 +20,7 @@ export function Navbar() {
   return <header className="site-header sticky top-0 z-50 border-b border-[var(--line-soft)] bg-background/95 backdrop-blur-xl">
     <div className="site-container flex h-[76px] items-center justify-between gap-5 lg:h-[88px]">
       <Link href="/" data-testid="link-home-logo" className="group flex min-w-0 shrink-0 items-center gap-3" aria-label={t("العبنق العقارية، الرئيسية", "Alabnq Real Estate, home")}>
-        <BrandLogo className="h-[53px] w-[53px] rounded-[2px] ring-1 ring-accent/30 lg:h-[62px] lg:w-[62px]" label={t("شعار شركة العبنق العقارية", "Alabnq Real Estate logo")} />
+        <BrandLogo className="h-[53px] w-[43px] lg:h-[62px] lg:w-[50px]" label={t("شعار شركة العبنق العقارية", "Alabnq Real Estate logo")} />
         <span className="text-[13px] font-bold leading-[1.5] tracking-tight text-foreground lg:hidden xl:block xl:text-[15px]">{t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</span>
       </Link>
       <nav aria-label={t("التنقل الرئيسي", "Main navigation")} className="hidden items-center gap-3 lg:flex xl:gap-6">
