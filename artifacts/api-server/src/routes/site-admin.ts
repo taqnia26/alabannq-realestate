@@ -3,14 +3,15 @@ import { db, contentTable, visitsTable, inquiriesTable } from "@workspace/db";
 import { eq, gte, sql, desc } from "drizzle-orm";
 import { z } from "zod";
 import siteImagesRouter from "./site-images";
-import { deleteUnreferencedImage, imageReferences, managedImageId, validateImageReferences } from "../lib/siteImages";
+import { deleteUnreferencedImage, imageReferences, managedImageId, validateImageReferences, withImageMutationLock } from "../lib/siteImages";
 import { requireAdmin } from "../lib/adminAuth";
+import { HERO_SLIDER_KEY, heroSliderSchema, type HeroSliderConfig } from "@workspace/slider-config";
 
 const router: IRouter = Router();
 const kinds = ["properties", "articles", "campaigns"] as const;
 const idSchema = z.string().min(1).max(130).regex(/^[a-zA-Z0-9_-]+$/);
 const itemSchema = z.object({ id: idSchema }).passthrough();
-const siteSchema = z.object({ key: z.string().min(1).max(120).regex(/^[a-zA-Z0-9_.-]+$/), value: z.string().max(15000) });
+const siteSchema = z.object({ key: z.string().min(1).max(120).regex(/^[a-zA-Z0-9_.-]+$/), value: z.string().max(60000) });
 const trackSchema = z.object({
   path: z.string().startsWith("/").max(250),
   session: z.string().uuid(),
@@ -98,7 +99,7 @@ router.patch("/admin/inquiries/:id/read", async (req, res): Promise<void> => {
   res.json(item);
 });
 
-async function saveItem(req: Request, res: Response): Promise<void> {
+async function saveItemUnlocked(req: Request, res: Response): Promise<void> {
   const kind = Array.isArray(req.params.kind) ? req.params.kind[0] : req.params.kind;
   if (!kinds.includes(kind as typeof kinds[number])) { res.status(400).json({ error: "نوع المحتوى غير صالح" }); return; }
   const parsed = itemSchema.safeParse(req.body);
@@ -123,9 +124,12 @@ async function saveItem(req: Request, res: Response): Promise<void> {
   await cleanupImages(req, previous?.data, data);
   res.json({ ...item.data, id: item.id, published: item.published });
 }
+async function saveItem(req: Request, res: Response): Promise<void> {
+  await withImageMutationLock(() => saveItemUnlocked(req, res));
+}
 router.post("/admin/items/:kind", saveItem);
 router.put("/admin/items/:kind/:id", saveItem);
-router.delete("/admin/items/:kind/:id", async (req, res): Promise<void> => {
+router.delete("/admin/items/:kind/:id", async (req, res): Promise<void> => withImageMutationLock(async () => {
   const kind = Array.isArray(req.params.kind) ? req.params.kind[0] : req.params.kind;
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   if (!kinds.includes(kind as typeof kinds[number]) || !idSchema.safeParse(id).success) {
@@ -137,18 +141,31 @@ router.delete("/admin/items/:kind/:id", async (req, res): Promise<void> => {
     .onConflictDoUpdate({ target: contentTable.id, set: { data: { id, deleted: true }, published: false, updatedAt: new Date() } });
   await cleanupImages(req, previous?.data, {});
   res.status(204).end();
-});
-router.put("/admin/site", async (req, res): Promise<void> => {
+}));
+router.put("/admin/site", async (req, res): Promise<void> => withImageMutationLock(async () => {
   const parsed = siteSchema.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "قيمة غير صالحة" }); return; }
   const { key, value } = parsed.data;
-  if (key.toLowerCase().includes("image") && !await validateImageReferences([value])) {
-    res.status(400).json({ error: "الصورة المرفوعة غير صالحة أو تجاوزت الحجم المسموح." }); return;
+  if (key === HERO_SLIDER_KEY) {
+    let config: HeroSliderConfig;
+    try {
+      config = heroSliderSchema.parse(JSON.parse(value));
+    } catch {
+      res.status(400).json({ error: "إعدادات شرائح الواجهة غير صالحة." }); return;
+    }
+    if (!await validateImageReferences(config.slides.map(slide => slide.image))) {
+      res.status(400).json({ error: "إحدى صور الشرائح المرفوعة غير صالحة أو تجاوزت الحجم المسموح." }); return;
+    }
+  } else {
+    if (value.length > 15000) { res.status(400).json({ error: "قيمة غير صالحة" }); return; }
+    if (key.toLowerCase().includes("image") && !await validateImageReferences([value])) {
+      res.status(400).json({ error: "الصورة المرفوعة غير صالحة أو تجاوزت الحجم المسموح." }); return;
+    }
   }
   const [previous] = await db.select({ data: contentTable.data }).from(contentTable).where(eq(contentTable.id, key));
   await db.insert(contentTable).values({ id: key, kind: "site", data: { value } })
     .onConflictDoUpdate({ target: contentTable.id, set: { data: { value }, updatedAt: new Date() } });
   await cleanupImages(req, previous?.data, { value });
   res.json({ key, value });
-});
+}));
 export default router;

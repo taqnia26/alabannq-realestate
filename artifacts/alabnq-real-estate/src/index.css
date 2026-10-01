@@ -177,6 +177,7 @@ html[lang="ar"] .site-display { letter-spacing: -.025em; line-height: 1.4; }
   50% { transform: translate3d(8vw, 22px, 0) rotate(-24deg); opacity: .8; }
 }
 .hero-frame img.active { animation: hero-approach 8s ease-out both; }
+.hero-slider-image-motion { animation: hero-approach 9s ease-out both; }
 @keyframes hero-approach { from { transform: scale(1.08); } to { transform: scale(1); } }
 .site-progress { transform-origin: left; animation: progress 6.5s linear forwards; }
 @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -313,7 +314,7 @@ html[dir="ltr"] .footer-nav-link { background-position: 0 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .site-reveal, .hero-frame img.active, .site-progress { animation: none !important; }
+  .site-reveal, .hero-frame img.active, .hero-slider-image-motion, .site-progress { animation: none !important; }
   .motion-ready [data-scroll-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
   .site-image, .site-link-arrow, .site-button, .site-outline-button { transition-duration: .01ms !important; }
   .footer-cta-motion::after { animation: none; }

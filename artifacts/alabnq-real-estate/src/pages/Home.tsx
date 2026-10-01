@@ -1,73 +1,32 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "wouter";
-import { ArrowUpLeft, ArrowDown, MapPin } from "lucide-react";
+import { ArrowUpLeft, MapPin } from "lucide-react";
+import { readHeroSlider } from "@workspace/slider-config";
 import { useSiteContent, useLocalizedSiteValue, useSiteValue } from "@/data/siteContent";
 import { usePreferences } from "@/lib/preferences";
-import { SiteSearch } from "@/components/SiteSearch";
+import { HeroSlider } from "@/components/HeroSlider";
 import { FeaturedSlider } from "@/components/FeaturedSlider";
 import { ArticleSlider } from "@/components/ArticleSlider";
 import { HomeMetrics } from "@/components/HomeMetrics";
 import { GoldMotionLines } from "@/components/GoldMotionLines";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-const heroSlides = [
-  "/hero/riyadh-kingdom.jpg",
-  "/hero/makkah-clocktower.jpg",
-  "/hero/riyadh-aerial.jpg",
-  "/hero/makkah-abraj.jpg",
-  "/hero/riyadh-financial.jpg",
-];
-
 export default function Home() {
   const mainRef = useScrollReveal<HTMLElement>();
   const { data, isLoading, isError, refetch } = useSiteContent();
   const { t } = usePreferences();
-  const heroTitle = useLocalizedSiteValue("home.title", "خبرة عقارية.. وخدمات متكاملة", "Real estate expertise. Complete service.");
-  const heroSubtitle = useLocalizedSiteValue("home.subtitle", "خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.", "Experience that builds trust. Services that create value.");
   const featuredHeading = useLocalizedSiteValue("home.propertiesHeading", "أحدث العروض المميزة", "Selected properties");
   const articlesHeading = useLocalizedSiteValue("home.articlesHeading", "الأخبار والمقالات", "News & articles");
-  const heroImage = useSiteValue("home.heroImage", "");
   const aboutImage = useSiteValue("about.image", "/hero/riyadh-financial.jpg");
   const intro = useLocalizedSiteValue("home.intro", "تعمل شركة العبنق العقارية في السوق العقاري بالمملكة، مستندة إلى خبرة ميدانية ممتدة وفهم متكامل لاحتياجات ملاك العقارات والمستثمرين ومتطلبات السوق.", "Alabnq Real Estate operates in the Kingdom's property market, drawing on extensive field experience and a thorough understanding of property owners, investors, and market needs.");
   const commitment = useLocalizedSiteValue("home.commitment", "نجاحنا لا يقاس بتقديم الخدمة فحسب، بل بقدرتنا على تقديمها بمهنية ووضوح، وبما يحقق مصلحة عملائنا ويحفظ حقوقهم.", "Our success is measured not merely by providing a service, but by delivering it with professionalism and clarity, protecting our clients' interests and rights.");
   const customerService = useLocalizedSiteValue("home.customerService", "تقديم خدمات عقارية احترافية ومتكاملة تستند إلى الخبرة والمعرفة بالسوق", "Providing professional, integrated real estate services grounded in experience and market knowledge.");
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  useEffect(() => {
-    if (heroImage || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setActive(value => (value + 1) % heroSlides.length), 6500);
-    return () => window.clearInterval(timer);
-  }, [heroImage, paused]);
-  const images = heroImage ? [heroImage] : heroSlides;
+  const slider = useMemo(() => {
+    try { return readHeroSlider(data?.site ?? {}); }
+    catch { return null; }
+  }, [data?.site]);
   return <main ref={mainRef} className="site-shell flex-1">
-    <section aria-label={t("المشهد الرئيسي", "Introduction")} className="site-always-dark relative isolate flex min-h-[720px] items-end overflow-hidden bg-[#162127] text-[#eee8db] md:min-h-[min(860px,calc(100dvh-88px))]" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
-      <div className="hero-frame absolute inset-0">
-        {images.map((image, index) => <img key={image} src={image} alt="" loading={index === 0 ? "eager" : "lazy"} fetchPriority={index === 0 ? "high" : "low"} aria-hidden="true" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] ease-in-out ${image.includes("/hero/makkah-") ? "md:object-[center_15%]" : ""} ${index === active || !!heroImage ? "active opacity-100" : "opacity-0"}`} />)}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#121a1e]/90 via-[#121a1e]/25 to-[#121a1e]/10" />
-        <div className="absolute inset-0 bg-gradient-to-l from-[#121a1e]/40 via-transparent to-transparent" />
-      </div>
-      <GoldMotionLines />
-      <div className="site-container relative z-10 pb-16 pt-36 md:pb-20">
-        <div className="mb-9 flex items-center gap-4 text-xl font-bold text-[#e4bd70] md:text-[1.75rem]"><span className="h-px w-10 bg-current" /> {t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</div>
-        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-24">
-          <div className="site-reveal">
-            <h1 data-testid="text-hero-title" className="site-display max-w-[870px] text-[clamp(2.8rem,5.8vw,6.8rem)] font-semibold text-[#f3eee4]">{heroTitle}</h1>
-            <p className="mt-7 max-w-xl text-base leading-9 text-[#e4e0d6]/85 md:text-lg">{heroSubtitle}</p>
-            <div className="mt-10 max-w-[680px]"><SiteSearch mode="hero" /></div>
-          </div>
-          <div className="hidden border-s border-[#d8b675]/40 ps-7 lg:block">
-             <span className="text-[11px] font-semibold tracking-[.2em] text-[#d8b675]">{t("العقارات", "PROPERTIES")}</span>
-            <p className="mt-4 text-sm leading-8 text-[#eee8db]/75">{customerService}</p>
-            <Link href="/properties" className="mt-6 inline-flex items-center gap-3 text-xs font-bold text-[#d8b675]">{t("استكشف العقارات", "Explore properties")} <ArrowUpLeft size={17} /></Link>
-          </div>
-        </div>
-        <div className="mt-20 flex items-end justify-between border-t border-[#eee8db]/20 pt-6">
-          <a href="#introduction" className="flex items-center gap-3 text-[11px] font-semibold tracking-widest text-[#eee8db]/75">{t("اكتشف المزيد", "DISCOVER MORE")} <ArrowDown size={15} /></a>
-          {!heroImage && <div className="flex items-center gap-3" aria-label={t("شرائح الصور", "Image slides")}>{images.map((_, index) => <button key={index} type="button" data-testid={`button-hero-slide-${index}`} aria-label={t(`عرض الصورة ${index + 1}`, `View image ${index + 1}`)} aria-current={index === active} onClick={() => setActive(index)} className={`h-1 transition-all duration-500 ${active === index ? "w-11 bg-[#d8b675]" : "w-5 bg-[#eee8db]/40 hover:bg-[#eee8db]"}`} />)}</div>}
-          <span className="hidden text-xs tracking-widest text-[#eee8db]/60 md:block" dir="ltr">{String(active + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span>
-        </div>
-      </div>
-    </section>
+    {slider ? <HeroSlider config={slider} customerService={customerService} /> : <section className="site-container py-24 text-center" role="alert">{t("تعذر عرض السلايدر بسبب إعدادات غير صالحة. يرجى مراجعتها في لوحة التحكم.", "Invalid slideshow settings. Please review them in the admin panel.")}</section>}
 
     <section id="introduction" className="site-container relative isolate grid gap-12 overflow-hidden py-24 md:py-36 lg:grid-cols-[.88fr_1.12fr] lg:gap-28">
       <GoldMotionLines />

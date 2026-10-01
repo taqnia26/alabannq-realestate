@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRef, useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import type { FormEvent } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
@@ -6,14 +6,17 @@ import {
   Activity, ArrowLeft, BarChart3, BookOpen, Building2, Check, ChevronLeft,
   CircleAlert, ExternalLink, FileText, Image, LayoutDashboard, LogOut,
   Megaphone, Moon, MoreHorizontal, Pencil, Plus, RefreshCw, Search,
-  Settings2, Sun, Trash2, TrendingUp, X,
+  Images, Settings2, Sun, Trash2, TrendingUp, X,
 } from 'lucide-react';
 import type { Property } from '../data/mockProperties';
 import type { Article } from '../data/articles';
 import { officialProperties } from '../data/mockProperties';
 import { articles } from '../data/articles';
 import { mergeRecords, contentQueryKey } from '../data/siteContent';
+import { HERO_SLIDER_KEY } from '@workspace/slider-config';
 import { ImageInput } from './ImageInput';
+import SliderEditor from './SliderEditor';
+import { discardSliderDraft } from './sliderDraft';
 import './admin.css';
 
 type Campaign = {
@@ -46,14 +49,14 @@ type AdminState = {
   inquiries: { id: number; name: string; phone: string; email: string | null; message: string; read: boolean; createdAt: string }[];
 };
 type Kind = 'properties' | 'articles' | 'campaigns';
-type Section = 'overview' | Kind | 'site' | 'analytics' | 'inquiries';
+type Section = 'overview' | Kind | 'site' | 'slider' | 'analytics' | 'inquiries';
 type Item = PublishedProperty | PublishedArticle | Campaign;
 type Notice = { text: string; error?: boolean };
 
 const siteFields = [
-  ['home.title', 'عنوان الصفحة الرئيسية', 'العنوان الرئيسي الذي يراه الزائر أولاً'],
-  ['home.subtitle', 'وصف الصفحة الرئيسية', 'النص التعريفي أسفل العنوان'],
-  ['home.heroImage', 'صورة واجهة الرئيسية', 'رابط صورة الغلاف'],
+  ['home.title', 'عنوان الصفحة الرئيسية (افتراضي)', 'قيمة افتراضية فقط، تُستخدم قبل حفظ سلايدر مخصص'],
+  ['home.subtitle', 'وصف الصفحة الرئيسية (افتراضي)', 'قيمة افتراضية فقط، تُستخدم قبل حفظ سلايدر مخصص'],
+  ['home.heroImage', 'صورة واجهة الرئيسية (افتراضية)', 'قيمة افتراضية فقط، تُستخدم قبل حفظ سلايدر مخصص'],
   ['home.intro', 'مقدمة الرئيسية', ''],
   ['home.commitment', 'التزامنا في الرئيسية', ''],
   ['home.customerService', 'خدمة العملاء في الرئيسية', ''],
@@ -90,7 +93,7 @@ const siteFields = [
 ] as const;
 const sectionNames: Record<Section, string> = {
   overview: 'نظرة عامة', properties: 'العقارات', articles: 'المقالات',
-  campaigns: 'الحملات', site: 'محتوى الموقع', analytics: 'التحليلات', inquiries: 'الرسائل',
+  campaigns: 'الحملات', site: 'محتوى الموقع', slider: 'سلايدر الرئيسية', analytics: 'التحليلات', inquiries: 'الرسائل',
 };
 const itemNames: Record<Kind, string> = { properties: 'عقار', articles: 'مقال', campaigns: 'حملة' };
 const numberFormat = new Intl.NumberFormat('ar-SA');
@@ -295,12 +298,17 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [siteValue, setSiteValue] = useState('');
   const [siteValueEn, setSiteValueEn] = useState('');
   const [savingKey, setSavingKey] = useState('');
+  const [sliderDirty, setSliderDirty] = useState(false);
+  const [sliderUploads, setSliderUploads] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const dataRef = useRef<AdminState | null>(null);
   const [siteUploads, setSiteUploads] = useState<string[]>([]);
 
   useEffect(() => { try { localStorage.setItem('alabnq-admin-theme', theme); } catch { /* storage unavailable */ } }, [theme]);
   useEffect(() => { if (!notice) return; const timeout = window.setTimeout(() => setNotice(null), 5000); return () => clearTimeout(timeout); }, [notice]);
   const reload = useCallback(async (initial = false) => {
-    if (initial) setLoading(true);
+    if (initial && !dataRef.current) setLoading(true);
+    if (initial && dataRef.current) setRefreshing(true);
     setLoadError('');
     try {
       const response = await request<AdminState>('/state');
@@ -312,8 +320,9 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       setSiteDraft(response.site || {});
     } catch (err) {
       setLoadError(err instanceof Error ? err.message : 'تعذر تحميل البيانات.');
-    } finally { setLoading(false); }
+    } finally { setLoading(false); setRefreshing(false); }
   }, []);
+  useEffect(() => { dataRef.current = data; }, [data]);
   useEffect(() => { void reload(true); }, [reload]);
   const showError = (err: unknown) => setNotice({ text: err instanceof Error ? err.message : 'حدث خطأ غير متوقع.', error: true });
   const saveItem = async (item: Item) => {
@@ -363,7 +372,48 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       setSiteValueEn('');
     } catch { /* Keep entered values if an unexpected save error occurs. */ }
   };
-  const changeSection = (next: Section) => { setSection(next); setSearch(''); };
+  const saveSlider = async (value: string) => {
+    await request('/site', { method: 'PUT', body: JSON.stringify({ key: HERO_SLIDER_KEY, value }) });
+    setData(current => current ? { ...current, site: { ...current.site, [HERO_SLIDER_KEY]: value } } : current);
+    setSiteDraft(current => ({ ...current, [HERO_SLIDER_KEY]: value }));
+    await queryClient.invalidateQueries({ queryKey: contentQueryKey });
+    setNotice({ text: 'تم حفظ سلايدر الرئيسية بنجاح.' });
+  };
+  const guarded = section === 'slider' && (sliderDirty || sliderUploads > 0);
+  const guardedRef = useRef(false);
+  guardedRef.current = guarded;
+  const guardHref = useRef('');
+  useEffect(() => {
+    if (!guarded) return;
+    guardHref.current = window.location.href;
+    const msg = 'لديك تعديلات غير محفوظة أو رفع صور جارٍ في سلايدر الرئيسية. هل تريد المغادرة؟';
+    const click = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+      if (!a || a.target === '_blank' || /^(mailto|tel):/.test(a.getAttribute('href') || '')) return;
+      if (a.href === window.location.href) return;
+      if (!window.confirm(msg)) { e.preventDefault(); e.stopImmediatePropagation(); }
+      else discardSliderDraft();
+    };
+    const pop = (event: PopStateEvent) => {
+      if (!window.confirm(msg)) {
+        // Run before Wouter's listener, otherwise it unmounts the unsaved editor.
+        event.stopImmediatePropagation();
+        window.history.pushState(null, '', guardHref.current);
+      } else { guardedRef.current = false; discardSliderDraft(); }
+    };
+    const unload = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ''; };
+    document.addEventListener('click', click, true);
+    window.addEventListener('popstate', pop, true);
+    window.addEventListener('beforeunload', unload);
+    return () => { document.removeEventListener('click', click, true); window.removeEventListener('popstate', pop, true); window.removeEventListener('beforeunload', unload); };
+  }, [guarded]);
+  const confirmLeave = () => {
+    if (!guarded) return true;
+    if (!window.confirm('لديك تعديلات غير محفوظة في سلايدر الرئيسية. هل تريد تجاهلها والمغادرة؟')) return false;
+    discardSliderDraft();
+    return true;
+  };
+  const changeSection = (next: Section) => { if (next !== section && !confirmLeave()) return; setSection(next); setSearch(''); };
   const openNew = (kind: Kind) => setEditor({ kind, item: newItem(kind), creating: true });
   const filtered = useMemo(() => {
     if (!data || !['properties', 'articles', 'campaigns'].includes(section)) return [];
@@ -377,6 +427,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
     { id: 'articles' as Section, label: 'المقالات', icon: BookOpen },
     { id: 'campaigns' as Section, label: 'الحملات', icon: Megaphone },
     { id: 'inquiries' as Section, label: 'الرسائل', icon: FileText },
+    { id: 'slider' as Section, label: 'سلايدر الرئيسية', icon: Images },
     { id: 'site' as Section, label: 'الموقع', icon: Settings2 },
     { id: 'analytics' as Section, label: 'التحليلات', icon: BarChart3 },
   ];
@@ -430,7 +481,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       </div></td>
     </tr>)}</tbody></table> : <Empty title={compact ? 'لا توجد عناصر بعد' : search ? 'لا توجد نتائج مطابقة' : `لا توجد ${sectionNames[kind]} بعد`} text={search ? 'جرّب البحث بكلمة أخرى.' : `ابدأ بإضافة ${itemNames[kind]} جديد لإدارته من هنا.`} action={!compact && !search ? { label: `إضافة ${itemNames[kind]}`, onClick: () => openNew(kind) } : undefined} />}
   </div>;
-  const siteKeys = [...new Set([...siteFields.map(entry => entry[0]), ...Object.keys(data?.site || {}).map(key => key.endsWith('.en') ? key.slice(0, -3) : key)])];
+  const siteKeys = [...new Set([...siteFields.map(entry => entry[0]), ...Object.keys(data?.site || {}).filter(key => key !== HERO_SLIDER_KEY && key !== `${HERO_SLIDER_KEY}.en`).map(key => key.endsWith('.en') ? key.slice(0, -3) : key)])];
   const isLanguageNeutralSiteKey = (key: string) => {
     const normalized = key.toLowerCase();
     return normalized.includes('image') || normalized.includes('link') || normalized.includes('url') ||
@@ -446,18 +497,18 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
         <nav className="ad-nav" aria-label="أقسام لوحة الإدارة">
           {nav.map(entry => <button key={entry.id} type="button" className={section === entry.id ? 'active' : ''} onClick={() => changeSection(entry.id)} data-testid={`button-nav-${entry.id}`} aria-current={section === entry.id ? 'page' : undefined}><entry.icon />{entry.label}{data && ['properties', 'articles', 'campaigns'].includes(entry.id) && <span>{data[entry.id as Kind].length}</span>}</button>)}
         </nav>
-        <div className="ad-sidebar-bottom"><button type="button" onClick={onLogout} data-testid="button-logout"><LogOut size={17} />تسجيل الخروج</button><div className="ad-sidebar-note">العبنق العقارية · لوحة إدارة الموقع</div></div>
+        <div className="ad-sidebar-bottom"><button type="button" onClick={() => { if (confirmLeave()) onLogout(); }} data-testid="button-logout"><LogOut size={17} />تسجيل الخروج</button><div className="ad-sidebar-note">العبنق العقارية · لوحة إدارة الموقع</div></div>
       </aside>
       <main className="ad-main">
         <header className="ad-topbar">
           <div className="ad-breadcrumb"><span>لوحة التحكم</span><ChevronLeft size={13} /><strong>{sectionNames[section]}</strong></div>
-          <div className="ad-top-actions"><span className="ad-live">البيانات المباشرة</span><button type="button" className="ad-icon-btn" onClick={() => void reload(true)} title="تحديث البيانات" aria-label="تحديث البيانات" data-testid="button-refresh"><RefreshCw /></button><button type="button" className="ad-icon-btn" onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} title={theme === 'light' ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'} aria-label="تبديل السمة" data-testid="button-theme">{theme === 'light' ? <Moon /> : <Sun />}</button><span className="ad-avatar" aria-label="المدير">ع</span></div>
+          <div className="ad-top-actions"><span className="ad-live" role="status">{refreshing ? 'جارٍ التحديث...' : 'البيانات المباشرة'}</span><button type="button" className="ad-icon-btn" onClick={() => void reload(true)} title="تحديث البيانات" aria-label="تحديث البيانات" disabled={refreshing} aria-busy={refreshing} data-testid="button-refresh"><RefreshCw /></button><button type="button" className="ad-icon-btn" onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} title={theme === 'light' ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'} aria-label="تبديل السمة" data-testid="button-theme">{theme === 'light' ? <Moon /> : <Sun />}</button><span className="ad-avatar" aria-label="المدير">ع</span></div>
         </header>
         <div className="ad-content">
-          <div className="ad-heading"><div><span className="ad-eyebrow">العبنق / الإدارة</span><h1>{section === 'overview' ? 'صباح الخير، أهلاً بك.' : sectionNames[section]}</h1><p className="ad-subtitle">{section === 'overview' ? 'مساحتك لمتابعة أعمالك واتخاذ القرار بثقة.' : section === 'analytics' ? 'صورة واضحة لأداء موقعك ومصادر الزيارات.' : section === 'site' ? 'حدّث النصوص والصور التي تظهر لزوار موقعك.' : `إدارة ${sectionNames[section]} المعروضة على موقعك.`}</p></div>
+          <div className="ad-heading"><div><span className="ad-eyebrow">العبنق / الإدارة</span><h1>{section === 'overview' ? 'صباح الخير، أهلاً بك.' : sectionNames[section]}</h1><p className="ad-subtitle">{section === 'overview' ? 'مساحتك لمتابعة أعمالك واتخاذ القرار بثقة.' : section === 'analytics' ? 'صورة واضحة لأداء موقعك ومصادر الزيارات.' : section === 'slider' ? 'تحكم في شرائح وصور وحركة السلايدر في أعلى الصفحة الرئيسية.' : section === 'site' ? 'حدّث النصوص والصور التي تظهر لزوار موقعك.' : `إدارة ${sectionNames[section]} المعروضة على موقعك.`}</p></div>
             {(['properties', 'articles', 'campaigns'] as Section[]).includes(section) && <button className="ad-button ad-button-primary" type="button" onClick={() => openNew(section as Kind)} data-testid={`button-add-${section}`}><Plus />إضافة {itemNames[section as Kind]}</button>}
           </div>
-          {loading ? <div className="ad-loading" aria-label="جارٍ تحميل لوحة التحكم"><div className="ad-skeleton" /><div className="ad-kpis"><div className="ad-skeleton" /><div className="ad-skeleton" /><div className="ad-skeleton" /><div className="ad-skeleton" /></div><div className="ad-skeleton" style={{ height: 280 }} /></div> :
+          {loading && !data ? <div className="ad-loading" aria-label="جارٍ تحميل لوحة التحكم"><div className="ad-skeleton" /><div className="ad-kpis"><div className="ad-skeleton" /><div className="ad-skeleton" /><div className="ad-skeleton" /><div className="ad-skeleton" /></div><div className="ad-skeleton" style={{ height: 280 }} /></div> :
             loadError && !data ? <div className="ad-card ad-error-box"><CircleAlert size={31} /><h2>تعذر الوصول إلى بيانات اللوحة</h2><p role="alert">{loadError}</p><button type="button" className="ad-button ad-button-primary" onClick={() => void reload(true)} data-testid="button-retry"><RefreshCw />إعادة المحاولة</button></div> :
             data && <>
               {loadError && <div className="ad-card ad-error-box" style={{ padding: 20, marginBottom: 18 }}><p role="alert">تعذر تحديث البيانات: {loadError}</p><button type="button" className="ad-button ad-button-plain" onClick={() => void reload()} data-testid="button-retry-refresh">إعادة المحاولة</button></div>}
@@ -497,6 +548,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                   </article>)}
                 </div> : <Empty title="لا توجد رسائل بعد" text="تظهر هنا الرسائل التي يرسلها الزوار عبر صفحة التواصل." />}
               </section>}
+              {section === 'slider' && <SliderEditor site={data.site} onSave={saveSlider} onDirtyChange={setSliderDirty} onUploadsChange={setSliderUploads} />}
               {section === 'site' && <>
                 <div className="ad-dashboard-hero"><div><span className="ad-eyebrow">إدارة المحتوى</span><h2>موقعك، بصوتك.</h2><p>عدّل النصوص والروابط مباشرة، ثم احفظ كل حقل على حدة.</p><p className="ad-site-shared-note">الصور والوسائط والروابط وأرقام الهاتف مشتركة بين اللغتين.</p></div></div>
                 <div className="ad-site-grid">{siteKeys.map(key => {

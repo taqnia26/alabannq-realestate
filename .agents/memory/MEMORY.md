@@ -3,3 +3,5 @@
 - [Official property catalog](official-property-catalog.md) — publish only current offers and public image links from alabannq.com; do not add fictional listings or stock-property photos.
 - [Site image storage](site-image-storage.md) — editorial uploads use admin-only writes but narrow public reads; never expose private attachments this way.
 - [Local upload persistence](local-upload-persistence.md) — local uploads satisfy the requested storage swap, but published Replit filesystem resets; warn before publishing.
+- [Draft upload ownership](draft-upload-ownership.md) — server checks cannot see unsaved reuse; removing one image field must not delete a file used elsewhere in a draft.
+- [Editor draft recovery](editor-draft-recovery.md) — navigation dialogs are best-effort; protect unsaved work independently and restore only against its matching saved baseline.

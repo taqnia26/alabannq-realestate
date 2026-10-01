@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { z } from "zod";
 import express from "express";
-import { MAX_IMAGE_SIZE, deleteUnreferencedImage, imageStream, saveImage, verifiedImage } from "../lib/siteImages";
+import { MAX_IMAGE_SIZE, deleteUnreferencedImage, imageStream, saveImage, verifiedImage, withImageMutationLock } from "../lib/siteImages";
 
 const router: IRouter = Router();
 const idSchema = z.string().uuid();
@@ -12,7 +12,7 @@ router.post("/images", express.raw({ type: "application/octet-stream", limit: MA
     res.status(201).json({ imageURL: await saveImage(req.body) });
   } catch (err) {
     if (err instanceof Error && err.message === "INVALID_IMAGE") {
-      res.status(400).json({ error: "الصورة يجب أن تكون JPG أو PNG أو WebP وبحجم لا يتجاوز 8 ميغابايت." }); return;
+      res.status(400).json({ error: "الصورة يجب أن تكون JPG/JPEG أو PNG أو WebP أو GIF أو AVIF وبحجم لا يتجاوز 8 ميغابايت." }); return;
     }
     req.log.error({ err }, "Failed to save image");
     res.status(503).json({ error: "تعذر حفظ الصورة. حاول مجددًا." });
@@ -22,7 +22,7 @@ router.post("/images", express.raw({ type: "application/octet-stream", limit: MA
 router.delete("/images/:id", async (req, res): Promise<void> => {
   const parsed = idSchema.safeParse(req.params.id);
   if (!parsed.success) { res.status(400).json({ error: "معرّف الصورة غير صالح" }); return; }
-  const result = await deleteUnreferencedImage(parsed.data);
+  const result = await withImageMutationLock(() => deleteUnreferencedImage(parsed.data));
   if (result === "referenced") { res.status(409).json({ error: "الصورة لا تزال مستخدمة في الموقع. احفظ إزالة الصورة أولًا." }); return; }
   res.status(204).end();
 });
