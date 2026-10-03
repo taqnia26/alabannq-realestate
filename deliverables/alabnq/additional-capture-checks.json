@@ -1,0 +1,186 @@
+[
+  {
+    "variant": "Architect",
+    "device": "desktop",
+    "width": 1360,
+    "pageWidth": 1360,
+    "height": 3225,
+    "rtl": "rtl",
+    "font": true,
+    "clippedHeadings": [],
+    "images": [
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-dark.png",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-company-exterior.png",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-company-exterior.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/3.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/1-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/2-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-dark.png",
+        "loaded": true
+      }
+    ],
+    "hero": true,
+    "errors": []
+  },
+  {
+    "variant": "Architect",
+    "device": "mobile",
+    "width": 420,
+    "pageWidth": 420,
+    "height": 4415,
+    "rtl": "rtl",
+    "font": true,
+    "clippedHeadings": [],
+    "images": [
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-dark.png",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-company-exterior.png",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-company-exterior.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/3.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/1-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/2-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-dark.png",
+        "loaded": true
+      }
+    ],
+    "hero": true,
+    "errors": []
+  },
+  {
+    "variant": "Collection",
+    "device": "desktop",
+    "width": 1360,
+    "pageWidth": 1360,
+    "height": 2361,
+    "rtl": "rtl",
+    "font": true,
+    "clippedHeadings": [],
+    "images": [
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-light.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/3.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/3.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/1-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/2-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-dark.png",
+        "loaded": true
+      }
+    ],
+    "hero": true,
+    "errors": []
+  },
+  {
+    "variant": "Collection",
+    "device": "mobile",
+    "width": 420,
+    "pageWidth": 420,
+    "height": 3685,
+    "rtl": "rtl",
+    "font": true,
+    "clippedHeadings": [],
+    "images": [
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-light.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/3.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/3.png",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/08/WhatsApp-Image-2025-12-25-at-8.40.46-PM-1.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/1-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://alabannq.com/wp-content/uploads/2026/07/2-3.jpeg",
+        "loaded": true
+      },
+      {
+        "src": "https://01d069cb-c822-4e8b-b4b1-8f174f84b94e-00-2v0g68g1j9uv6-nyo2bgc0.pike.replit.dev/__mockup/alabnq/alabnq-mark-dark.png",
+        "loaded": true
+      }
+    ],
+    "hero": true,
+    "errors": []
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "report": [
+    {
+      "file": "alabnq-proposal-03-architect.png",
+      "bytes": 1626983,
+      "verified": true
+    },
+    {
+      "file": "alabnq-proposal-03-architect.jpg",
+      "bytes": 653865,
+      "verified": true
+    },
+    {
+      "file": "alabnq-proposal-04-collection.png",
+      "bytes": 1519677,
+      "verified": true
+    },
+    {
+      "file": "alabnq-proposal-04-collection.jpg",
+      "bytes": 560811,
+      "verified": true
+    },
+    {
+      "file": "alabnq-proposal-01-dark-gold.png",
+      "bytes": 7676457,
+      "verified": true
+    },
+    {
+      "file": "alabnq-proposal-01-lightweight.jpg",
+      "bytes": 804669,
+      "verified": true
+    },
+    {
+      "file": "alabnq-proposal-02-cream-gold.png",
+      "bytes": 7250404,
+      "verified": true
+    },
+    {
+      "file": "alabnq-proposal-02-lightweight.jpg",
+      "bytes": 795296,
+      "verified": true
+    }
+  ],
+  "errors": []
+}

@@ -28,3 +28,87 @@ mtime_ms = 1790680832260
 storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/41f1f2d4-d8b8-44b7-937b-ca5964cbf2f1/27833a2d-bebf-4ef3-a6f5-88b1ff959eb4"
 storage_version_token = "1790680852061128"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "nluXW3TAK9excyiPpKD-X"
+uri = "file://deliverables/alabnq/alabnq-proposal-01-dark-gold.png"
+type = "image"
+title = "تحميل المقترح الأول — داكن وذهبي"
+description = "النسخة الأصلية PNG عالية الدقة، 7.4 ميجابايت."
+logical_id = "c3ce7c2b-01cc-43d2-b697-91e898e9330e"
+content_hash = "sha256:c22a1750a2b9f63a584394543d136e99a586f2c5b5e0693b7290925db16a69d0"
+size = 7676457
+mtime_ms = 1790871093948
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/c3ce7c2b-01cc-43d2-b697-91e898e9330e/e3ba4ada-00ed-4c57-92b2-3b69e899ebbe"
+storage_version_token = "1790879575883781"
+content_type = "image/png"
+
+[[outputs]]
+id = "IfbDnG4oOM_tcW9Lbu7vb"
+uri = "file://deliverables/alabnq/alabnq-proposal-02-cream-gold.png"
+type = "image"
+title = "تحميل المقترح الثاني — كريمي وذهبي"
+description = "النسخة الأصلية PNG عالية الدقة، 7 ميجابايت."
+logical_id = "7bf33cfe-2d10-4bc8-8d86-468069f4da7c"
+content_hash = "sha256:bfad76075c6d8a3cd007ec40b50cfe2fe891181d72e04735c13bd0156fc4d1e2"
+size = 7250404
+mtime_ms = 1790871110416
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/7bf33cfe-2d10-4bc8-8d86-468069f4da7c/06a4d1dc-9c1a-4edd-b16a-6af358882bb6"
+storage_version_token = "1790879577390574"
+content_type = "image/png"
+
+[[outputs]]
+id = "l1w6zQtMWh8HbmBQhTNNa"
+uri = "file://deliverables/alabnq/alabnq-proposal-01-lightweight.jpg"
+type = "image"
+title = "المقترح الأول — نسخة خفيفة للتنزيل"
+description = "الصورة نفسها بصيغة JPG، بعرض 1920 بكسل وحجم أقل من 1 ميجابايت."
+logical_id = "7cae5b66-36d2-4cf3-b8d5-225851f934e8"
+content_hash = "sha256:eb046416b6738cc2d45b5c63441422212a6b0dcdd83cb523fd19b5089d3135e3"
+size = 804669
+mtime_ms = 1790879603993
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/7cae5b66-36d2-4cf3-b8d5-225851f934e8/acde4c22-5ba0-4208-89c3-f6ddfce156be"
+storage_version_token = "1790879635942803"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "jW5XE64RYp45BBuMBCRE8"
+uri = "file://deliverables/alabnq/alabnq-proposal-02-lightweight.jpg"
+type = "image"
+title = "المقترح الثاني — نسخة خفيفة للتنزيل"
+description = "الصورة نفسها بصيغة JPG، بعرض 1920 بكسل وحجم أقل من 1 ميجابايت."
+logical_id = "3f43815f-08ec-42b5-a281-eacb8a10ee3d"
+content_hash = "sha256:8788e5d891a72d1800a3bf338315b707c9f7ffa0ea19992f47e883bbe1fc27c0"
+size = 795296
+mtime_ms = 1790879604273
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/3f43815f-08ec-42b5-a281-eacb8a10ee3d/e8d49379-dadc-45b4-af46-99172b873096"
+storage_version_token = "1790879637220278"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "_kXlHSQ4jXOwv9A-dr_2M"
+uri = "file://deliverables/alabnq/alabnq-proposal-03-architect.png"
+type = "image"
+title = "المقترح الثالث — تكوين معماري فحمي وذهبي"
+description = "صورة PNG عالية الدقة تضم الكمبيوتر والجوال، بتكوين غير متماثل يبرز الشركة وخدماتها. 1920 × 4744 بكسل."
+logical_id = "43a14f96-a49d-4afa-ac13-79d46eec35be"
+content_hash = "sha256:21bd0c4e35d670462655537e8ccb4798ac3a8b29e1bb16034bb4e15be0ce58f9"
+size = 1626983
+mtime_ms = 1790880322473
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/43a14f96-a49d-4afa-ac13-79d46eec35be/636434c5-a03d-4429-a66f-83eb5ca84602"
+storage_version_token = "1790880542515825"
+content_type = "image/png"
+
+[[outputs]]
+id = "2enbGpXTPL0euEeexi76n"
+uri = "file://deliverables/alabnq/alabnq-proposal-04-collection.png"
+type = "image"
+title = "المقترح الرابع — مجموعة العقارات الكريمية والذهبية"
+description = "صورة PNG عالية الدقة تضم الكمبيوتر والجوال، بصور العقارات الفعلية وعرض رئيسي وقائمة عروض جانبية. 1920 × 4017 بكسل."
+logical_id = "92aae79f-94c8-48fb-b4c6-6bc5d22c923e"
+content_hash = "sha256:a647d2bedcab16871ab2cc3bfb4d426ef6836de9d5423b2ab1f44f05425a7861"
+size = 1519677
+mtime_ms = 1790880332257
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/92aae79f-94c8-48fb-b4c6-6bc5d22c923e/e6f428ac-1add-42fd-9a6d-b9017fd464b2"
+storage_version_token = "1790880543880736"
+content_type = "image/png"
