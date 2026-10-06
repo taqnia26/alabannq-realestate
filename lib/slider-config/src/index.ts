@@ -87,13 +87,15 @@ export function newHeroSlide(id: string): HeroSlide {
 
 export function defaultHeroSlider(site: Record<string, string> = {}): HeroSliderConfig {
   const images = site["home.heroImage"] ? [site["home.heroImage"]] : [
-    "/hero/riyadh-kingdom.jpg", "/hero/makkah-clocktower.jpg", "/hero/riyadh-aerial.jpg",
+    "/hero/kafd-sunset.png", "/hero/makkah-clocktower.jpg", "/hero/riyadh-aerial.jpg",
     "/hero/makkah-abraj.jpg", "/hero/riyadh-financial.jpg",
   ];
   return {
     version: 1,
     slides: images.map((image, index) => ({
       ...newHeroSlide(`default-${index + 1}`), image,
+      imageAlt: image === "/hero/kafd-sunset.png" ? "أفق مركز الملك عبدالله المالي تحت وهج الغروب" : "",
+      imageAltEn: image === "/hero/kafd-sunset.png" ? "King Abdullah Financial District skyline at sunset" : "",
       title: site["home.title"] || "خبرة عقارية.. وخدمات متكاملة",
       titleEn: site["home.title.en"] || "Real estate expertise. Complete service.",
       subtitle: site["home.subtitle"] || "خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.",
