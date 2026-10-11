@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './adminPasswordInput';
+export * from './authError';
 export * from './googleMapsLink';
 export * from './googleMapsLocation';
 export * from './healthStatus';

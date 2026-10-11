@@ -1,5 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { uploadsDir } from "./lib/siteImages";
 
 const rawPort = process.env["PORT"];
 
@@ -13,6 +14,12 @@ const port = Number(rawPort);
 
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
+}
+
+try {
+  uploadsDir();
+} catch {
+  logger.error("Image upload is disabled: UPLOADS_DIR must be an absolute path outside the API build output.");
 }
 
 app.listen(port, (err) => {

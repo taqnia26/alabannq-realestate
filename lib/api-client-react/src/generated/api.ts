@@ -20,6 +20,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminPasswordInput,
+  AuthError,
   GoogleMapsLink,
   GoogleMapsLocation,
   HealthStatus
@@ -51,6 +53,77 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getChangeAdminPasswordUrl = () => {
+
+
+
+
+  return `/api/auth/change-password`
+}
+
+/**
+ * @summary Change the signed-in administrator's password and rotate the session
+ */
+export const changeAdminPassword = async (adminPasswordInput: AdminPasswordInput, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getChangeAdminPasswordUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(adminPasswordInput)
+  }
+);}
+
+
+
+
+
+export const getChangeAdminPasswordMutationOptions = <TError = ErrorType<AuthError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeAdminPassword>>, TError,{data: BodyType<AdminPasswordInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof changeAdminPassword>>, TError,{data: BodyType<AdminPasswordInput>}, TContext> => {
+
+const mutationKey = ['changeAdminPassword'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof changeAdminPassword>>, {data: BodyType<AdminPasswordInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  changeAdminPassword(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChangeAdminPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof changeAdminPassword>>>
+    export type ChangeAdminPasswordMutationBody = BodyType<AdminPasswordInput>
+    export type ChangeAdminPasswordMutationError = ErrorType<AuthError>
+
+    /**
+ * @summary Change the signed-in administrator's password and rotate the session
+ */
+export const useChangeAdminPassword = <TError = ErrorType<AuthError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeAdminPassword>>, TError,{data: BodyType<AdminPasswordInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof changeAdminPassword>>,
+        TError,
+        {data: BodyType<AdminPasswordInput>},
+        TContext
+      > => {
+      return useMutation(getChangeAdminPasswordMutationOptions(options));
+    }
 
 export const getResolveGoogleMapsLocationUrl = () => {
 

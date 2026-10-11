@@ -9,6 +9,24 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Change the signed-in administrator's password and rotate the session
+ */
+export const changeAdminPasswordBodyCurrentPasswordMax = 1024;
+
+export const changeAdminPasswordBodyNewPasswordMin = 12;
+export const changeAdminPasswordBodyNewPasswordMax = 1024;
+
+
+
+export const ChangeAdminPasswordBody = zod.object({
+  "currentPassword": zod.string().min(1).max(changeAdminPasswordBodyCurrentPasswordMax),
+  "newPassword": zod.string().min(changeAdminPasswordBodyNewPasswordMin).max(changeAdminPasswordBodyNewPasswordMax)
+})
+
+export const ChangeAdminPasswordResponse = zod.void()
+
+
+/**
  * @summary Resolve an exact property pin from a Google Maps sharing URL
  */
 export const resolveGoogleMapsLocationBodyUrlMax = 4000;

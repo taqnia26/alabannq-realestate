@@ -112,3 +112,17 @@ mtime_ms = 1790880332257
 storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/92aae79f-94c8-48fb-b4c6-6bc5d22c923e/e6f428ac-1add-42fd-9a6d-b9017fd464b2"
 storage_version_token = "1790880543880736"
 content_type = "image/png"
+
+[[outputs]]
+id = "5zmGtBA1WWxy1DJ5BVvjD"
+uri = "file://DEPLOYMENT.md"
+type = "text"
+title = "دليل متغيرات التشغيل والنشر"
+description = "المتغيرات المقروءة فعليًا، وأوامر البناء وتهيئة أول أدمن، مع أمثلة غير حقيقية."
+logical_id = "e4c55c45-4974-463a-889d-e1401a89ad95"
+content_hash = "sha256:44cd1fc6291b0953d5d5be14467b4755235d5b70424a3f15e11cec9d355d871e"
+size = 5349
+mtime_ms = 1791741479028
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:01d069cb-c822-4e8b-b4b1-8f174f84b94e/e4c55c45-4974-463a-889d-e1401a89ad95/6f8b95e9-f373-42cb-a43e-a9d17626665f"
+storage_version_token = "1791742594128427"
+content_type = "text/markdown"

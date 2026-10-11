@@ -5,6 +5,23 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface AdminPasswordInput {
+  /**
+     * @minLength 1
+     * @maxLength 1024
+     */
+  currentPassword: string;
+  /**
+     * @minLength 12
+     * @maxLength 1024
+     */
+  newPassword: string;
+}
+
+export interface AuthError {
+  error: string;
+}
+
 export interface GoogleMapsLink {
   /** @maxLength 4000 */
   url: string;

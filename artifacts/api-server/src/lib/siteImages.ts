@@ -29,7 +29,7 @@ export function managedImageId(url: string): string | null {
   return imageId.test(id) ? id : null;
 }
 
-function uploadsDir(): string {
+export function uploadsDir(): string {
   const dir = process.env.UPLOADS_DIR;
   if (!dir || !path.isAbsolute(dir)) throw new Error("UPLOADS_DIR must be an absolute path");
   const resolved = path.resolve(dir);

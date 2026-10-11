@@ -61,24 +61,29 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
   } catch (error) { next(error); }
 }
 
-const attempts = new Map<string, { count: number; until: number }>();
-export function limitLogin(req: Request, res: Response, next: NextFunction): void {
-  const now = Date.now();
-  if (attempts.size > 2000) {
-    for (const [ip, entry] of attempts) if (entry.until <= now) attempts.delete(ip);
-  }
-  const ip = req.ip || req.socket.remoteAddress || "unknown";
-  const previous = attempts.get(ip);
-  const entry = previous && previous.until > now ? previous : { count: 0, until: now + 60_000 };
-  if (++entry.count > 5) {
+export function createAuthLimiter() {
+  const attempts = new Map<string, { count: number; until: number }>();
+  return function limitAttempts(req: Request, res: Response, next: NextFunction): void {
+    const now = Date.now();
+    if (attempts.size > 2000) {
+      for (const [ip, entry] of attempts) if (entry.until <= now) attempts.delete(ip);
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    const previous = attempts.get(ip);
+    const entry = previous && previous.until > now ? previous : { count: 0, until: now + 60_000 };
+    if (++entry.count > 5) {
+      attempts.set(ip, entry);
+      res.set("Retry-After", String(Math.ceil((entry.until - now) / 1000)));
+      res.status(429).json({ error: "محاولات كثيرة، حاول بعد دقيقة." });
+      return;
+    }
     attempts.set(ip, entry);
-    res.set("Retry-After", String(Math.ceil((entry.until - now) / 1000)));
-    res.status(429).json({ error: "محاولات كثيرة، حاول بعد دقيقة." });
-    return;
-  }
-  attempts.set(ip, entry);
-  next();
+    next();
+  };
 }
+
+export const limitLogin = createAuthLimiter();
+export const limitPasswordChange = createAuthLimiter();
 
 export function setSession(res: Response, token: string): void {
   res.cookie(COOKIE, token, cookieOptions);

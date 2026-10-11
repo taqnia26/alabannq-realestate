@@ -7,3 +7,4 @@
 - [Editor draft recovery](editor-draft-recovery.md) — navigation dialogs are best-effort; protect unsaved work independently and restore only against its matching saved baseline.
 - [Client proposal delivery](client-proposal-delivery.md) — supply an isolated browser download page alongside image cards; binary text in the editor does not indicate a damaged PNG.
 - [Actual site content control](site-content-control.md) — public content edits must persist and render for visitors; Google Maps links must identify the actual property pin.
+- [Preview rate-limit testing](preview-rate-limit-testing.md) — forwarded test IPs may share one preview rate window; honor Retry-After instead of weakening auth limits.

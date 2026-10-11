@@ -6,7 +6,7 @@ import {
   Activity, ArrowLeft, BarChart3, BookOpen, Building2, Check, ChevronLeft,
   CircleAlert, ExternalLink, FileText, Image, LayoutDashboard, LogOut,
   Megaphone, Moon, MoreHorizontal, Pencil, Plus, RefreshCw, Search,
-  Images, Settings2, Sun, Trash2, TrendingUp, X,
+  Images, KeyRound, Settings2, Sun, Trash2, TrendingUp, X,
 } from 'lucide-react';
 import type { Property } from '../data/mockProperties';
 import type { Article } from '../data/articles';
@@ -21,6 +21,7 @@ import { BrandLogo } from '../components/BrandLogo';
 import ContentEditor from './ContentEditor';
 import PropertyLocationInput from './PropertyLocationInput';
 import PagesEditor, { type AdminPage } from './PagesEditor';
+import ChangePasswordDialog from './ChangePasswordDialog';
 import './admin.css';
 
 type Campaign = {
@@ -307,6 +308,8 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [notice, setNotice] = useState<Notice | null>(null);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const passwordButtonRef = useRef<HTMLButtonElement>(null);
   const [search, setSearch] = useState('');
   const [editor, setEditor] = useState<{ kind: Kind; item: Item; creating: boolean } | null>(null);
   const [deleting, setDeleting] = useState<{ kind: Kind; item: Item } | null>(null);
@@ -519,7 +522,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
         <nav className="ad-nav" aria-label="أقسام لوحة الإدارة">
           {nav.map(entry => <button key={entry.id} type="button" className={section === entry.id ? 'active' : ''} onClick={() => changeSection(entry.id)} data-testid={`button-nav-${entry.id}`} aria-current={section === entry.id ? 'page' : undefined}><entry.icon />{entry.label}{data && ['properties', 'articles', 'campaigns'].includes(entry.id) && <span>{data[entry.id as Kind].length}</span>}</button>)}
         </nav>
-        <div className="ad-sidebar-bottom"><button type="button" onClick={() => { if (confirmLeave()) onLogout(); }} data-testid="button-logout"><LogOut size={17} />تسجيل الخروج</button><div className="ad-sidebar-note">العبنق العقارية · لوحة إدارة الموقع</div></div>
+        <div className="ad-sidebar-bottom"><button ref={passwordButtonRef} type="button" onClick={() => setPasswordDialogOpen(true)} data-testid="button-change-password"><KeyRound size={17} />تغيير كلمة المرور</button><button type="button" onClick={() => { if (confirmLeave()) onLogout(); }} data-testid="button-logout"><LogOut size={17} />تسجيل الخروج</button><div className="ad-sidebar-note">العبنق العقارية · لوحة إدارة الموقع</div></div>
       </aside>
       <main className="ad-main">
         <header className="ad-topbar">
@@ -580,6 +583,9 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       </main>
     </div>
     {notice && <div className={`ad-feedback ${notice.error ? 'error' : ''}`} role="status" data-testid="status-feedback">{notice.error ? <CircleAlert size={16} /> : <Check size={16} />}{notice.text}<button type="button" onClick={() => setNotice(null)} aria-label="إغلاق التنبيه" data-testid="button-dismiss-feedback"><X size={15} /></button></div>}
+    {passwordDialogOpen && <ChangePasswordDialog returnFocusRef={passwordButtonRef} onClose={() => setPasswordDialogOpen(false)} onSuccess={() => {
+      setPasswordDialogOpen(false); setNotice({text:'تم تغيير كلمة المرور بنجاح، وإلغاء الجلسات السابقة.'});
+    }} />}
     {editor && <ItemForm key={`${editor.kind}-${editor.item.id}`} kind={editor.kind} initial={editor.kind === 'properties' ? { ...editor.item, latitude: (editor.item as PublishedProperty).coordinates?.[0] ?? 21.4225, longitude: (editor.item as PublishedProperty).coordinates?.[1] ?? 39.8262 } as unknown as Item : editor.item} saving={saving} onClose={() => setEditor(null)} onSave={saveItem} />}
     {deleting && <div className="ad-overlay" onMouseDown={e => { if (e.target === e.currentTarget) setDeleting(null); }} role="presentation"><div className="ad-confirm" role="alertdialog" aria-modal="true" aria-label="تأكيد الحذف"><CircleAlert className="ad-confirm-icon" size={31} /><h2>حذف {itemNames[deleting.kind]}؟</h2><p>سيتم حذف «{itemTitle(deleting.item)}» من لوحة الإدارة والموقع. لا يمكن التراجع عن هذا الإجراء.</p><div className="ad-confirm-actions"><button type="button" className="ad-button ad-button-danger" onClick={() => void deleteItem()} disabled={saving} data-testid="button-confirm-delete"><Trash2 />{saving ? 'جارٍ الحذف...' : 'نعم، احذف'}</button><button type="button" className="ad-button ad-button-plain" onClick={() => setDeleting(null)} data-testid="button-cancel-delete">إلغاء</button></div></div></div>}
   </div>;
