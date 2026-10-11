@@ -1,13 +1,15 @@
 import { Link } from "wouter";
 import { ArrowUpLeft, Mail, MapPin, Phone, Instagram, Twitter, Linkedin } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
-import { useSiteValue, useLocalizedSiteValue } from "@/data/siteContent";
+import { useSiteValue, useLocalizedSiteValue, useSiteContent } from "@/data/siteContent";
 import { usePreferences } from "@/lib/preferences";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export function Footer() {
   const footerRef = useScrollReveal<HTMLElement>();
-  const { t } = usePreferences();
+  const { t, locale } = usePreferences();
+  const { data } = useSiteContent();
+  const name = useLocalizedSiteValue("site.name", "شركة العبنق العقارية", "ALABNQ REAL ESTATE");
   const image = useSiteValue("footer.image", "/hero/riyadh-kingdom.jpg");
   const about = useLocalizedSiteValue("footer.about", "شركة العبنق العقارية: خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.", "Alabnq Real Estate: experience that builds trust, services that create value.");
   const address = useLocalizedSiteValue("contact.address", "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع", "Makkah – Al-Awali – Sheikh Mohammed bin Manea Street");
@@ -18,10 +20,14 @@ export function Footer() {
     { icon: Instagram, label: "Instagram", url: useSiteValue("footer.instagram", "") },
     { icon: Linkedin, label: "LinkedIn", url: useSiteValue("footer.linkedin", "") },
   ];
-  const links = [
+  const pageLinks = [
     ["/", t("الرئيسية", "Home")], ["/properties", t("العقارات", "Properties")],
     ["/about", t("عن الشركة", "Our company")], ["/articles", t("الأخبار والمقالات", "Journal")],
     ["/contact", t("تواصل معنا", "Contact")],
+  ];
+  const links = [
+    ...pageLinks.filter(([href]) => data?.site[`pages.${href === "/" ? "home" : href.slice(1)}.enabled`] !== "false"),
+    ...(data?.pages ?? []).filter(page => page.showInNav).map(page => [`/pages/${page.slug}`, locale === "en" ? page.titleEn || page.title : page.title]),
   ];
   return <footer ref={footerRef} className="site-always-dark relative isolate overflow-hidden bg-[#121b20] text-[#eee8db]">
     <img src={image} loading="lazy" alt="" className="footer-bg-motion pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[.45]" />
@@ -34,7 +40,7 @@ export function Footer() {
         <Link data-scroll-reveal href="/contact" className="site-button footer-cta-link inline-flex min-h-14 w-fit items-center gap-5 px-7 text-sm font-bold" style={{ "--reveal-delay": "130ms" } as React.CSSProperties}>{t("تواصل معنا", "Get in touch")} <ArrowUpLeft size={19} /></Link>
       </div>
       <div className="grid gap-14 py-16 md:grid-cols-2 lg:grid-cols-[1.35fr_.8fr_1fr] lg:gap-20 lg:py-20">
-        <div data-scroll-reveal><Link href="/" className="inline-flex items-center gap-4"><BrandLogo className="h-16 w-[52px]" tone="dark" label={t("شعار شركة العبنق العقارية", "Alabnq logo")} /><span className="text-base font-bold leading-6">{t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</span></Link><p className="mt-7 max-w-sm text-sm leading-8 text-[#eee8db]/65">{about}</p><div className="mt-8 flex gap-2">{socials.filter(s => s.url).map(s => <a key={s.label} href={s.url} target="_blank" rel="noreferrer" aria-label={s.label} className="flex h-10 w-10 items-center justify-center border border-[#e6d8b6]/20 transition-colors hover:border-[#d8b675] hover:text-[#d8b675]"><s.icon size={16} /></a>)}</div></div>
+        <div data-scroll-reveal><Link href="/" className="inline-flex items-center gap-4"><BrandLogo className="h-16 w-[52px]" tone="dark" label={t("شعار شركة العبنق العقارية", "Alabnq logo")} /><span className="text-base font-bold leading-6">{name}</span></Link><p className="mt-7 max-w-sm text-sm leading-8 text-[#eee8db]/65">{about}</p><div className="mt-8 flex gap-2">{socials.filter(s => s.url).map(s => <a key={s.label} href={s.url} target="_blank" rel="noreferrer" aria-label={s.label} className="flex h-10 w-10 items-center justify-center border border-[#e6d8b6]/20 transition-colors hover:border-[#d8b675] hover:text-[#d8b675]"><s.icon size={16} /></a>)}</div></div>
         <div data-scroll-reveal style={{ "--reveal-delay": "90ms" } as React.CSSProperties}><h3 className="mb-7 text-[11px] font-bold tracking-[.17em] text-[#d8b675]">{t("استكشف", "EXPLORE")}</h3><ul className="space-y-4">{links.map(([href, label]) => <li key={href}><Link href={href} className="footer-nav-link text-sm text-[#eee8db]/65 transition-colors hover:text-[#d8b675]">{label}</Link></li>)}</ul></div>
         <div data-scroll-reveal style={{ "--reveal-delay": "180ms" } as React.CSSProperties}><h3 className="mb-7 text-[11px] font-bold tracking-[.17em] text-[#d8b675]">{t("بيانات التواصل", "CONTACT DETAILS")}</h3><div className="space-y-6 text-sm leading-7 text-[#eee8db]/70"><div className="flex items-start gap-4"><MapPin size={17} className="mt-1 shrink-0 text-[#d8b675]" /><span>{address}</span></div><a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="flex items-center gap-4 transition-colors hover:text-[#d8b675]"><Phone size={17} className="text-[#d8b675]" /><span dir="ltr">{phone}</span></a><a href={`mailto:${email}`} className="flex items-center gap-4 transition-colors hover:text-[#d8b675]"><Mail size={17} className="text-[#d8b675]" /><span>{email}</span></a></div></div>
       </div>

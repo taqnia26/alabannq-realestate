@@ -16,7 +16,8 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { PreferencesProvider, usePreferences } from '@/lib/preferences';
-import { useLocalizedSiteValue } from '@/data/siteContent';
+import { useLocalizedSiteValue, useSiteValue, useSiteContent } from '@/data/siteContent';
+import CustomPage from '@/pages/CustomPage';
 
 // Pages
 import Home from '@/pages/Home';
@@ -128,13 +129,14 @@ function Router() {
             <Route path="/sign-up" component={() => <AuthScreen />} />
             <Route>
               <><Navbar /><Switch>
-            <Route path="/" component={Home} />
-            <Route path="/properties" component={Properties} />
+            <Route path="/"><ManagedPage page="home"><Home /></ManagedPage></Route>
+            <Route path="/properties"><ManagedPage page="properties"><Properties /></ManagedPage></Route>
             <Route path="/properties/:id" component={PropertyDetail} />
-            <Route path="/articles" component={Articles} />
+            <Route path="/articles"><ManagedPage page="articles"><Articles /></ManagedPage></Route>
             <Route path="/articles/:id" component={ArticleDetail} />
-            <Route path="/about" component={About} />
-            <Route path="/contact" component={Contact} />
+            <Route path="/about"><ManagedPage page="about"><About /></ManagedPage></Route>
+            <Route path="/contact"><ManagedPage page="contact"><Contact /></ManagedPage></Route>
+            <Route path="/pages/:slug" component={CustomPage} />
             <Route component={NotFound} />
               </Switch><Footer /><WhatsAppButton /></>
             </Route>
@@ -147,13 +149,13 @@ function Router() {
 
 function DocumentMetadata() {
   const { locale } = usePreferences();
+  const name = useLocalizedSiteValue("site.name", "شركة العبنق العقارية", "ALABNQ REAL ESTATE");
   const description = useLocalizedSiteValue(
     'seo.description',
     'شركة العبنق العقارية — خبرة عقارية.. وخدمات متكاملة.',
     'Alabnq Real Estate Company — real estate expertise and integrated services.',
   );
   useEffect(() => {
-    const name = locale === 'ar' ? 'شركة العبنق العقارية' : 'Alabnq Real Estate Company';
     document.title = name;
     for (const selector of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']) {
       document.querySelector(selector)?.setAttribute('content', description);
@@ -161,7 +163,7 @@ function DocumentMetadata() {
     for (const selector of ['meta[property="og:title"]', 'meta[name="twitter:title"]']) {
       document.querySelector(selector)?.setAttribute('content', name);
     }
-  }, [description, locale]);
+  }, [description, locale, name]);
   return null;
 }
 
@@ -186,18 +188,25 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  return <WouterRouter base={basePath}><PreferencesProvider><AppWithRouter /></PreferencesProvider></WouterRouter>;
+  return <QueryClientProvider client={queryClient}><WouterRouter base={basePath}><PreferencesProvider><AppWithRouter /></PreferencesProvider></WouterRouter></QueryClientProvider>;
 }
 
 function AppWithRouter() {
   return (
-    <QueryClientProvider client={queryClient}>
        <TooltipProvider>
           <Router />
         <Toaster />
       </TooltipProvider>
-    </QueryClientProvider>
   );
+}
+
+function ManagedPage({ page, children }: { page: string; children: ReactNode }) {
+  const { data, isLoading, isError } = useSiteContent();
+  const { t } = usePreferences();
+  if (isLoading) return <main className="site-container py-24">{t("جارٍ تحميل الصفحة…", "Loading page…")}</main>;
+  if (isError) return <main className="site-container py-24" role="alert">{t("تعذر تحميل إعدادات الصفحة.", "Could not load page settings.")}</main>;
+  if (data?.site[`pages.${page}.enabled`] === "false") return <NotFound />;
+  return <>{children}</>;
 }
 
 export default App;

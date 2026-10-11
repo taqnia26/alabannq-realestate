@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MapPinned, Ruler, TrendingUp, UsersRound } from "lucide-react";
 import { usePreferences } from "@/lib/preferences";
+import { useSiteContent } from "@/data/siteContent";
 
 const metrics = [
   {
@@ -25,6 +26,16 @@ const metrics = [
 
 export function HomeMetrics() {
   const { t } = usePreferences();
+  const { data } = useSiteContent();
+  const visibleMetrics = metrics.map((metric, index) => {
+    const stored = data?.site[`metrics.${index + 1}.value`];
+    const numeric = stored === undefined ? metric.value : Number(stored);
+    return { ...metric, value: Number.isFinite(numeric) && numeric >= 0 ? numeric : metric.value,
+      titleAr: data?.site[`metrics.${index + 1}.title`] ?? metric.titleAr,
+      titleEn: data?.site[`metrics.${index + 1}.title.en`] ?? metric.titleEn,
+      labelAr: data?.site[`metrics.${index + 1}.label`] ?? metric.labelAr,
+      labelEn: data?.site[`metrics.${index + 1}.label.en`] ?? metric.labelEn };
+  });
   const sectionRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
@@ -50,7 +61,7 @@ export function HomeMetrics() {
   }, []);
 
   return <div ref={sectionRef} className="order-3 grid grid-cols-2 gap-3 border-t border-[var(--line-soft)] pt-9 lg:col-span-2 lg:grid-cols-4 lg:gap-4 lg:pt-12">
-    {metrics.map((metric, index) => <div key={metric.titleEn} data-scroll-reveal className="home-metric min-w-0 border border-[var(--line-soft)] bg-secondary/20 p-4 sm:p-6" style={{ "--reveal-delay": `${index * 85}ms` } as React.CSSProperties}>
+    {visibleMetrics.map((metric, index) => <div key={index} data-scroll-reveal className="home-metric min-w-0 border border-[var(--line-soft)] bg-secondary/20 p-4 sm:p-6" style={{ "--reveal-delay": `${index * 85}ms` } as React.CSSProperties}>
       <div className="mb-8 flex justify-start text-accent"><metric.icon size={22} strokeWidth={1.5} aria-hidden="true" /></div>
       <span className="block text-[11px] font-semibold text-muted-foreground">{t(metric.titleAr, metric.titleEn)}</span>
       <strong className="mt-2 block whitespace-nowrap font-sans text-[clamp(1.15rem,2.3vw,2.15rem)] font-semibold leading-tight tracking-tight text-foreground tabular-nums" dir="ltr">{Math.round(metric.value * progress).toLocaleString("en-US")}{progress === 1 ? "+" : ""}</strong>

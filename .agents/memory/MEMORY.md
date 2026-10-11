@@ -6,3 +6,4 @@
 - [Draft upload ownership](draft-upload-ownership.md) — server checks cannot see unsaved reuse; removing one image field must not delete a file used elsewhere in a draft.
 - [Editor draft recovery](editor-draft-recovery.md) — navigation dialogs are best-effort; protect unsaved work independently and restore only against its matching saved baseline.
 - [Client proposal delivery](client-proposal-delivery.md) — supply an isolated browser download page alongside image cards; binary text in the editor does not indicate a damaged PNG.
+- [Actual site content control](site-content-control.md) — public content edits must persist and render for visitors; Google Maps links must identify the actual property pin.

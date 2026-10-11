@@ -1,0 +1,11 @@
+.admin-root .pe-root { display: grid; gap: 14px; }
+.admin-root .pe-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.admin-root .pe-head h3 { margin: 0; }
+.admin-root .pe-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.admin-root .pe-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border: 1px solid rgba(128,128,128,.25); border-radius: 10px; }
+.admin-root .pe-info { display: grid; gap: 4px; }
+.admin-root .pe-info code { font-size: 11px; color: var(--ad-muted); }
+.admin-root .pe-tags { display: flex; gap: 6px; }
+.admin-root .pe-tags em { font-style: normal; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: rgba(128,128,128,.15); }
+.admin-root .pe-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.admin-root .pe-notice { color: #2f8f5b; font-size: 12px; margin: 0; }

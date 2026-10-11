@@ -17,7 +17,8 @@ export default function Home() {
   const { t } = usePreferences();
   const featuredHeading = useLocalizedSiteValue("home.propertiesHeading", "أحدث العروض المميزة", "Selected properties");
   const articlesHeading = useLocalizedSiteValue("home.articlesHeading", "الأخبار والمقالات", "News & articles");
-  const aboutImage = useSiteValue("about.image", "/hero/riyadh-financial.jpg");
+   const aboutImage = useSiteValue("home.introImage", "/hero/riyadh-financial.jpg");
+   const servicesImage = useSiteValue("home.servicesImage", "/hero/riyadh-kingdom.jpg");
   const intro = useLocalizedSiteValue("home.intro", "تعمل شركة العبنق العقارية في السوق العقاري بالمملكة، مستندة إلى خبرة ميدانية ممتدة وفهم متكامل لاحتياجات ملاك العقارات والمستثمرين ومتطلبات السوق.", "Alabnq Real Estate operates in the Kingdom's property market, drawing on extensive field experience and a thorough understanding of property owners, investors, and market needs.");
   const commitment = useLocalizedSiteValue("home.commitment", "نجاحنا لا يقاس بتقديم الخدمة فحسب، بل بقدرتنا على تقديمها بمهنية ووضوح، وبما يحقق مصلحة عملائنا ويحفظ حقوقهم.", "Our success is measured not merely by providing a service, but by delivering it with professionalism and clarity, protecting our clients' interests and rights.");
   const customerService = useLocalizedSiteValue("home.customerService", "تقديم خدمات عقارية احترافية ومتكاملة تستند إلى الخبرة والمعرفة بالسوق", "Providing professional, integrated real estate services grounded in experience and market knowledge.");
@@ -47,7 +48,7 @@ export default function Home() {
        <div className="relative z-10 order-3 lg:col-span-2"><HomeMetrics /></div>
     </section>
     <section className="site-always-dark relative isolate overflow-hidden bg-[#172329] py-24 text-[#f0ebdf] md:py-32">
-      <img src="/hero/riyadh-kingdom.jpg" loading="lazy" alt="" className="value-showcase-image absolute inset-0 h-full w-full object-cover opacity-20" />
+       <img src={servicesImage} loading="lazy" alt="" className="value-showcase-image absolute inset-0 h-full w-full object-cover opacity-20" />
       <div className="absolute inset-0 bg-gradient-to-l from-[#172329] via-[#172329]/90 to-[#172329]/60" />
       <div aria-hidden="true" className="value-showcase-glow pointer-events-none absolute -end-32 -top-44 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(216,182,117,.15),transparent_68%)]" />
       <div aria-hidden="true" className="value-showcase-sheen absolute -inset-y-1/2 start-[-25%] w-[15%]" />

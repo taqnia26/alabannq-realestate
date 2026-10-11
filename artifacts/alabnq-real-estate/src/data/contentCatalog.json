@@ -1,0 +1,2043 @@
+[
+  {
+    "key": "about.heading",
+    "defaultValue": "شركة العبنق العقارية",
+    "englishDefault": "Alabnq Real Estate",
+    "type": "text",
+    "label": "عنوان صفحة من نحن",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.intro",
+    "defaultValue": "على مدى أكثر من عشرين عامًا، تعمل شركة العبنق العقارية في السوق العقاري بالمملكة، مستندة إلى خبرة ميدانية ممتدة وفهم متكامل لاحتياجات ملاك العقارات والمستثمرين ومتطلبات السوق.",
+    "englishDefault": "For more than twenty years, Alabnq Real Estate has operated in the Kingdom's property market, drawing on extensive field experience and an understanding of property owners, investors, and market needs.",
+    "type": "text",
+    "label": "مقدمة من نحن",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.story",
+    "defaultValue": "تقدم الشركة مجموعة من الخدمات العقارية المتخصصة التي تشمل التسويق العقاري، والمزادات العقارية، وإدارة الأملاك، وإدارة المرافق، والمتابعة القانونية والإدارية وغيرها من الخدمات العقارية، وفق منهجية عمل تهدف إلى رفع كفاءة الأصول، والمحافظة على قيمتها، وتحسين إدارتها وتشغيلها.",
+    "englishDefault": "The company offers specialized property services including marketing, auctions, property and facilities management, and legal and administrative follow-up. Its approach aims to improve asset efficiency, preserve value, and enhance management and operations.",
+    "type": "text",
+    "label": "قصة الشركة",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.commitment",
+    "defaultValue": "ونؤمن في العبنق العقارية بأن نجاحنا لا يقاس بتقديم الخدمة فحسب، بل بقدرتنا على تقديمها بمهنية ووضوح، وبما يحقق مصلحة عملائنا ويحفظ حقوقهم، في إطار من الالتزام بالأنظمة واللوائح المعمول بها في المملكة.",
+    "englishDefault": "At Alabnq Real Estate, we believe success is measured not merely by providing a service, but by delivering it with professionalism and clarity, serving our clients' interests and protecting their rights within the Kingdom's applicable laws and regulations.",
+    "type": "text",
+    "label": "التزام الشركة",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.vision",
+    "defaultValue": "أن تكون شركة العبنق العقارية من الشركات العقارية الموثوقة والرائدة في تقديم الخدمات العقارية المتكاملة بالمملكة، وأن نكون خيارًا مفضلًا لملاك العقارات والمستثمرين الباحثين عن الخبرة والمهنية وجودة الخدمة.",
+    "englishDefault": "To be among the Kingdom's trusted, leading providers of integrated property services, and a preferred choice for owners and investors seeking expertise, professionalism, and quality.",
+    "type": "text",
+    "label": "نص الرؤية",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.mission",
+    "defaultValue": "تقديم خدمات عقارية احترافية ومتكاملة تستند إلى الخبرة والمعرفة بالسوق، وتلتزم بالشفافية والامتثال للأنظمة واللوائح، بما يسهم في رفع كفاءة الأصول العقارية، وتعظيم قيمتها، وتوفير تجربة موثوقة لعملائنا وشركائنا.",
+    "englishDefault": "To provide professional, integrated property services grounded in market experience and knowledge, committed to transparency and regulatory compliance, improving asset efficiency and value while providing a trustworthy experience for clients and partners.",
+    "type": "text",
+    "label": "نص الرسالة",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.servicesHeading",
+    "defaultValue": "خدمات الشركة",
+    "englishDefault": "Our services",
+    "type": "text",
+    "label": "عنوان خدمات الشركة",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.servicesIntro",
+    "defaultValue": "خدمات عقارية متكاملة تغطي جوانب متعددة من دورة العقار، من التسويق والمزادات إلى إدارة الأملاك والمرافق والمتابعة القانونية والإدارية.",
+    "englishDefault": "Integrated property services spanning multiple stages of the property lifecycle, from marketing and auctions to management, facilities, and legal and administrative follow-up.",
+    "type": "text",
+    "label": "مقدمة الخدمات",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.service.marketing",
+    "defaultValue": "دراسة العقار وتحديد خصائصه، وإعداد خطته التسويقية، والوصول إلى الفئات المستهدفة من المشترين والمستثمرين.",
+    "englishDefault": "Studying each property and its characteristics, preparing its marketing plan, and reaching the relevant groups of buyers and investors.",
+    "type": "text",
+    "label": "وصف التسويق العقاري",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.service.auctions",
+    "defaultValue": "دراسة العقار وتجهيزه، والتسويق واستقطاب المهتمين، وإدارة إجراءات المزايدة والترسية.",
+    "englishDefault": "Studying and preparing the property, marketing it to interested parties, and managing the bidding and award process.",
+    "type": "text",
+    "label": "وصف المزادات",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.service.management",
+    "defaultValue": "إدارة العقار ومتابعة تفاصيله التشغيلية والمالية والإيجارية.",
+    "englishDefault": "Managing property and following up on its operational, financial, and leasing details.",
+    "type": "text",
+    "label": "وصف إدارة الأملاك",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.service.facilities",
+    "defaultValue": "إعداد ومتابعة خطط الصيانة الوقائية، والإشراف على الأعمال الفنية والتشغيلية، والمحافظة على جاهزية العقار ومرافقه.",
+    "englishDefault": "Preparing and monitoring preventive maintenance plans, supervising technical and operational work, and maintaining the readiness of the property and its facilities.",
+    "type": "text",
+    "label": "وصف إدارة المرافق",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.service.legal",
+    "defaultValue": "متابعة المطالبات والإجراءات القضائية والتنفيذية المتعلقة بحقوق العقار، وفق الأنظمة ونطاق التكليف.",
+    "englishDefault": "Following up on claims and judicial and enforcement procedures concerning property rights, within the applicable regulations and scope of engagement.",
+    "type": "text",
+    "label": "وصف المتابعة القانونية",
+    "group": "من نحن"
+  },
+  {
+    "key": "about.image",
+    "defaultValue": "/hero/alabnq-company-exterior.png",
+    "type": "image",
+    "label": "صورة صفحة من نحن",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.e5106fe6",
+    "defaultValue": "التسويق العقاري",
+    "englishDefault": "Property marketing",
+    "type": "text",
+    "label": "التسويق العقاري",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.190c43b2",
+    "defaultValue": "المزادات العقارية",
+    "englishDefault": "Property auctions",
+    "type": "text",
+    "label": "المزادات العقارية",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.c68ae82c",
+    "defaultValue": "إدارة الأملاك العقارية",
+    "englishDefault": "Property management",
+    "type": "text",
+    "label": "إدارة الأملاك العقارية",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.c9b593ae",
+    "defaultValue": "إدارة المرافق العقارية",
+    "englishDefault": "Facilities management",
+    "type": "text",
+    "label": "إدارة المرافق العقارية",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.3f5370ee",
+    "defaultValue": "المتابعة القانونية والإدارية",
+    "englishDefault": "Legal and administrative follow-up",
+    "type": "text",
+    "label": "المتابعة القانونية والإدارية",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.6813de4f",
+    "defaultValue": "من نحن",
+    "englishDefault": "THE COMPANY",
+    "type": "text",
+    "label": "من نحن",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.968ec5f1",
+    "defaultValue": "قصتنا",
+    "englishDefault": "OUR APPROACH",
+    "type": "text",
+    "label": "قصتنا",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.c5fe91ea",
+    "defaultValue": "رؤية واضحة لكل أصل عقاري.",
+    "englishDefault": "A clear view of every property asset.",
+    "type": "text",
+    "label": "رؤية واضحة لكل أصل عقاري.",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.9bf65ef2",
+    "defaultValue": "الرؤية",
+    "englishDefault": "VISION",
+    "type": "text",
+    "label": "الرؤية",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.8a1501b",
+    "defaultValue": "رؤيتنا",
+    "englishDefault": "Our vision",
+    "type": "text",
+    "label": "رؤيتنا",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.20ed35c6",
+    "defaultValue": "الرسالة",
+    "englishDefault": "MISSION",
+    "type": "text",
+    "label": "الرسالة",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.26a5af87",
+    "defaultValue": "رسالتنا",
+    "englishDefault": "Our mission",
+    "type": "text",
+    "label": "رسالتنا",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.f1a585d7",
+    "defaultValue": "ما نقدمه",
+    "englishDefault": "WHAT WE DO",
+    "type": "text",
+    "label": "ما نقدمه",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.585bbf28",
+    "defaultValue": "تحدث معنا",
+    "englishDefault": "Talk to us",
+    "type": "text",
+    "label": "تحدث معنا",
+    "group": "من نحن"
+  },
+  {
+    "key": "copy.41cc7a73",
+    "defaultValue": "تعذر تحميل المقال.",
+    "englishDefault": "Could not load the article.",
+    "type": "text",
+    "label": "تعذر تحميل المقال.",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.a0000828",
+    "defaultValue": "إعادة المحاولة",
+    "englishDefault": "Try again",
+    "type": "text",
+    "label": "إعادة المحاولة",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.7bd6d7b0",
+    "defaultValue": "المقال غير موجود",
+    "englishDefault": "Article not found",
+    "type": "text",
+    "label": "المقال غير موجود",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.a00d8f1b",
+    "defaultValue": "العودة للمقالات",
+    "englishDefault": "Back to articles",
+    "type": "text",
+    "label": "العودة للمقالات",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.e85b8656",
+    "defaultValue": "الرئيسية",
+    "englishDefault": "Home",
+    "type": "text",
+    "label": "الرئيسية",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.fa8f74c0",
+    "defaultValue": "المقالات",
+    "englishDefault": "Journal",
+    "type": "text",
+    "label": "المقالات",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.4a287a90",
+    "defaultValue": "شارك المقال",
+    "englishDefault": "SHARE",
+    "type": "text",
+    "label": "شارك المقال",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.91972b3e",
+    "defaultValue": "خطوتك التالية",
+    "englishDefault": "YOUR NEXT STEP",
+    "type": "text",
+    "label": "خطوتك التالية",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.b5673b00",
+    "defaultValue": "هل تبحث عن عقار؟",
+    "englishDefault": "Looking for a property?",
+    "type": "text",
+    "label": "هل تبحث عن عقار؟",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.a800fc0b",
+    "defaultValue": "تصفح العروض المتاحة أو تواصل معنا لمناقشة احتياجاتك.",
+    "englishDefault": "Browse available listings or contact us to discuss what you need.",
+    "type": "text",
+    "label": "تصفح العروض المتاحة أو تواصل معنا لمناقشة احتياجاتك.",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.88e8b9ec",
+    "defaultValue": "تصفح العقارات",
+    "englishDefault": "Browse properties",
+    "type": "text",
+    "label": "تصفح العقارات",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.e5fbe90e",
+    "defaultValue": "تواصل معنا",
+    "englishDefault": "Contact us",
+    "type": "text",
+    "label": "تواصل معنا",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.d52062f1",
+    "defaultValue": "مقالات ذات صلة",
+    "englishDefault": "Related articles",
+    "type": "text",
+    "label": "مقالات ذات صلة",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "copy.269e0ce",
+    "defaultValue": "كل المقالات",
+    "englishDefault": "All articles",
+    "type": "text",
+    "label": "كل المقالات",
+    "group": "تفاصيل المقال"
+  },
+  {
+    "key": "articles.image",
+    "defaultValue": "/hero/riyadh-kingdom.jpg",
+    "type": "image",
+    "label": "خلفية صفحة المقالات",
+    "group": "المقالات"
+  },
+  {
+    "key": "articles.heading",
+    "defaultValue": "دليلك نحو قرارات عقارية واثقة",
+    "englishDefault": "A clearer perspective on property",
+    "type": "text",
+    "label": "عنوان صفحة المقالات",
+    "group": "المقالات"
+  },
+  {
+    "key": "articles.intro",
+    "defaultValue": "تغطيات، نصائح، وتحليلات متعمقة لسوق العقارات في مكة المكرمة نضعها بين يديك لتكون دليلك الشامل في رحلتك العقارية.",
+    "englishDefault": "Coverage, advice, and in-depth analysis of Makkah's property market to guide your property journey.",
+    "type": "text",
+    "label": "وصف صفحة المقالات",
+    "group": "المقالات"
+  },
+  {
+    "key": "copy.5604c52f",
+    "defaultValue": "الأخبار والمقالات",
+    "englishDefault": "THE JOURNAL",
+    "type": "text",
+    "label": "الأخبار والمقالات",
+    "group": "المقالات"
+  },
+  {
+    "key": "copy.774ddbff",
+    "defaultValue": "اقرأ واستكشف",
+    "englishDefault": "READ & EXPLORE",
+    "type": "text",
+    "label": "اقرأ واستكشف",
+    "group": "المقالات"
+  },
+  {
+    "key": "copy.6614c089",
+    "defaultValue": "تصفح العقارات",
+    "englishDefault": "Explore properties",
+    "type": "text",
+    "label": "تصفح العقارات",
+    "group": "المقالات"
+  },
+  {
+    "key": "copy.42a8f578",
+    "defaultValue": "تعذر تحميل المقالات.",
+    "englishDefault": "Could not load articles.",
+    "type": "text",
+    "label": "تعذر تحميل المقالات.",
+    "group": "المقالات"
+  },
+  {
+    "key": "copy.b4b4a857",
+    "defaultValue": "لا توجد مقالات منشورة حاليًا.",
+    "englishDefault": "No articles are currently published.",
+    "type": "text",
+    "label": "لا توجد مقالات منشورة حاليًا.",
+    "group": "المقالات"
+  },
+  {
+    "key": "contact.heading",
+    "defaultValue": "تواصل معنا",
+    "englishDefault": "Let's talk",
+    "type": "text",
+    "label": "عنوان صفحة التواصل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "contact.intro",
+    "defaultValue": "شركة العبنق العقارية — شريككم في الخدمات العقارية.",
+    "englishDefault": "Alabnq Real Estate — your partner in property services.",
+    "type": "text",
+    "label": "وصف صفحة التواصل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "contact.address",
+    "defaultValue": "مكة المكرمة – العوالي – شارع الشيخ محمد بن مانع",
+    "englishDefault": "Makkah – Al-Awali – Sheikh Mohammed bin Manea Street",
+    "type": "text",
+    "label": "عنوان المكتب",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "contact.phone",
+    "defaultValue": "8002450000",
+    "type": "value",
+    "label": "رقم الهاتف",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "footer.email",
+    "defaultValue": "info@alabnq.com",
+    "type": "value",
+    "label": "بريد التواصل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "contact.image",
+    "defaultValue": "/hero/riyadh-financial.jpg",
+    "type": "image",
+    "label": "خلفية صفحة التواصل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.c59233b7",
+    "defaultValue": "تعذر إرسال الرسالة. حاول مرة أخرى.",
+    "englishDefault": "Could not send your message. Please try again.",
+    "type": "text",
+    "label": "تعذر إرسال الرسالة. حاول مرة أخرى.",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.cee7d112",
+    "defaultValue": "تعذر إرسال الرسالة.",
+    "englishDefault": "Could not send your message.",
+    "type": "text",
+    "label": "تعذر إرسال الرسالة.",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.fea70e51",
+    "defaultValue": "لنبدأ الحديث",
+    "englishDefault": "START A CONVERSATION",
+    "type": "text",
+    "label": "لنبدأ الحديث",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.e8401e32",
+    "defaultValue": "تجدنا هنا",
+    "englishDefault": "FIND US HERE",
+    "type": "text",
+    "label": "تجدنا هنا",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.c2f8a706",
+    "defaultValue": "معلومات التواصل",
+    "englishDefault": "Contact details",
+    "type": "text",
+    "label": "معلومات التواصل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.24be51ca",
+    "defaultValue": "العنوان",
+    "englishDefault": "ADDRESS",
+    "type": "text",
+    "label": "العنوان",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.a7345589",
+    "defaultValue": "الهاتف",
+    "englishDefault": "PHONE",
+    "type": "text",
+    "label": "الهاتف",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.82e90c24",
+    "defaultValue": "البريد الإلكتروني",
+    "englishDefault": "EMAIL",
+    "type": "text",
+    "label": "البريد الإلكتروني",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.6eb54e94",
+    "defaultValue": "شكرًا لتواصلك معنا",
+    "englishDefault": "Thank you for reaching out",
+    "type": "text",
+    "label": "شكرًا لتواصلك معنا",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.d5038b39",
+    "defaultValue": "تم حفظ رسالتك بنجاح، وسيتمكن فريقنا من مراجعتها من لوحة التحكم.",
+    "englishDefault": "Your message has been saved. Our team will be able to review it.",
+    "type": "text",
+    "label": "تم حفظ رسالتك بنجاح، وسيتمكن فريقنا من مراجعتها من لوحة التحكم.",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.1656111e",
+    "defaultValue": "إرسال رسالة أخرى",
+    "englishDefault": "Send another message",
+    "type": "text",
+    "label": "إرسال رسالة أخرى",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.53eeecad",
+    "defaultValue": "اترك رسالة",
+    "englishDefault": "LEAVE A MESSAGE",
+    "type": "text",
+    "label": "اترك رسالة",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.e7581717",
+    "defaultValue": "كيف يمكننا مساعدتك؟",
+    "englishDefault": "How can we help?",
+    "type": "text",
+    "label": "كيف يمكننا مساعدتك؟",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.3cf07d4d",
+    "defaultValue": "الاسم الكريم",
+    "englishDefault": "Your name",
+    "type": "text",
+    "label": "الاسم الكريم",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.1f82d711",
+    "defaultValue": "الاسم الكامل",
+    "englishDefault": "Full name",
+    "type": "text",
+    "label": "الاسم الكامل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.bf8104f0",
+    "defaultValue": "أدخل اسمًا من حرفين على الأقل",
+    "englishDefault": "Enter a name with at least 2 characters",
+    "type": "text",
+    "label": "أدخل اسمًا من حرفين على الأقل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.67a93aec",
+    "defaultValue": "رقم الجوال",
+    "englishDefault": "Phone number",
+    "type": "text",
+    "label": "رقم الجوال",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.446810a9",
+    "defaultValue": "أدخل رقم هاتف صحيحًا",
+    "englishDefault": "Enter a valid phone number",
+    "type": "text",
+    "label": "أدخل رقم هاتف صحيحًا",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.6c69e09b",
+    "defaultValue": "البريد الإلكتروني (اختياري)",
+    "englishDefault": "Email (optional)",
+    "type": "text",
+    "label": "البريد الإلكتروني (اختياري)",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.af230a12",
+    "defaultValue": "أدخل بريدًا إلكترونيًا صحيحًا",
+    "englishDefault": "Enter a valid email address",
+    "type": "text",
+    "label": "أدخل بريدًا إلكترونيًا صحيحًا",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.57e8c2ab",
+    "defaultValue": "رسالتك",
+    "englishDefault": "Your message",
+    "type": "text",
+    "label": "رسالتك",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.4eb36142",
+    "defaultValue": "اكتب رسالتك هنا...",
+    "englishDefault": "Write your message here...",
+    "type": "text",
+    "label": "اكتب رسالتك هنا...",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.54f9aef",
+    "defaultValue": "أدخل رسالة من 10 أحرف على الأقل",
+    "englishDefault": "Enter a message of at least 10 characters",
+    "type": "text",
+    "label": "أدخل رسالة من 10 أحرف على الأقل",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.b04a5bc9",
+    "defaultValue": "جارٍ الإرسال...",
+    "englishDefault": "Sending...",
+    "type": "text",
+    "label": "جارٍ الإرسال...",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "copy.5a05b485",
+    "defaultValue": "إرسال الرسالة",
+    "englishDefault": "Send message",
+    "type": "text",
+    "label": "إرسال الرسالة",
+    "group": "تواصل معنا"
+  },
+  {
+    "key": "home.propertiesHeading",
+    "defaultValue": "أحدث العروض المميزة",
+    "englishDefault": "Selected properties",
+    "type": "text",
+    "label": "عنوان العروض الرئيسية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "home.articlesHeading",
+    "defaultValue": "الأخبار والمقالات",
+    "englishDefault": "News & articles",
+    "type": "text",
+    "label": "عنوان أخبار الرئيسية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "home.introImage",
+    "defaultValue": "/hero/riyadh-financial.jpg",
+    "type": "image",
+    "label": "صورة التعريف في الرئيسية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "home.servicesImage",
+    "defaultValue": "/hero/riyadh-kingdom.jpg",
+    "type": "image",
+    "label": "خلفية الخدمات في الرئيسية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "home.intro",
+    "defaultValue": "تعمل شركة العبنق العقارية في السوق العقاري بالمملكة، مستندة إلى خبرة ميدانية ممتدة وفهم متكامل لاحتياجات ملاك العقارات والمستثمرين ومتطلبات السوق.",
+    "englishDefault": "Alabnq Real Estate operates in the Kingdom's property market, drawing on extensive field experience and a thorough understanding of property owners, investors, and market needs.",
+    "type": "text",
+    "label": "مقدمة الرئيسية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "home.commitment",
+    "defaultValue": "نجاحنا لا يقاس بتقديم الخدمة فحسب، بل بقدرتنا على تقديمها بمهنية ووضوح، وبما يحقق مصلحة عملائنا ويحفظ حقوقهم.",
+    "englishDefault": "Our success is measured not merely by providing a service, but by delivering it with professionalism and clarity, protecting our clients' interests and rights.",
+    "type": "text",
+    "label": "التزام الشركة في الرئيسية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "home.customerService",
+    "defaultValue": "تقديم خدمات عقارية احترافية ومتكاملة تستند إلى الخبرة والمعرفة بالسوق",
+    "englishDefault": "Providing professional, integrated real estate services grounded in experience and market knowledge.",
+    "type": "text",
+    "label": "وصف الخدمات في الرئيسية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.93956aae",
+    "defaultValue": "تعذر عرض السلايدر بسبب إعدادات غير صالحة. يرجى مراجعتها في لوحة التحكم.",
+    "englishDefault": "Invalid slideshow settings. Please review them in the admin panel.",
+    "type": "text",
+    "label": "تعذر عرض السلايدر بسبب إعدادات غير صالحة. يرجى مراجعتها في لوحة التحكم.",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.bcf0a99e",
+    "defaultValue": "مشهد معماري",
+    "englishDefault": "Architectural scene",
+    "type": "text",
+    "label": "مشهد معماري",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.a6db1ac2",
+    "defaultValue": "الخدمات العقارية",
+    "englishDefault": "REAL ESTATE SERVICES",
+    "type": "text",
+    "label": "الخدمات العقارية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.91945486",
+    "defaultValue": "من نحن",
+    "englishDefault": "OUR COMPANY",
+    "type": "text",
+    "label": "من نحن",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.a021351f",
+    "defaultValue": "خبرة ميدانية وفهم متكامل",
+    "englishDefault": "Field experience and comprehensive understanding",
+    "type": "text",
+    "label": "خبرة ميدانية وفهم متكامل",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.d061f323",
+    "defaultValue": "إدارة الأملاك",
+    "englishDefault": "Property management",
+    "type": "text",
+    "label": "إدارة الأملاك",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.653a222d",
+    "defaultValue": "إدارة المرافق",
+    "englishDefault": "Facilities management",
+    "type": "text",
+    "label": "إدارة المرافق",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.1571b919",
+    "defaultValue": "إدارة أملاك متكاملة",
+    "englishDefault": "Comprehensive property management",
+    "type": "text",
+    "label": "إدارة أملاك متكاملة",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.c9ed666",
+    "defaultValue": "تعرّف على الشركة",
+    "englishDefault": "Meet the company",
+    "type": "text",
+    "label": "تعرّف على الشركة",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.dd8beacb",
+    "defaultValue": "عروض عقارية",
+    "englishDefault": "PROPERTY LISTINGS",
+    "type": "text",
+    "label": "عروض عقارية",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.8a186acb",
+    "defaultValue": "الخدمات العقارية المتكاملة",
+    "englishDefault": "Integrated real estate services",
+    "type": "text",
+    "label": "الخدمات العقارية المتكاملة",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.91d485f4",
+    "defaultValue": "استعرض خريطة العقارات",
+    "englishDefault": "Explore the property map",
+    "type": "text",
+    "label": "استعرض خريطة العقارات",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.7b2e12bf",
+    "defaultValue": "تعذر تحميل العقارات المميزة.",
+    "englishDefault": "Could not load featured properties.",
+    "type": "text",
+    "label": "تعذر تحميل العقارات المميزة.",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "copy.9a90415c",
+    "defaultValue": "تعذر تحميل الأخبار والمقالات.",
+    "englishDefault": "Could not load news and articles.",
+    "type": "text",
+    "label": "تعذر تحميل الأخبار والمقالات.",
+    "group": "الرئيسية"
+  },
+  {
+    "key": "properties.image",
+    "defaultValue": "/hero/riyadh-aerial.jpg",
+    "type": "image",
+    "label": "خلفية صفحة العقارات",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.4e8fb5d8",
+    "defaultValue": "جميع العقارات",
+    "englishDefault": "All properties",
+    "type": "text",
+    "label": "جميع العقارات",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.b53c7bf2",
+    "defaultValue": "استكشف العروض",
+    "englishDefault": "DISCOVER PROPERTIES",
+    "type": "text",
+    "label": "استكشف العروض",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.1f810da3",
+    "defaultValue": "عقارات العبنق",
+    "englishDefault": "The property collection",
+    "type": "text",
+    "label": "عقارات العبنق",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.61f06dc",
+    "defaultValue": "تصفح العقارات المتاحة وابحث حسب ما يناسب احتياجاتك.",
+    "englishDefault": "Explore available properties and find the right fit for your needs.",
+    "type": "text",
+    "label": "تصفح العقارات المتاحة وابحث حسب ما يناسب احتياجاتك.",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.a3a900e5",
+    "defaultValue": "البحث بالكلمات",
+    "englishDefault": "Keyword search",
+    "type": "text",
+    "label": "البحث بالكلمات",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.4fd99233",
+    "defaultValue": "ابحث بالعنوان أو الحي أو الوصف...",
+    "englishDefault": "Search title, district, or description...",
+    "type": "text",
+    "label": "ابحث بالعنوان أو الحي أو الوصف...",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.b43f8501",
+    "defaultValue": "تصفية متقدمة",
+    "englishDefault": "Advanced filters",
+    "type": "text",
+    "label": "تصفية متقدمة",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.f7933b2c",
+    "defaultValue": "خصص بحثك",
+    "englishDefault": "Refine your search",
+    "type": "text",
+    "label": "خصص بحثك",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.f123cfcd",
+    "defaultValue": "إعادة الضبط",
+    "englishDefault": "Reset",
+    "type": "text",
+    "label": "إعادة الضبط",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.b714a17d",
+    "defaultValue": "نوع العقار",
+    "englishDefault": "Property type",
+    "type": "text",
+    "label": "نوع العقار",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.33a582de",
+    "defaultValue": "كل الأنواع",
+    "englishDefault": "All types",
+    "type": "text",
+    "label": "كل الأنواع",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.999f0b82",
+    "defaultValue": "شقق",
+    "englishDefault": "Apartments",
+    "type": "text",
+    "label": "شقق",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.a0aed6e0",
+    "defaultValue": "عمائر",
+    "englishDefault": "Buildings",
+    "type": "text",
+    "label": "عمائر",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.3237273f",
+    "defaultValue": "أراضي",
+    "englishDefault": "Land",
+    "type": "text",
+    "label": "أراضي",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.4207ec69",
+    "defaultValue": "الحي",
+    "englishDefault": "District",
+    "type": "text",
+    "label": "الحي",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.3ee50e3c",
+    "defaultValue": "جميع الأحياء",
+    "englishDefault": "All districts",
+    "type": "text",
+    "label": "جميع الأحياء",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.cc6b6450",
+    "defaultValue": "نوع العملية",
+    "englishDefault": "Transaction",
+    "type": "text",
+    "label": "نوع العملية",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.3cae1760",
+    "defaultValue": "البيع والإيجار",
+    "englishDefault": "Sale and rent",
+    "type": "text",
+    "label": "البيع والإيجار",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.245c2274",
+    "defaultValue": "للبيع",
+    "englishDefault": "For sale",
+    "type": "text",
+    "label": "للبيع",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.917ebd10",
+    "defaultValue": "للإيجار",
+    "englishDefault": "For rent",
+    "type": "text",
+    "label": "للإيجار",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.f74c614a",
+    "defaultValue": "عدد الغرف الأدنى",
+    "englishDefault": "Minimum bedrooms",
+    "type": "text",
+    "label": "عدد الغرف الأدنى",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.97eb5a43",
+    "defaultValue": "أي عدد",
+    "englishDefault": "Any",
+    "type": "text",
+    "label": "أي عدد",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.65a0ca9d",
+    "defaultValue": "دورات المياه الأدنى",
+    "englishDefault": "Minimum bathrooms",
+    "type": "text",
+    "label": "دورات المياه الأدنى",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.9e22eac3",
+    "defaultValue": "السعر من (ر.س)",
+    "englishDefault": "Min price (SAR)",
+    "type": "text",
+    "label": "السعر من (ر.س)",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.b407df44",
+    "defaultValue": "السعر إلى (ر.س)",
+    "englishDefault": "Max price (SAR)",
+    "type": "text",
+    "label": "السعر إلى (ر.س)",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.85f450f",
+    "defaultValue": "المساحة من (م²)",
+    "englishDefault": "Min area (m²)",
+    "type": "text",
+    "label": "المساحة من (م²)",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.5dba46ea",
+    "defaultValue": "المساحة إلى (م²)",
+    "englishDefault": "Max area (m²)",
+    "type": "text",
+    "label": "المساحة إلى (م²)",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.2bcd4369",
+    "defaultValue": "عقار متاح",
+    "englishDefault": "properties available",
+    "type": "text",
+    "label": "عقار متاح",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.50a0cc25",
+    "defaultValue": "طريقة العرض",
+    "englishDefault": "View mode",
+    "type": "text",
+    "label": "طريقة العرض",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.2db3e5be",
+    "defaultValue": "قائمة",
+    "englishDefault": "Grid",
+    "type": "text",
+    "label": "قائمة",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.5f66985c",
+    "defaultValue": "خريطة",
+    "englishDefault": "Map",
+    "type": "text",
+    "label": "خريطة",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.caf67240",
+    "defaultValue": "ترتيب النتائج",
+    "englishDefault": "Sort results",
+    "type": "text",
+    "label": "ترتيب النتائج",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.654269b",
+    "defaultValue": "الأحدث",
+    "englishDefault": "Latest",
+    "type": "text",
+    "label": "الأحدث",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.d8825749",
+    "defaultValue": "السعر: الأقل",
+    "englishDefault": "Price: low to high",
+    "type": "text",
+    "label": "السعر: الأقل",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.597ce49f",
+    "defaultValue": "السعر: الأعلى",
+    "englishDefault": "Price: high to low",
+    "type": "text",
+    "label": "السعر: الأعلى",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.c5dc7516",
+    "defaultValue": "المساحة: الأكبر",
+    "englishDefault": "Largest area",
+    "type": "text",
+    "label": "المساحة: الأكبر",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.d57ecb2d",
+    "defaultValue": "الغرف: الأكثر",
+    "englishDefault": "Most bedrooms",
+    "type": "text",
+    "label": "الغرف: الأكثر",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.d232fba5",
+    "defaultValue": "تعذر تحميل العقارات.",
+    "englishDefault": "Could not load properties.",
+    "type": "text",
+    "label": "تعذر تحميل العقارات.",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.51376a03",
+    "defaultValue": "لم نعثر على عقار بهذه المواصفات",
+    "englishDefault": "No properties match these filters",
+    "type": "text",
+    "label": "لم نعثر على عقار بهذه المواصفات",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.ff59b4d0",
+    "defaultValue": "جرّب توسيع نطاق البحث أو إعادة ضبط الفلاتر.",
+    "englishDefault": "Try broadening your search or resetting your filters.",
+    "type": "text",
+    "label": "جرّب توسيع نطاق البحث أو إعادة ضبط الفلاتر.",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.6f33cd4c",
+    "defaultValue": "عرض كل العقارات",
+    "englishDefault": "View all properties",
+    "type": "text",
+    "label": "عرض كل العقارات",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.ddd2f28b",
+    "defaultValue": "التفاصيل",
+    "englishDefault": "Details",
+    "type": "text",
+    "label": "التفاصيل",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.ca2ca1cf",
+    "defaultValue": "الإعلان الأصلي",
+    "englishDefault": "Official listing",
+    "type": "text",
+    "label": "الإعلان الأصلي",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.18a1265a",
+    "defaultValue": "لا توجد عقارات مطابقة",
+    "englishDefault": "No matching properties",
+    "type": "text",
+    "label": "لا توجد عقارات مطابقة",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.64279326",
+    "defaultValue": "إعادة الضبط",
+    "englishDefault": "Reset filters",
+    "type": "text",
+    "label": "إعادة الضبط",
+    "group": "العقارات"
+  },
+  {
+    "key": "copy.ba1073f7",
+    "defaultValue": "تعذر تحميل العقار.",
+    "englishDefault": "Could not load the property.",
+    "type": "text",
+    "label": "تعذر تحميل العقار.",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.e9ed1548",
+    "defaultValue": "العقار غير موجود",
+    "englishDefault": "Property not found",
+    "type": "text",
+    "label": "العقار غير موجود",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.3657f4ec",
+    "defaultValue": "العودة للعقارات",
+    "englishDefault": "Back to properties",
+    "type": "text",
+    "label": "العودة للعقارات",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.da9924d9",
+    "defaultValue": "العقارات",
+    "englishDefault": "Properties",
+    "type": "text",
+    "label": "العقارات",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.610dc3d4",
+    "defaultValue": "إزالة من المفضلة",
+    "englishDefault": "Remove from favorites",
+    "type": "text",
+    "label": "إزالة من المفضلة",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.b19a413f",
+    "defaultValue": "إضافة للمفضلة",
+    "englishDefault": "Add to favorites",
+    "type": "text",
+    "label": "إضافة للمفضلة",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.10cc994",
+    "defaultValue": "مشاركة العقار",
+    "englishDefault": "Share property",
+    "type": "text",
+    "label": "مشاركة العقار",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.952f15b",
+    "defaultValue": "تم نسخ الرابط",
+    "englishDefault": "Link copied",
+    "type": "text",
+    "label": "تم نسخ الرابط",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.30d2435a",
+    "defaultValue": "سعر البيع",
+    "englishDefault": "ASKING PRICE",
+    "type": "text",
+    "label": "سعر البيع",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.65ea7607",
+    "defaultValue": "الإيجار السنوي",
+    "englishDefault": "ANNUAL RENT",
+    "type": "text",
+    "label": "الإيجار السنوي",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.9fec7be5",
+    "defaultValue": "غرف",
+    "englishDefault": "Beds",
+    "type": "text",
+    "label": "غرف",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.6650dd7c",
+    "defaultValue": "حمامات",
+    "englishDefault": "Baths",
+    "type": "text",
+    "label": "حمامات",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.cbfe5b1d",
+    "defaultValue": "م²",
+    "englishDefault": "m²",
+    "type": "text",
+    "label": "م²",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.26e39998",
+    "defaultValue": "التفاصيل",
+    "englishDefault": "THE DETAILS",
+    "type": "text",
+    "label": "التفاصيل",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.78a86c07",
+    "defaultValue": "وصف العقار",
+    "englishDefault": "About this property",
+    "type": "text",
+    "label": "وصف العقار",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.8355d9a8",
+    "defaultValue": "صور العرض",
+    "englishDefault": "Gallery",
+    "type": "text",
+    "label": "صور العرض",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.c45ee353",
+    "defaultValue": "المميزات والمرافق",
+    "englishDefault": "Features and amenities",
+    "type": "text",
+    "label": "المميزات والمرافق",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.95a7cbcc",
+    "defaultValue": "الموقع على الخريطة",
+    "englishDefault": "Location on map",
+    "type": "text",
+    "label": "الموقع على الخريطة",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.751a75a",
+    "defaultValue": "شعار العبنق",
+    "englishDefault": "Alabnq logo",
+    "type": "text",
+    "label": "شعار العبنق",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.d2d01372",
+    "defaultValue": "نحن هنا للمساعدة",
+    "englishDefault": "HERE TO HELP",
+    "type": "text",
+    "label": "نحن هنا للمساعدة",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.9f875e97",
+    "defaultValue": "مهتم بهذا العقار؟",
+    "englishDefault": "Interested in this property?",
+    "type": "text",
+    "label": "مهتم بهذا العقار؟",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.a9174e5c",
+    "defaultValue": "تواصل معنا لترتيب زيارة ومناقشة التفاصيل.",
+    "englishDefault": "Contact us to arrange a viewing and discuss the details.",
+    "type": "text",
+    "label": "تواصل معنا لترتيب زيارة ومناقشة التفاصيل.",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.c54952d5",
+    "defaultValue": "طلب موعد للزيارة",
+    "englishDefault": "Request a viewing",
+    "type": "text",
+    "label": "طلب موعد للزيارة",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.3794c1a8",
+    "defaultValue": "اتصل بنا مباشرة",
+    "englishDefault": "Call us directly",
+    "type": "text",
+    "label": "اتصل بنا مباشرة",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.68710a99",
+    "defaultValue": "الإعلان الأصلي",
+    "englishDefault": "Original listing",
+    "type": "text",
+    "label": "الإعلان الأصلي",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.3129fb74",
+    "defaultValue": "رقم المرجع",
+    "englishDefault": "Reference",
+    "type": "text",
+    "label": "رقم المرجع",
+    "group": "تفاصيل العقار"
+  },
+  {
+    "key": "copy.d6ff11e7",
+    "defaultValue": "اقرأ المقال",
+    "englishDefault": "Read article",
+    "type": "text",
+    "label": "اقرأ المقال",
+    "group": "بطاقات المقالات"
+  },
+  {
+    "key": "copy.a3b7bbaa",
+    "defaultValue": "من أخبارنا",
+    "englishDefault": "FROM THE JOURNAL",
+    "type": "text",
+    "label": "من أخبارنا",
+    "group": "أخبار الرئيسية"
+  },
+  {
+    "key": "copy.7c7a81c5",
+    "defaultValue": "جميع الأخبار والمقالات",
+    "englishDefault": "All news and articles",
+    "type": "text",
+    "label": "جميع الأخبار والمقالات",
+    "group": "أخبار الرئيسية"
+  },
+  {
+    "key": "copy.6f61ce0c",
+    "defaultValue": "المقال السابق",
+    "englishDefault": "Previous article",
+    "type": "text",
+    "label": "المقال السابق",
+    "group": "أخبار الرئيسية"
+  },
+  {
+    "key": "copy.76a72a7",
+    "defaultValue": "المقال التالي",
+    "englishDefault": "Next article",
+    "type": "text",
+    "label": "المقال التالي",
+    "group": "أخبار الرئيسية"
+  },
+  {
+    "key": "copy.35304b71",
+    "defaultValue": "لا توجد أخبار أو مقالات منشورة حاليًا.",
+    "englishDefault": "No published news or articles yet.",
+    "type": "text",
+    "label": "لا توجد أخبار أو مقالات منشورة حاليًا.",
+    "group": "أخبار الرئيسية"
+  },
+  {
+    "key": "brand.image.dark",
+    "defaultValue": "/brand/alabnq-mark-dark.png",
+    "type": "image",
+    "label": "شعار الخلفيات الداكنة",
+    "group": "الشعار"
+  },
+  {
+    "key": "brand.image.light",
+    "defaultValue": "/brand/alabnq-mark-light.png",
+    "type": "image",
+    "label": "شعار الخلفيات الفاتحة",
+    "group": "الشعار"
+  },
+  {
+    "key": "copy.cd2afbcf",
+    "defaultValue": "العقارات المميزة",
+    "englishDefault": "Featured properties",
+    "type": "text",
+    "label": "العقارات المميزة",
+    "group": "العروض الرئيسية"
+  },
+  {
+    "key": "copy.5048d422",
+    "defaultValue": "اختياراتنا",
+    "englishDefault": "SELECTED SPACES",
+    "type": "text",
+    "label": "اختياراتنا",
+    "group": "العروض الرئيسية"
+  },
+  {
+    "key": "copy.f60c6f00",
+    "defaultValue": "أحدث العروض المميزة",
+    "englishDefault": "Selected properties",
+    "type": "text",
+    "label": "أحدث العروض المميزة",
+    "group": "العروض الرئيسية"
+  },
+  {
+    "key": "copy.9de9298f",
+    "defaultValue": "العرض السابق",
+    "englishDefault": "Previous property",
+    "type": "text",
+    "label": "العرض السابق",
+    "group": "العروض الرئيسية"
+  },
+  {
+    "key": "copy.9130bf82",
+    "defaultValue": "العرض التالي",
+    "englishDefault": "Next property",
+    "type": "text",
+    "label": "العرض التالي",
+    "group": "العروض الرئيسية"
+  },
+  {
+    "key": "copy.a0eb4bc3",
+    "defaultValue": "لا توجد عروض مميزة منشورة حاليًا.",
+    "englishDefault": "No featured properties are currently published.",
+    "type": "text",
+    "label": "لا توجد عروض مميزة منشورة حاليًا.",
+    "group": "العروض الرئيسية"
+  },
+  {
+    "key": "site.name",
+    "label": "اسم الشركة",
+    "group": "الهوية",
+    "type": "text",
+    "defaultValue": "شركة العبنق العقارية",
+    "englishDefault": "ALABNQ REAL ESTATE"
+  },
+  {
+    "key": "footer.image",
+    "defaultValue": "/hero/riyadh-kingdom.jpg",
+    "type": "image",
+    "label": "خلفية التذييل",
+    "group": "التذييل"
+  },
+  {
+    "key": "footer.about",
+    "defaultValue": "شركة العبنق العقارية: خبرة تُرسّخ الثقة.. وخدمات تصنع قيمة.",
+    "englishDefault": "Alabnq Real Estate: experience that builds trust, services that create value.",
+    "type": "text",
+    "label": "نبذة التذييل",
+    "group": "التذييل"
+  },
+  {
+    "key": "footer.twitter",
+    "defaultValue": "",
+    "type": "value",
+    "label": "رابط حساب X",
+    "group": "التذييل"
+  },
+  {
+    "key": "footer.instagram",
+    "defaultValue": "",
+    "type": "value",
+    "label": "رابط إنستغرام",
+    "group": "التذييل"
+  },
+  {
+    "key": "footer.linkedin",
+    "defaultValue": "",
+    "type": "value",
+    "label": "رابط لينكدإن",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.791451ab",
+    "defaultValue": "عن الشركة",
+    "englishDefault": "Our company",
+    "type": "text",
+    "label": "عن الشركة",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.fe231084",
+    "defaultValue": "الأخبار والمقالات",
+    "englishDefault": "Journal",
+    "type": "text",
+    "label": "الأخبار والمقالات",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.aba60982",
+    "defaultValue": "تواصل معنا",
+    "englishDefault": "Contact",
+    "type": "text",
+    "label": "تواصل معنا",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.763ebd0c",
+    "defaultValue": "دعنا نبدأ الحديث",
+    "englishDefault": "LET'S BEGIN",
+    "type": "text",
+    "label": "دعنا نبدأ الحديث",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.7ec633bd",
+    "defaultValue": "لكل عقار قصة. نود سماع قصتك.",
+    "englishDefault": "Every property has a story. Tell us yours.",
+    "type": "text",
+    "label": "لكل عقار قصة. نود سماع قصتك.",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.3e46024e",
+    "defaultValue": "تواصل معنا",
+    "englishDefault": "Get in touch",
+    "type": "text",
+    "label": "تواصل معنا",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.6ea5d9b0",
+    "defaultValue": "شعار شركة العبنق العقارية",
+    "englishDefault": "Alabnq logo",
+    "type": "text",
+    "label": "شعار شركة العبنق العقارية",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.53e0bc28",
+    "defaultValue": "استكشف",
+    "englishDefault": "EXPLORE",
+    "type": "text",
+    "label": "استكشف",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.c438807a",
+    "defaultValue": "بيانات التواصل",
+    "englishDefault": "CONTACT DETAILS",
+    "type": "text",
+    "label": "بيانات التواصل",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.8a32d6f8",
+    "defaultValue": "شركة العبنق العقارية. جميع الحقوق محفوظة.",
+    "englishDefault": "Alabnq Real Estate. All rights reserved.",
+    "type": "text",
+    "label": "شركة العبنق العقارية. جميع الحقوق محفوظة.",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.72057689",
+    "defaultValue": "المملكة العربية السعودية",
+    "englishDefault": "Saudi Arabia",
+    "type": "text",
+    "label": "المملكة العربية السعودية",
+    "group": "التذييل"
+  },
+  {
+    "key": "copy.4e8e8e6e",
+    "defaultValue": "المشهد الرئيسي",
+    "englishDefault": "Introduction",
+    "type": "text",
+    "label": "المشهد الرئيسي",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.13b42cb9",
+    "defaultValue": "العقارات",
+    "englishDefault": "PROPERTIES",
+    "type": "text",
+    "label": "العقارات",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.e6819e74",
+    "defaultValue": "استكشف العقارات",
+    "englishDefault": "Explore properties",
+    "type": "text",
+    "label": "استكشف العقارات",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.260672d7",
+    "defaultValue": "اكتشف المزيد",
+    "englishDefault": "DISCOVER MORE",
+    "type": "text",
+    "label": "اكتشف المزيد",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.f782f5bf",
+    "defaultValue": "الشريحة السابقة",
+    "englishDefault": "Previous slide",
+    "type": "text",
+    "label": "الشريحة السابقة",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.52e1d6df",
+    "defaultValue": "الشرائح",
+    "englishDefault": "Slides",
+    "type": "text",
+    "label": "الشرائح",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.ee5c9226",
+    "defaultValue": "الشريحة التالية",
+    "englishDefault": "Next slide",
+    "type": "text",
+    "label": "الشريحة التالية",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.cd380d5c",
+    "defaultValue": "تشغيل السلايدر",
+    "englishDefault": "Play slideshow",
+    "type": "text",
+    "label": "تشغيل السلايدر",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.e7a74e1e",
+    "defaultValue": "إيقاف السلايدر مؤقتًا",
+    "englishDefault": "Pause slideshow",
+    "type": "text",
+    "label": "إيقاف السلايدر مؤقتًا",
+    "group": "سلايدر الرئيسية"
+  },
+  {
+    "key": "copy.739c5815",
+    "defaultValue": "نطاق أعمالنا",
+    "englishDefault": "Our reach",
+    "type": "text",
+    "label": "نطاق أعمالنا",
+    "group": "إحصائيات الرئيسية"
+  },
+  {
+    "key": "copy.b3be9463",
+    "defaultValue": "أنحاء المملكة",
+    "englishDefault": "Across the Kingdom",
+    "type": "text",
+    "label": "أنحاء المملكة",
+    "group": "إحصائيات الرئيسية"
+  },
+  {
+    "key": "copy.1f85927a",
+    "defaultValue": "تغطية في مختلف مناطق المملكة",
+    "englishDefault": "Coverage across the Kingdom's regions",
+    "type": "text",
+    "label": "تغطية في مختلف مناطق المملكة",
+    "group": "إحصائيات الرئيسية"
+  },
+  {
+    "key": "copy.2e7f72a6",
+    "defaultValue": "من نحن",
+    "englishDefault": "Our company",
+    "type": "text",
+    "label": "من نحن",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.382786c2",
+    "defaultValue": "العبنق العقارية، الرئيسية",
+    "englishDefault": "Alabnq Real Estate, home",
+    "type": "text",
+    "label": "العبنق العقارية، الرئيسية",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.8c302354",
+    "defaultValue": "شعار شركة العبنق العقارية",
+    "englishDefault": "Alabnq Real Estate logo",
+    "type": "text",
+    "label": "شعار شركة العبنق العقارية",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.225ecac2",
+    "defaultValue": "التنقل الرئيسي",
+    "englishDefault": "Main navigation",
+    "type": "text",
+    "label": "التنقل الرئيسي",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.d60c6563",
+    "defaultValue": "التبديل إلى الإنجليزية",
+    "englishDefault": "Switch to Arabic",
+    "type": "text",
+    "label": "التبديل إلى الإنجليزية",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.d9ff44ae",
+    "defaultValue": "الوضع الفاتح",
+    "englishDefault": "Light mode",
+    "type": "text",
+    "label": "الوضع الفاتح",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.49c1b33e",
+    "defaultValue": "الوضع الداكن",
+    "englishDefault": "Dark mode",
+    "type": "text",
+    "label": "الوضع الداكن",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.f7a756d3",
+    "defaultValue": "احجز استشارة",
+    "englishDefault": "Book a consultation",
+    "type": "text",
+    "label": "احجز استشارة",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.8a13048e",
+    "defaultValue": "إغلاق القائمة",
+    "englishDefault": "Close menu",
+    "type": "text",
+    "label": "إغلاق القائمة",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.dbd87852",
+    "defaultValue": "فتح القائمة",
+    "englishDefault": "Open menu",
+    "type": "text",
+    "label": "فتح القائمة",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.97cb7397",
+    "defaultValue": "قائمة الجوال",
+    "englishDefault": "Mobile menu",
+    "type": "text",
+    "label": "قائمة الجوال",
+    "group": "الترويسة والتنقل"
+  },
+  {
+    "key": "copy.390ce4c5",
+    "defaultValue": "غرف",
+    "englishDefault": "beds",
+    "type": "text",
+    "label": "غرف",
+    "group": "بطاقات العقارات"
+  },
+  {
+    "key": "copy.f2c12d1c",
+    "defaultValue": "حمامات",
+    "englishDefault": "baths",
+    "type": "text",
+    "label": "حمامات",
+    "group": "بطاقات العقارات"
+  },
+  {
+    "key": "copy.45ed9641",
+    "defaultValue": "تفاصيل العقار",
+    "englishDefault": "Property details",
+    "type": "text",
+    "label": "تفاصيل العقار",
+    "group": "بطاقات العقارات"
+  },
+  {
+    "key": "copy.afc2ed41",
+    "defaultValue": "استعراض العقارات في الحي",
+    "englishDefault": "Explore properties in this district",
+    "type": "text",
+    "label": "استعراض العقارات في الحي",
+    "group": "البحث"
+  },
+  {
+    "key": "copy.71c25543",
+    "defaultValue": "ابحث عن عقار أو حي أو مقال",
+    "englishDefault": "Search property, district or article",
+    "type": "text",
+    "label": "ابحث عن عقار أو حي أو مقال",
+    "group": "البحث"
+  },
+  {
+    "key": "copy.e1d71f4e",
+    "defaultValue": "ابحث في الموقع",
+    "englishDefault": "Search the site",
+    "type": "text",
+    "label": "ابحث في الموقع",
+    "group": "البحث"
+  },
+  {
+    "key": "copy.c3351cb",
+    "defaultValue": "البحث في العقارات والأخبار",
+    "englishDefault": "Search properties and articles",
+    "type": "text",
+    "label": "البحث في العقارات والأخبار",
+    "group": "البحث"
+  },
+  {
+    "key": "copy.6d3449d0",
+    "defaultValue": "اقتراحات من الموقع",
+    "englishDefault": "SITE SUGGESTIONS",
+    "type": "text",
+    "label": "اقتراحات من الموقع",
+    "group": "البحث"
+  },
+  {
+    "key": "copy.7d59d920",
+    "defaultValue": "لا توجد نتيجة مطابقة. جرّب كلمة أخرى.",
+    "englishDefault": "No matching results. Try another search.",
+    "type": "text",
+    "label": "لا توجد نتيجة مطابقة. جرّب كلمة أخرى.",
+    "group": "البحث"
+  },
+  {
+    "key": "copy.f9a47fda",
+    "defaultValue": "عرض كل نتائج العقارات",
+    "englishDefault": "View property search results",
+    "type": "text",
+    "label": "عرض كل نتائج العقارات",
+    "group": "البحث"
+  },
+  {
+    "key": "copy.a76256e3",
+    "defaultValue": "ابحث الآن",
+    "englishDefault": "Search now",
+    "type": "text",
+    "label": "ابحث الآن",
+    "group": "البحث"
+  },
+  {
+    "key": "contact.whatsapp",
+    "defaultValue": "9668002450000",
+    "type": "value",
+    "label": "رقم واتساب",
+    "group": "واتساب"
+  },
+  {
+    "key": "copy.f90402e3",
+    "defaultValue": "مرحبًا، أرغب بالاستفسار عن عقار.",
+    "englishDefault": "Hello, I would like to ask about a property.",
+    "type": "text",
+    "label": "مرحبًا، أرغب بالاستفسار عن عقار.",
+    "group": "واتساب"
+  },
+  {
+    "key": "copy.a7c4215c",
+    "defaultValue": "تواصل معنا عبر واتساب",
+    "englishDefault": "Contact us on WhatsApp",
+    "type": "text",
+    "label": "تواصل معنا عبر واتساب",
+    "group": "واتساب"
+  },
+  {
+    "key": "copy.a0512b61",
+    "defaultValue": "تواصل عبر واتساب",
+    "englishDefault": "Chat on WhatsApp",
+    "type": "text",
+    "label": "تواصل عبر واتساب",
+    "group": "واتساب"
+  },
+  {
+    "key": "pages.home.enabled",
+    "label": "إظهار صفحة الرئيسية",
+    "group": "إظهار الصفحات",
+    "type": "value",
+    "defaultValue": "true"
+  },
+  {
+    "key": "pages.about.enabled",
+    "label": "إظهار صفحة من نحن",
+    "group": "إظهار الصفحات",
+    "type": "value",
+    "defaultValue": "true"
+  },
+  {
+    "key": "pages.properties.enabled",
+    "label": "إظهار صفحة العقارات",
+    "group": "إظهار الصفحات",
+    "type": "value",
+    "defaultValue": "true"
+  },
+  {
+    "key": "pages.articles.enabled",
+    "label": "إظهار صفحة المقالات",
+    "group": "إظهار الصفحات",
+    "type": "value",
+    "defaultValue": "true"
+  },
+  {
+    "key": "pages.contact.enabled",
+    "label": "إظهار صفحة تواصل معنا",
+    "group": "إظهار الصفحات",
+    "type": "value",
+    "defaultValue": "true"
+  },
+  {
+    "key": "seo.description",
+    "label": "وصف الموقع لمحركات البحث",
+    "group": "الهوية",
+    "type": "text",
+    "defaultValue": "شركة العبنق العقارية — خبرة عقارية.. وخدمات متكاملة.",
+    "englishDefault": "Alabnq Real Estate Company — real estate expertise and integrated services."
+  },
+  {
+    "key": "metrics.1.value",
+    "label": "قيمة مبيعاتنا",
+    "group": "إحصائيات الرئيسية",
+    "type": "value",
+    "defaultValue": "100000000"
+  },
+  {
+    "key": "metrics.1.title",
+    "label": "عنوان مبيعاتنا",
+    "group": "إحصائيات الرئيسية",
+    "type": "text",
+    "defaultValue": "مبيعاتنا",
+    "englishDefault": "Our sales"
+  },
+  {
+    "key": "metrics.1.label",
+    "label": "وصف مبيعاتنا",
+    "group": "إحصائيات الرئيسية",
+    "type": "text",
+    "defaultValue": "ريال مبيعات تجاوزت 100 مليون",
+    "englishDefault": "SAR in sales exceeding 100 million"
+  },
+  {
+    "key": "metrics.2.value",
+    "label": "قيمة المساحات",
+    "group": "إحصائيات الرئيسية",
+    "type": "value",
+    "defaultValue": "500000"
+  },
+  {
+    "key": "metrics.2.title",
+    "label": "عنوان المساحات",
+    "group": "إحصائيات الرئيسية",
+    "type": "text",
+    "defaultValue": "المساحات",
+    "englishDefault": "Property area"
+  },
+  {
+    "key": "metrics.2.label",
+    "label": "وصف المساحات",
+    "group": "إحصائيات الرئيسية",
+    "type": "text",
+    "defaultValue": "متر مربع مباعة ومعروضة",
+    "englishDefault": "sqm sold and offered"
+  },
+  {
+    "key": "metrics.3.value",
+    "label": "قيمة قاعدة العملاء",
+    "group": "إحصائيات الرئيسية",
+    "type": "value",
+    "defaultValue": "10000"
+  },
+  {
+    "key": "metrics.3.title",
+    "label": "عنوان قاعدة العملاء",
+    "group": "إحصائيات الرئيسية",
+    "type": "text",
+    "defaultValue": "قاعدة العملاء",
+    "englishDefault": "Our clients"
+  },
+  {
+    "key": "metrics.3.label",
+    "label": "وصف قاعدة العملاء",
+    "group": "إحصائيات الرئيسية",
+    "type": "text",
+    "defaultValue": "عميل في قاعدة عملائنا",
+    "englishDefault": "clients in our network"
+  }
+]

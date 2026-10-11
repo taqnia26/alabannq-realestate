@@ -4,26 +4,35 @@ import { ArrowUpLeft, Menu, Moon, Sun, X } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 import { SiteSearch } from "./SiteSearch";
 import { usePreferences } from "@/lib/preferences";
+import { useSiteContent, useLocalizedSiteValue } from "@/data/siteContent";
 
 export function Navbar() {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
   const { locale, setLocale, theme, setTheme, t } = usePreferences();
+  const { data } = useSiteContent();
+  const name = useLocalizedSiteValue("site.name", "شركة العبنق العقارية", "ALABNQ REAL ESTATE");
   useEffect(() => setOpen(false), [location]);
-  const links = [
+  const pageLinks = [
     { href: "/", label: t("الرئيسية", "Home") },
     { href: "/properties", label: t("العقارات", "Properties") },
     { href: "/about", label: t("من نحن", "Our company") },
     { href: "/articles", label: t("الأخبار والمقالات", "Journal") },
     { href: "/contact", label: t("تواصل معنا", "Contact") },
   ];
+  const links = [
+    ...pageLinks.filter(link => data?.site[`pages.${link.href === "/" ? "home" : link.href.slice(1)}.enabled`] !== "false"),
+    ...(data?.pages ?? []).filter(page => page.published !== false && page.showInNav).map(page => ({
+      href: `/pages/${page.slug}`, label: locale === "en" ? page.titleEn || page.title : page.title,
+    })),
+  ];
   return <header className="site-header sticky top-0 z-50 border-b border-[var(--line-soft)] bg-background/95 backdrop-blur-xl">
     <div className="site-container flex h-[76px] items-center justify-between gap-5 lg:h-[88px]">
       <Link href="/" data-testid="link-home-logo" className="group flex min-w-0 shrink-0 items-center gap-3" aria-label={t("العبنق العقارية، الرئيسية", "Alabnq Real Estate, home")}>
         <BrandLogo className="h-[53px] w-[43px] lg:h-[62px] lg:w-[50px]" label={t("شعار شركة العبنق العقارية", "Alabnq Real Estate logo")} />
-        <span className="text-[13px] font-bold leading-[1.5] tracking-tight text-foreground lg:hidden xl:block xl:text-[15px]">{t("شركة العبنق العقارية", "ALABNQ REAL ESTATE")}</span>
+        <span className="text-[13px] font-bold leading-[1.5] tracking-tight text-foreground lg:hidden xl:block xl:text-[15px]">{name}</span>
       </Link>
-      <nav aria-label={t("التنقل الرئيسي", "Main navigation")} className="hidden items-center gap-3 lg:flex xl:gap-6">
+      <nav aria-label={t("التنقل الرئيسي", "Main navigation")} className="hidden max-w-[50%] items-center gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex xl:gap-6">
         {links.map(link => <Link key={link.href} href={link.href} data-testid={`link-nav-${link.href.replace(/\W/g, "") || "home"}`} aria-current={location === link.href ? "page" : undefined} className={`relative whitespace-nowrap py-2 text-[13px] font-semibold transition-colors hover:text-accent ${location === link.href ? "text-accent" : "text-foreground/75"}`}>{link.label}{location === link.href && <span className="absolute inset-x-0 -bottom-1 h-px bg-accent" />}</Link>)}
       </nav>
       <div className="flex items-center gap-1.5 lg:gap-3">

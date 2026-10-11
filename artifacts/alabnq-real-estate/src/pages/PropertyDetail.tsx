@@ -23,7 +23,7 @@ export default function PropertyDetail() {
   if (isLoading) return <main className="site-container min-h-[70dvh] animate-pulse py-24"><div className="h-96 bg-muted" /><div className="mt-10 h-8 w-2/3 bg-muted" /></main>;
   if (isError) return <main className="site-container min-h-[60dvh] py-32 text-center"><p>{t("تعذر تحميل العقار.", "Could not load the property.")}</p><button onClick={() => void refetch()} className="site-button mt-6 px-7 py-3">{t("إعادة المحاولة", "Try again")}</button></main>;
   if (!property) return <main className="site-container min-h-[60dvh] py-32 text-center"><h1 className="site-display text-3xl">{t("العقار غير موجود", "Property not found")}</h1><Link href="/properties" className="site-button mt-8 inline-block px-7 py-3">{t("العودة للعقارات", "Back to properties")}</Link></main>;
-  const gallery = property.gallery?.length ? property.gallery : [property.image];
+  const gallery = [...new Set([property.image, ...(property.gallery ?? [])].filter(Boolean))];
   const image = selectedImage ?? gallery[0];
   const title = localized(property, "title", locale);
   const amenities = locale === "en" ? property.amenitiesEn ?? [] : property.amenities;

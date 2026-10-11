@@ -18,6 +18,9 @@ import { ImageInput } from './ImageInput';
 import SliderEditor from './SliderEditor';
 import { discardSliderDraft } from './sliderDraft';
 import { BrandLogo } from '../components/BrandLogo';
+import ContentEditor from './ContentEditor';
+import PropertyLocationInput from './PropertyLocationInput';
+import PagesEditor, { type AdminPage } from './PagesEditor';
 import './admin.css';
 
 type Campaign = {
@@ -31,7 +34,7 @@ type Campaign = {
   endDate: string;
   notes: string;
 };
-type PublishedProperty = Property & { published?: boolean };
+type PublishedProperty = Property & { published?: boolean; latitude?: number; longitude?: number; googleMapsUrl?: string };
 type PublishedArticle = Article & { published?: boolean };
 type Stats = {
   total: number;
@@ -46,11 +49,12 @@ type AdminState = {
   articles: PublishedArticle[];
   campaigns: Campaign[];
   site: Record<string, string>;
+  pages: AdminPage[];
   stats: Stats;
   inquiries: { id: number; name: string; phone: string; email: string | null; message: string; read: boolean; createdAt: string }[];
 };
 type Kind = 'properties' | 'articles' | 'campaigns';
-type Section = 'overview' | Kind | 'site' | 'slider' | 'analytics' | 'inquiries';
+type Section = 'overview' | Kind | 'site' | 'slider' | 'analytics' | 'inquiries' | 'pages';
 type Item = PublishedProperty | PublishedArticle | Campaign;
 type Notice = { text: string; error?: boolean };
 
@@ -95,6 +99,7 @@ const siteFields = [
 const sectionNames: Record<Section, string> = {
   overview: 'نظرة عامة', properties: 'العقارات', articles: 'المقالات',
   campaigns: 'الحملات', site: 'محتوى الموقع', slider: 'سلايدر الرئيسية', analytics: 'التحليلات', inquiries: 'الرسائل',
+  pages: 'الصفحات',
 };
 const itemNames: Record<Kind, string> = { properties: 'عقار', articles: 'مقال', campaigns: 'حملة' };
 const numberFormat = new Intl.NumberFormat('ar-SA');
@@ -143,7 +148,9 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
   const [form, setForm] = useState<Item>(initial);
   const [error, setError] = useState('');
   const [uploadsInProgress, setUploadsInProgress] = useState(0);
-  const changeUploadState = (busy: boolean) => setUploadsInProgress(count => count + (busy ? 1 : -1));
+  const [resolvedMapUrl, setResolvedMapUrl] = useState(String((initial as unknown as Record<string, unknown>).googleMapsUrl ?? ''));
+  const [locationChosen, setLocationChosen] = useState(Boolean('title' in initial && initial.title));
+  const changeUploadState = (busy: boolean) => setUploadsInProgress(count => Math.max(0, count + (busy ? 1 : -1)));
   const isNew = !('createdAt' in initial) && initial.id.startsWith(`${kind.slice(0, -1)}-`) &&
     !('sourceUrl' in initial && initial.sourceUrl) && !('title' in initial && initial.title) && !('name' in initial && initial.name);
   const value = (key: string): string => {
@@ -169,6 +176,7 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
+    if (uploadsInProgress > 0) return setError('انتظر اكتمال رفع الصور أو استخراج الموقع قبل الحفظ.');
     let payload: Item = form;
     if (kind === 'properties') {
       const property = form as PublishedProperty;
@@ -177,6 +185,8 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
       if (property.published !== false && property.amenities.length && !property.amenitiesEn?.length && !value('amenitiesEn').trim()) return setError('أكمل المميزات بالإنجليزية قبل النشر، أو احفظ العقار كمسودة.');
       if (property.price < 0 || property.area < 0 || property.rooms < 0 || property.bathrooms < 0) return setError('القيم الرقمية يجب ألا تكون سالبة.');
       const lat = Number(value('latitude')), lng = Number(value('longitude'));
+      if (!locationChosen) return setError('حدد موقع العقار من رابط الخرائط أو أدخل إحداثياته قبل الحفظ.');
+      if (value('googleMapsUrl').trim() && value('googleMapsUrl') !== resolvedMapUrl) return setError('استخرج الإحداثيات من رابط الخرائط الجديد قبل حفظ العقار، أو امسح الرابط واستخدم الموقع اليدوي.');
       if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) return setError('أدخل إحداثيات صحيحة للموقع.');
        payload = { ...property, coordinates: [lat, lng], amenities: value('amenities').split('\n').map(s => s.trim()).filter(Boolean), amenitiesEn: value('amenitiesEn').split('\n').map(s => s.trim()).filter(Boolean), gallery: value('gallery').split('\n').map(s => s.trim()).filter(Boolean), priceLabel: property.priceLabel.trim() || `${formatNumber(property.price)} ر.س` } as Item;
     }
@@ -202,7 +212,8 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
             <div className="ad-form-section"><h3>التفاصيل الأساسية</h3><div className="ad-field-grid">
               {field('title', 'عنوان العرض', { required: true, full: true, placeholder: 'شقة للبيع في حي العوالي' })}
               {field('neighborhood', 'الحي', { required: true })}
-              {field('type', 'نوع العقار', { choices: ['شقق للبيع', 'أراضي للبيع', 'عمائر للبيع', 'شقق للإيجار'].map(v => ({ value: v, label: v })) })}
+              {field('city', 'المدينة', { required: true })}
+              {field('type', 'نوع العقار', { choices: ['شقق للبيع', 'فلل للبيع', 'أراضي للبيع', 'عمائر للبيع', 'شقق للإيجار', 'فلل للإيجار'].map(v => ({ value: v, label: v })) })}
               {field('purpose', 'الغرض', { choices: [{ value: 'sale', label: 'بيع' }, { value: 'rent', label: 'إيجار' }] })}
               {field('price', 'السعر (ر.س)', { type: 'number', min: 0, required: true })}
               {field('priceLabel', 'صيغة السعر المعروضة', { placeholder: 'يُنشأ تلقائياً إن تُرك فارغاً' })}
@@ -232,8 +243,14 @@ function ItemForm({ kind, initial, saving, onClose, onSave }: {
                     return { ...prev, gallery: action === 'add' ? [...urls, url] : urls.filter(x => x !== url) };
                   })} /></div>
               {field('sourceUrl', 'رابط الإعلان الأصلي', { full: true, type: 'url', placeholder: 'https://...' })}
-              {field('latitude', 'خط العرض', { type: 'number', hint: 'مثال: 21.4225' })}
-              {field('longitude', 'خط الطول', { type: 'number', hint: 'مثال: 39.8262' })}
+              <div className="ad-field full"><PropertyLocationInput latitude={locationChosen ? value('latitude') : ''} longitude={locationChosen ? value('longitude') : ''} mapUrl={value('googleMapsUrl')}
+                onUrlChange={url => set('googleMapsUrl', url)} onBusyChange={changeUploadState}
+                onChange={location => {
+                  const mapUrl = location.mapUrl ?? '';
+                  setResolvedMapUrl(mapUrl);
+                  setLocationChosen(true);
+                  setForm(previous => ({ ...previous, latitude: location.latitude, longitude: location.longitude, googleMapsUrl: mapUrl }) as Item);
+                }} /></div>
             </div></div>
             <div className="ad-form-section"><h3>الظهور</h3>{checkbox('featured', 'عرضه ضمن العقارات المميزة')}{checkbox('published', 'منشور على الموقع')}</div>
           </>}
@@ -304,6 +321,8 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [refreshing, setRefreshing] = useState(false);
   const dataRef = useRef<AdminState | null>(null);
   const [siteUploads, setSiteUploads] = useState<string[]>([]);
+  const [contentDirty, setContentDirty] = useState(false);
+  const [contentBusy, setContentBusy] = useState(false);
 
   useEffect(() => { try { localStorage.setItem('alabnq-admin-theme', theme); } catch { /* storage unavailable */ } }, [theme]);
   useEffect(() => { if (!notice) return; const timeout = window.setTimeout(() => setNotice(null), 5000); return () => clearTimeout(timeout); }, [notice]);
@@ -380,14 +399,14 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
     await queryClient.invalidateQueries({ queryKey: contentQueryKey });
     setNotice({ text: 'تم حفظ سلايدر الرئيسية بنجاح.' });
   };
-  const guarded = section === 'slider' && (sliderDirty || sliderUploads > 0);
+  const guarded = (section === 'slider' && (sliderDirty || sliderUploads > 0)) || contentDirty || contentBusy;
   const guardedRef = useRef(false);
   guardedRef.current = guarded;
   const guardHref = useRef('');
   useEffect(() => {
     if (!guarded) return;
     guardHref.current = window.location.href;
-    const msg = 'لديك تعديلات غير محفوظة أو رفع صور جارٍ في سلايدر الرئيسية. هل تريد المغادرة؟';
+    const msg = 'لديك تعديلات غير محفوظة أو عملية حفظ / رفع صور جارية. هل تريد المغادرة؟';
     const click = (e: MouseEvent) => {
       const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
       if (!a || a.target === '_blank' || /^(mailto|tel):/.test(a.getAttribute('href') || '')) return;
@@ -410,7 +429,8 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   }, [guarded]);
   const confirmLeave = () => {
     if (!guarded) return true;
-    if (!window.confirm('لديك تعديلات غير محفوظة في سلايدر الرئيسية. هل تريد تجاهلها والمغادرة؟')) return false;
+    if (contentBusy || sliderUploads > 0) { setNotice({text:'انتظر اكتمال العملية الجارية قبل المغادرة.',error:true}); return false; }
+    if (!window.confirm('لديك تعديلات غير محفوظة. هل تريد المغادرة؟ سيتم الاحتفاظ بمسودة محتوى الموقع.')) return false;
     discardSliderDraft();
     return true;
   };
@@ -430,6 +450,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
     { id: 'inquiries' as Section, label: 'الرسائل', icon: FileText },
     { id: 'slider' as Section, label: 'سلايدر الرئيسية', icon: Images },
     { id: 'site' as Section, label: 'الموقع', icon: Settings2 },
+    { id: 'pages' as Section, label: 'الصفحات', icon: FileText },
     { id: 'analytics' as Section, label: 'التحليلات', icon: BarChart3 },
   ];
   const stats = data?.stats;
@@ -550,30 +571,10 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                 </div> : <Empty title="لا توجد رسائل بعد" text="تظهر هنا الرسائل التي يرسلها الزوار عبر صفحة التواصل." />}
               </section>}
               {section === 'slider' && <SliderEditor site={data.site} onSave={saveSlider} onDirtyChange={setSliderDirty} onUploadsChange={setSliderUploads} />}
-              {section === 'site' && <>
-                <div className="ad-dashboard-hero"><div><span className="ad-eyebrow">إدارة المحتوى</span><h2>موقعك، بصوتك.</h2><p>عدّل النصوص والروابط مباشرة، ثم احفظ كل حقل على حدة.</p><p className="ad-site-shared-note">الصور والوسائط والروابط وأرقام الهاتف مشتركة بين اللغتين.</p></div></div>
-                <div className="ad-site-grid">{siteKeys.map(key => {
-                  const detail = siteFields.find(entry => entry[0] === key);
-                  const value = siteDraft[key] ?? '';
-                  const englishValue = siteDraft[`${key}.en`] ?? '';
-                  const imageKey = key.toLowerCase().includes('image');
-                  const neutral = isLanguageNeutralSiteKey(key);
-                  return <div className="ad-card ad-site-card" key={key}><label htmlFor={`site-${key}`}>{detail?.[1] || key}</label><div className="ad-site-key">{detail?.[2] || key}</div>
-                    {neutral ? <>
-                      <label htmlFor={`site-${key}`}>{imageKey ? 'رابط / صورة (مشترك بين اللغتين)' : 'قيمة مشتركة بين اللغتين'}</label>
-                      {imageKey || isLanguageNeutralSiteKey(key) ? <input id={`site-${key}`} className="ad-input" type="text" dir={imageKey || /link|url|email|twitter|instagram|linkedin/i.test(key) ? 'ltr' : 'auto'} value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder={imageKey ? 'https://...' : 'اكتب المحتوى هنا'} data-testid={`input-site-${key}`} /> : <textarea id={`site-${key}`} className="ad-input" value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder="اكتب المحتوى هنا" data-testid={`textarea-site-${key}`} />}
-                    </> : <>
-                      <div className="ad-site-language-field"><label htmlFor={`site-${key}`}>العربية</label><textarea id={`site-${key}`} className="ad-input" value={value} onChange={e => setSiteDraft(d => ({ ...d, [key]: e.target.value }))} placeholder="اكتب النص بالعربية" data-testid={`textarea-site-${key}`} /><button type="button" className="ad-button ad-button-plain" disabled={savingKey === key || value === (data.site?.[key] ?? '')} onClick={() => void saveSite(key, value)} data-testid={`button-save-site-${key}`}><Check />{savingKey === key ? 'جارٍ الحفظ...' : 'حفظ العربية'}</button></div>
-                      <div className="ad-site-language-field" dir="ltr"><label htmlFor={`site-${key}-en`}>English</label><textarea id={`site-${key}-en`} className="ad-input" dir="ltr" value={englishValue} onChange={e => setSiteDraft(d => ({ ...d, [`${key}.en`]: e.target.value }))} placeholder="Enter the English text" data-testid={`textarea-site-${key}-en`} /><button type="button" className="ad-button ad-button-plain" disabled={savingKey === `${key}.en` || englishValue === (data.site?.[`${key}.en`] ?? '')} onClick={() => void saveSite(`${key}.en`, englishValue)} data-testid={`button-save-site-${key}-en`}><Check />{savingKey === `${key}.en` ? 'Saving...' : 'Save English'}</button></div>
-                    </>}
-                     {imageKey && <ImageInput id={`upload-site-${key}`} label={detail?.[1] || key} value={value ? [value] : []}
-                       onBusyChange={busy => setSiteUploads(keys => busy ? [...keys, key] : keys.filter(x => x !== key))}
-                       onChange={(url, action) => setSiteDraft(d => ({ ...d, [key]: action === 'add' ? url : '' }))} />}
-                      {neutral && <button type="button" className="ad-button ad-button-plain" disabled={savingKey === key || siteUploads.includes(key) || value === (data.site?.[key] ?? '')} onClick={() => void saveSite(key, value)} data-testid={`button-save-site-${key}`}><Check />{savingKey === key ? 'جارٍ الحفظ...' : 'حفظ التعديل'}</button>}
-                  </div>;
-                })}</div>
-                <div className="ad-site-add ad-section-gap"><h3>إضافة مفتاح محتوى آخر</h3><div className="ad-field-grid"><input className="ad-input" value={siteKey} onChange={e => setSiteKey(e.target.value)} placeholder="اسم المفتاح، مثال: services.title" dir="ltr" aria-label="اسم مفتاح المحتوى" data-testid="input-site-new-key" /><div><label htmlFor="input-site-new-value">العربية</label><textarea id="input-site-new-value" className="ad-input" value={siteValue} onChange={e => setSiteValue(e.target.value)} placeholder="النص بالعربية" aria-label="قيمة المحتوى بالعربية" data-testid="input-site-new-value" /></div><div dir="ltr"><label htmlFor="input-site-new-value-en">English (optional)</label><textarea id="input-site-new-value-en" className="ad-input" value={siteValueEn} onChange={e => setSiteValueEn(e.target.value)} placeholder="English text" aria-label="English content value" data-testid="input-site-new-value-en" /></div></div><button type="button" className="ad-button ad-button-primary" onClick={() => void saveNewSiteKey()} disabled={!!savingKey || !siteKey.trim()} data-testid="button-add-site-key"><Plus />حفظ المحتوى</button></div>
-              </>}
+              {section === 'site' && <ContentEditor site={data.site} onSave={saveSite} onBusyChange={setContentBusy} onDirtyChange={setContentDirty} />}
+              {section === 'pages' && <PagesEditor pages={data.pages ?? []} onRefresh={async () => {
+                await reload(); await queryClient.invalidateQueries({queryKey:contentQueryKey});
+              }} />}
             </>}
         </div>
       </main>

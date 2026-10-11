@@ -1,0 +1,9 @@
+.admin-root .pl-root { display: grid; gap: 12px; }
+.admin-root .pl-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-root .pl-row input { flex: 1 1 240px; }
+.admin-root .pl-coords { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.admin-root .pl-map { height: 240px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(128,128,128,.25); }
+.admin-root .pl-link { width: fit-content; }
+.admin-root .pl-ok { color: #2f8f5b; }
+.pl-marker span { display: block; width: 22px; height: 22px; border-radius: 50% 50% 50% 0; background: #b8892f; transform: rotate(-45deg); border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+@media (max-width: 560px) { .admin-root .pl-coords { grid-template-columns: 1fr; } }

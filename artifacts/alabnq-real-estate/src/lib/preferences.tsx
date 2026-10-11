@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useSiteContent } from "@/data/siteQuery";
+import { contentTextKey } from "./contentCatalog";
 
 export type Locale = "ar" | "en";
 export type Theme = "dark" | "light";
@@ -23,6 +25,7 @@ function stored<T extends string>(key: string, values: readonly T[], fallback: T
 }
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
+  const { data } = useSiteContent();
   const [locale, setLocale] = useState<Locale>(() => stored("alabnq-locale", ["ar", "en"], "ar"));
   const [theme, setTheme] = useState<Theme>(() => stored("alabnq-site-theme", ["dark", "light"], "dark"));
 
@@ -39,8 +42,11 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<Preferences>(() => ({
     locale, setLocale, theme, setTheme,
-    t: (arabic, english) => locale === "en" ? english : arabic,
-  }), [locale, theme]);
+    t: (arabic, english) => {
+      const key = contentTextKey(arabic, english);
+      return data?.site[locale === "en" ? `${key}.en` : key] ?? (locale === "en" ? english : arabic);
+    },
+  }), [locale, theme, data?.site]);
 
   return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;
 }

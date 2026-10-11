@@ -6,9 +6,10 @@ import siteImagesRouter from "./site-images";
 import { deleteUnreferencedImage, imageReferences, managedImageId, validateImageReferences, withImageMutationLock } from "../lib/siteImages";
 import { requireAdmin } from "../lib/adminAuth";
 import { HERO_SLIDER_KEY, heroSliderSchema, type HeroSliderConfig } from "@workspace/slider-config";
+import { resolveGoogleMapsPoint } from "../lib/googleMaps";
 
 const router: IRouter = Router();
-const kinds = ["properties", "articles", "campaigns"] as const;
+const kinds = ["properties", "articles", "campaigns", "pages"] as const;
 const idSchema = z.string().min(1).max(130).regex(/^[a-zA-Z0-9_-]+$/);
 const itemSchema = z.object({ id: idSchema }).passthrough();
 const siteSchema = z.object({ key: z.string().min(1).max(120).regex(/^[a-zA-Z0-9_.-]+$/), value: z.string().max(60000) });
@@ -31,6 +32,7 @@ router.get("/content", async (_req, res): Promise<void> => {
   res.json({
     properties: entries.filter(x => x.kind === "properties").map(x => ({ ...x.data, id: x.id, published: x.published })),
     articles: entries.filter(x => x.kind === "articles").map(x => ({ ...x.data, id: x.id, published: x.published })),
+    pages: entries.filter(x => x.kind === "pages" && x.published && x.data.deleted !== true).map(x => ({ ...x.data, id: x.id, published: x.published })),
     site: Object.fromEntries(entries.filter(x => x.kind === "site").map(x => [x.id, x.data.value])),
   });
 });
@@ -54,6 +56,14 @@ router.post("/inquiries", async (req, res): Promise<void> => {
 
 router.use("/admin", requireAdmin);
 router.use("/admin/media", siteImagesRouter);
+router.post("/admin/maps/resolve", async (req, res): Promise<void> => {
+  const parsed = z.object({ url: z.string().trim().min(1).max(4000) }).safeParse(req.body);
+  if (!parsed.success) { res.status(400).json({error:"أدخل رابط خرائط Google صحيحًا."}); return; }
+  try { res.json(await resolveGoogleMapsPoint(parsed.data.url)); }
+  catch (error) {
+    res.status(400).json({error: error instanceof Error && error.name !== "TimeoutError" ? error.message : "تعذر فتح رابط الخرائط. حاول مجددًا أو استخدم الإدخال اليدوي."});
+  }
+});
 
 async function cleanupImages(req: Request, before: Record<string, unknown> | undefined, after: Record<string, unknown>): Promise<void> {
   for (const url of imageReferences(before || {})) {
@@ -86,6 +96,7 @@ router.get("/admin/state", async (_req, res): Promise<void> => {
     properties: entries.filter(x => x.kind === "properties").map(x => ({ ...x.data, id: x.id, published: x.published })),
     articles: entries.filter(x => x.kind === "articles").map(x => ({ ...x.data, id: x.id, published: x.published })),
     campaigns: entries.filter(x => x.kind === "campaigns").map(x => ({ ...x.data, id: x.id })),
+    pages: entries.filter(x => x.kind === "pages" && x.data.deleted !== true).map(x => ({ ...x.data, id: x.id, published: x.published })),
     inquiries,
     site: Object.fromEntries(entries.filter(x => x.kind === "site").map(x => [x.id, x.data.value])),
     stats: { ...(totals[0] || { total: 0, last7: 0, today: 0 }), daily, topPages, campaignVisits },
@@ -108,15 +119,29 @@ async function saveItemUnlocked(req: Request, res: Response): Promise<void> {
     res.status(400).json({ error: "بيانات المحتوى غير صالحة" }); return;
   }
   const { id, published, ...data } = parsed.data;
-  if ((kind === "properties" || kind === "articles") &&
+  if ((kind === "properties" || kind === "articles" || kind === "pages") &&
     !await validateImageReferences([
       ...(typeof data.image === "string" ? [data.image] : []),
       ...(kind === "properties" && Array.isArray(data.gallery) ? data.gallery.filter((x): x is string => typeof x === "string") : []),
     ])) {
     res.status(400).json({ error: "إحدى الصور المرفوعة غير صالحة أو تجاوزت الحجم المسموح." }); return;
   }
-  if (kind === "properties" && data.city !== "مكة المكرمة") {
-    res.status(400).json({ error: "العروض متاحة في مكة المكرمة فقط" }); return;
+  if (kind === "properties" && (!Array.isArray(data.coordinates) || data.coordinates.length !== 2 ||
+    !data.coordinates.every((v, i) => typeof v === "number" && Number.isFinite(v) && Math.abs(v) <= (i === 0 ? 90 : 180)))) {
+    res.status(400).json({ error: "حدد موقع العقار الصحيح قبل الحفظ." }); return;
+  }
+  if (kind === "pages") {
+    const page = z.object({
+      slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100),
+      title: z.string().trim().min(1).max(250), content: z.string().trim().min(1).max(15000),
+      titleEn: z.string().max(250).optional(), contentEn: z.string().max(15000).optional(),
+      image: z.string().max(4000).optional(), showInNav: z.boolean().optional(),
+    }).safeParse(data);
+    if (!page.success) { res.status(400).json({error:"أدخل عنوان الصفحة ومحتواها ورابطًا صالحًا."}); return; }
+    const matches = await db.select({id:contentTable.id,data:contentTable.data}).from(contentTable).where(eq(contentTable.kind,"pages"));
+    if (matches.some(p => p.id !== id && p.data.deleted !== true && p.data.slug === page.data.slug)) {
+      res.status(409).json({error:"رابط الصفحة مستخدم بالفعل. اختر رابطًا مختلفًا."}); return;
+    }
   }
   const [previous] = await db.select({ data: contentTable.data }).from(contentTable).where(eq(contentTable.id, id));
   const [item] = await db.insert(contentTable).values({ id, kind, data, published: published !== false })
@@ -158,6 +183,16 @@ router.put("/admin/site", async (req, res): Promise<void> => withImageMutationLo
     }
   } else {
     if (value.length > 15000) { res.status(400).json({ error: "قيمة غير صالحة" }); return; }
+    if (/^metrics\.\d+\.value$/.test(key) && (!value.trim() || !Number.isFinite(Number(value)) || Number(value) < 0)) {
+      res.status(400).json({error:"أدخل قيمة رقمية غير سالبة للإحصائية."}); return;
+    }
+    if (/^pages\..+\.enabled$/.test(key) && value !== "true" && value !== "false") {
+      res.status(400).json({error:"اختر إظهار الصفحة أو إخفاءها."}); return;
+    }
+    if (/twitter|instagram|linkedin|\.url$|\.link$/i.test(key) && value.trim()) {
+      try { const url = new URL(value); if (!["https:","http:"].includes(url.protocol)) throw new Error(); }
+      catch { res.status(400).json({error:"أدخل رابطًا صحيحًا يبدأ بـ https://."}); return; }
+    }
     if (key.toLowerCase().includes("image") && !await validateImageReferences([value])) {
       res.status(400).json({ error: "الصورة المرفوعة غير صالحة أو تجاوزت الحجم المسموح." }); return;
     }
